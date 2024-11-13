@@ -1,0 +1,1 @@
+./scripts/build.sh && ./dist/discovery_app.exe
