@@ -25,7 +25,7 @@ func main() {
 	// Load environment file
 	err := godotenv.Load()
 	if err != nil {
-		fmt.Errorf("error loading .env file :%w \n ", err)
+		fmt.Printf("error loading .env file :%s \n ", err)
 	}
 
 	// Connect to web server port: 8080
@@ -47,7 +47,7 @@ func main() {
 	fmt.Printf("server started on %s\n", addr)
 	err = srv.ListenAndServe()
 	if err != nil {
-		fmt.Errorf("%w\n ", err)
+		fmt.Printf("%s\n ", err)
 	}
 
 }
@@ -81,7 +81,7 @@ func handlePage(w http.ResponseWriter, r *http.Request) {
 `, resultString)
 	_, err = w.Write([]byte(page))
 	if err != nil {
-		fmt.Errorf("error in writing web page: %w\n ", err)
+		fmt.Printf("error in writing web page: %s\n ", err)
 	}
 }
 
