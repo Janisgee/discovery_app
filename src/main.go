@@ -40,5 +40,8 @@ func handlePage(w http.ResponseWriter, r *http.Request) {
 </body>
 </html>
 `
-	w.Write([]byte(page))
+	_, err := w.Write([]byte(page))
+	if err != nil {
+		log.Fatal(err)
+	}
 }
