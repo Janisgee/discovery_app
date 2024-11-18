@@ -26,6 +26,7 @@ func main() {
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Printf("error loading .env file :%s \n ", err)
+		os.Exit(1)
 	}
 
 	// Connect to web server port: 8080
@@ -68,17 +69,19 @@ func handlePage(w http.ResponseWriter, r *http.Request) {
 		resultString += fmt.Sprintf("<p>%d. Name: %s<br>Description: %s<br>Image: <img src='%s' alt='%s'></p>",
 			i+1, attraction.Name, attraction.Description, attraction.Image, attraction.Name)
 	}
+
 	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(200)
 	page := fmt.Sprintf(`<html>
-<head></head>
-<body>
+	<head></head>
+	<body>
 	<p> Hi there, welcome to Discovery App! </p>
 	<p> Generated Attractions in Perth:</p>
 	<p>%s</p>
-</body>
-</html>
-`, resultString)
+	</body>
+	</html>
+	`, resultString)
+
 	_, err = w.Write([]byte(page))
 	if err != nil {
 		fmt.Printf("error in writing web page: %s\n ", err)
