@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { Button } from '@/app/ui/buttons';
 
 export default function App() {
   return (
@@ -15,26 +15,3 @@ export default function App() {
     </div>
   );
 }
-
-function Button({ useFor, link, color }) {
-  return (
-    <div>
-      <Link href={link}>
-        <button className={color}>{useFor}</button>
-      </Link>
-    </div>
-  );
-}
-
-// function Counter() {
-//   const [count, setCount] = useState(0);
-
-//   return (
-//     <div>
-//       <p>You clicked me {count} times</p>
-//       <button className='btn-primary' onClick={() => setCount(count + 1)}>
-//         Click Me
-//       </button>
-//     </div>
-//   );
-// }
