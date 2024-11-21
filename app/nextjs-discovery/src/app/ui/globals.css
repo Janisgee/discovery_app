@@ -4,10 +4,13 @@
 
 @layer base {
   h1 {
-    @apply text-6xl font-bold;
+    @apply text-6xl font-kaisei_tokumin font-bold;
   }
   h2 {
     @apply text-3xl font-bold;
+  }
+  h3 {
+    @apply text-2xl font-bold;
   }
 }
 
@@ -21,4 +24,12 @@
   .btn-grey {
     @apply py-2 px-5 bg-neutral-200 text-black font-semibold rounded-full shadow-md hover:bg-neutral-400 active:bg-neutral-300 focus:outline-none focus:ring focus:ring-neutral-100 focus:ring-opacity-55 drop-shadow-md;
   }
+
+  .zoom-img {
+    @apply hover:scale-105  rounded-lg duration-500 transition-transform;
+  }
+}
+
+.background-yellow {
+  background-color: #fffca0;
 }
