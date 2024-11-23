@@ -1,6 +1,6 @@
-import { Kaisei_Tokumin } from '@next/font/google';
-import { Space_Mono } from '@next/font/google';
-import { Inter } from '@next/font/google';
+import { Kaisei_Tokumin } from 'next/font/google';
+import { Space_Mono } from 'next/font/google';
+import { Inter } from 'next/font/google';
 
 export const kaiseiTokumin = Kaisei_Tokumin({
   subsets: ['latin'],
