@@ -2,7 +2,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
-import prettierPlugin from "eslint-plugin-prettier/recommended";
+import eslintConfigPrettier from "eslint-config-prettier";
 import tailwindCSS from "eslint-plugin-tailwindcss";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -21,7 +21,7 @@ const config = [
       "tailwindcss/no-custom-classname": "off",
     },
   },
-  prettierPlugin,
+  eslintConfigPrettier,
   { ignores: [".next/*"] },
 ];
 
