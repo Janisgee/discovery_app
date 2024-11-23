@@ -1,0 +1,2 @@
+cd discovery-web
+pnpm lint-staged
