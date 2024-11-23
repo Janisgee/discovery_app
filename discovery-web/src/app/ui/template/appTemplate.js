@@ -20,7 +20,7 @@ export default function AppTemplate({ children }) {
               </span>
               <FontAwesomeIcon icon={faFileLines} size='3x' />
             </div>
-            <div class='flex items-center justify-center'>
+            <div className='flex items-center justify-center'>
               <FontAwesomeIcon icon={faHeart} size='3x' />
               <span className=' ml-2 inline items-start text-xl'>
                 <Button useFor='JG' link='/dashboard/home' color='btn-grey' />
