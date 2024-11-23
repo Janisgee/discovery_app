@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import AppTemplate from '@/app/ui/template/appTemplate';
+import AppTemplate from "@/app/ui/template/appTemplate";
 
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 
 export default function LocationPlace() {
   const params = useParams();
