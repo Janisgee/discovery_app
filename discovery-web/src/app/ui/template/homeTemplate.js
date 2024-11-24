@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faFileLines, faHeart } from "@fortawesome/free-solid-svg-icons";
 
-export default function AppTemplate({ children }) {
+export default function HomeTemplate({ children }) {
   return (
     <div className="background-yellow font-inter">
       <div className="px-10 py-5">
