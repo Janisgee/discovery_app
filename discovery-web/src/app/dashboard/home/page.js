@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,9 +8,30 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "@/app/ui/buttons";
 import HomeTemplate from "@/app/ui/template/homeTemplate";
 import CardTemplete from "@/app/ui/template/cardTemplate";
+import Link from "next/link";
 
 export default function Home() {
+  const [country1, setCountry1] = useState("");
+  const [country2, setCountry2] = useState("");
+  const [country3, setCountry3] = useState("");
+
   const router = useRouter();
+
+  const generateRandomCountry = () => {
+    const randomCountry = require("random-country");
+    const country1 = randomCountry({ full: true });
+    if (country1 != "") {
+      setCountry1(country1);
+    }
+    const country2 = randomCountry({ full: true });
+    if (country2 != "") {
+      setCountry2(country2);
+    }
+    const country3 = randomCountry({ full: true });
+    if (country3 != "") {
+      setCountry3(country3);
+    }
+  };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -21,6 +43,11 @@ export default function Home() {
     }
     router.push(`/dashboard/location/${encodeURIComponent(searchData)}`);
   };
+
+  // Generate a random country when the component mounts
+  useEffect(() => {
+    generateRandomCountry();
+  }, []);
 
   return (
     <div>
@@ -63,18 +90,24 @@ export default function Home() {
           <h3>Popular Destination</h3>
           {/* <div className='w-full h-96 overflow-hidden inline-block rounded-lg'> */}
           <div className="h-96 w-full overflow-auto rounded-lg">
-            <CardTemplete
-              imageSource="/place_img/paris-france.jpg"
-              text="Japan"
-            />
-            <CardTemplete
-              imageSource="/place_img/paris-france.jpg"
-              text="Korea"
-            />
-            <CardTemplete
-              imageSource="/place_img/paris-france.jpg"
-              text="France"
-            />
+            <Link href={`/dashboard/location/${encodeURIComponent(country1)}`}>
+              <CardTemplete
+                imageSource="/place_img/paris-france.jpg"
+                text={country1}
+              />
+            </Link>
+            <Link href={`/dashboard/location/${encodeURIComponent(country2)}`}>
+              <CardTemplete
+                imageSource="/place_img/paris-france.jpg"
+                text={country2}
+              />
+            </Link>
+            <Link href={`/dashboard/location/${encodeURIComponent(country3)}`}>
+              <CardTemplete
+                imageSource="/place_img/paris-france.jpg"
+                text={country3}
+              />
+            </Link>
           </div>
         </div>
       </HomeTemplate>

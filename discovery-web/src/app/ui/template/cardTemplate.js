@@ -12,7 +12,7 @@ export default function CardTemplete({ imageSource, text }) {
       />
       <div className="absolute inset-0 rounded-lg bg-gray-700 opacity-40"></div>
       <div className="absolute inset-0 flex items-center justify-center">
-        <h2 className="text-white">{text}</h2>
+        <h2 className="text-center text-white">{text}</h2>
       </div>
     </div>
   );

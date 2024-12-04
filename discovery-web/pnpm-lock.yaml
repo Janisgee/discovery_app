@@ -28,6 +28,9 @@ importers:
       next:
         specifier: 15.0.3
         version: 15.0.3(react-dom@19.0.0-rc-66855b96-20241106(react@19.0.0-rc-66855b96-20241106))(react@19.0.0-rc-66855b96-20241106)
+      random-country:
+        specifier: ^1.0.1
+        version: 1.0.1
       react:
         specifier: 19.0.0-rc-66855b96-20241106
         version: 19.0.0-rc-66855b96-20241106
@@ -944,6 +947,12 @@ packages:
       }
     engines: { node: ">= 8.10.0" }
 
+  clamp@1.0.1:
+    resolution:
+      {
+        integrity: sha512-kgMuFyE78OC6Dyu3Dy7vcx4uy97EIbVxJB/B0eJ3bUNAkwdNcxYzgKltnyADiYwsR7SEqkkUPsEUT//OVS6XMA==,
+      }
+
   cli-cursor@5.0.0:
     resolution:
       {
@@ -1740,6 +1749,18 @@ packages:
       }
     engines: { node: ">= 0.4" }
 
+  is-array-like@1.1.2:
+    resolution:
+      {
+        integrity: sha512-ENI9ZKpn3AXM4JiWKZ31cgwl0Dc3Mj7HCLCq60qngozG7EFRDNCMiCAURaD5wwRnehkP63Ge6Z7hoIg23OMzMw==,
+      }
+
+  is-array@1.0.1:
+    resolution:
+      {
+        integrity: sha512-gxiZ+y/u67AzpeFmAmo4CbtME/bs7J2C++su5zQzvQyaxUqVzkh69DI+jN+KZuSO6JaH6TIIU6M6LhqxMjxEpw==,
+      }
+
   is-arrayish@0.3.2:
     resolution:
       {
@@ -1841,6 +1862,12 @@ packages:
       }
     engines: { node: ">=18" }
 
+  is-function@1.0.2:
+    resolution:
+      {
+        integrity: sha512-lw7DUp0aWXYg+CBCN+JKkcE0Q2RayZnSvnZBlwgxHBQhqt5pZNVy4Ri7H9GmmXkdu7LUthszM+Tor1u/2iBcpQ==,
+      }
+
   is-generator-function@1.0.10:
     resolution:
       {
@@ -1869,6 +1896,12 @@ packages:
       }
     engines: { node: ">= 0.4" }
 
+  is-nil@1.0.1:
+    resolution:
+      {
+        integrity: sha512-m2Rm8PhUFDNNhgvwZJjJG74a9h5CHU0fkA8WT+WGlCjyEbZ2jPwgb+ZxHu4np284EqNVyOsgppReK4qy/TwEwg==,
+      }
+
   is-number-object@1.0.7:
     resolution:
       {
@@ -1882,6 +1915,12 @@ packages:
         integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==,
       }
     engines: { node: ">=0.12.0" }
+
+  is-object@1.0.2:
+    resolution:
+      {
+        integrity: sha512-2rRIahhZr2UWb45fIOuvZGpFtz0TyOZLf32KxBbSoUCeZR495zCKlWUKKUByk3geS2eAs7ZAABt0Y/Rx0GiQGA==,
+      }
 
   is-regex@1.1.4:
     resolution:
@@ -1951,6 +1990,12 @@ packages:
         integrity: sha512-LvIm3/KWzS9oRFHugab7d+M/GcBXuXX5xZkzPmN+NxihdQlZUQ4dWuSV1xR/sq6upL1TJEDrfBgRepHFdBtSNQ==,
       }
     engines: { node: ">= 0.4" }
+
+  is-window@1.0.2:
+    resolution:
+      {
+        integrity: sha512-uj00kdXyZb9t9RcAUAwMZAnkBUwdYGhYlt7djMXhfyhUCzwNba50tIiBKR7q0l7tdoBtFVw/3JmLY6fI3rmZmg==,
+      }
 
   isarray@2.0.5:
     resolution:
@@ -2121,6 +2166,18 @@ packages:
     resolution:
       {
         integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==,
+      }
+
+  max-array-length@1.0.0:
+    resolution:
+      {
+        integrity: sha512-LoN7jKHokSYrSytV/auhMfVNZplvI7olzzoTNW/Zz+UE7bT7mlwJ8uBnQO3biz0aMlu0b31/A7WuN3nT8iCosg==,
+      }
+
+  max-safe-int@1.0.0:
+    resolution:
+      {
+        integrity: sha512-Rmc9S+xr1IwnktrDAbR4+7Nh9RTzvJ83A1R4WVKPZCwd7Qo5mc/u8qBoC+T4hskmBDByg72vHgHjB1GcLwEEgw==,
       }
 
   merge-stream@2.0.0:
@@ -2405,6 +2462,12 @@ packages:
       }
     engines: { node: ">=16 || 14 >=14.18" }
 
+  pick-item@1.0.4:
+    resolution:
+      {
+        integrity: sha512-SKx0hrhizZ2TAyvw8FBhEBQUhuzxPFRBZwSFhYZpxXs6AFOt4x5/hB+vudx10+Ilw3rr3QcF+KlkewkN1BjlPA==,
+      }
+
   picocolors@1.1.1:
     resolution:
       {
@@ -2548,6 +2611,30 @@ packages:
     resolution:
       {
         integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==,
+      }
+
+  random-country@1.0.1:
+    resolution:
+      {
+        integrity: sha512-pY9FIOcxC5zE8Wv4TUsAiTSGWkXN1hVMNHRr4HJT3/1S3ny/+r7XHeCn2iyDoHzgu3oPI6/qeMdcqrhJA4QTeA==,
+      }
+
+  random-index@1.0.4:
+    resolution:
+      {
+        integrity: sha512-CH+/AYc8E+We37g1CtND9G6mbqcYGU+8jDoKYFjXBgAJvSZ9goxWqeI/plx7jlShkULUk8Si8HfNJTJd67BaPg==,
+      }
+
+  random-integral@1.0.3:
+    resolution:
+      {
+        integrity: sha512-MgWqgQqlHWGj5LExW2EoP4EtJty6uGNszlHdMuAox/yLVixpjEQIAyluW2CH9Nrxt0hE7fklFqYM0JFELSWpvw==,
+      }
+
+  random-natural@1.0.3:
+    resolution:
+      {
+        integrity: sha512-Mw78ZGZ3lKO5K2XUxv4dXQudnBu9oTVHRFutqbfy+thZem41a+hFMD6egzQNHj3Kbee9fM8RGnryHyyip/mmbw==,
       }
 
   react-dom@19.0.0-rc-66855b96-20241106:
@@ -2936,6 +3023,12 @@ packages:
     resolution:
       {
         integrity: sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw==,
+      }
+
+  to-integer@1.0.1:
+    resolution:
+      {
+        integrity: sha512-mv4Nwp8Y28xLp1rdYgnlV4NqYBn23lIitU2fqCtyrLXlwsC6th3Aq37JRe7qfuROMJv66kAZG8V9NR1HIgwOUg==,
       }
 
   to-regex-range@5.0.1:
@@ -3643,6 +3736,8 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
+  clamp@1.0.1: {}
+
   cli-cursor@5.0.0:
     dependencies:
       restore-cursor: 5.1.0
@@ -4248,6 +4343,14 @@ snapshots:
       call-bind: 1.0.7
       get-intrinsic: 1.2.4
 
+  is-array-like@1.1.2:
+    dependencies:
+      is-array: 1.0.1
+      is-function: 1.0.2
+      is-window: 1.0.2
+
+  is-array@1.0.1: {}
+
   is-arrayish@0.3.2:
     optional: true
 
@@ -4300,6 +4403,8 @@ snapshots:
     dependencies:
       get-east-asian-width: 1.3.0
 
+  is-function@1.0.2: {}
+
   is-generator-function@1.0.10:
     dependencies:
       has-tostringtag: 1.0.2
@@ -4312,11 +4417,15 @@ snapshots:
 
   is-negative-zero@2.0.3: {}
 
+  is-nil@1.0.1: {}
+
   is-number-object@1.0.7:
     dependencies:
       has-tostringtag: 1.0.2
 
   is-number@7.0.0: {}
+
+  is-object@1.0.2: {}
 
   is-regex@1.1.4:
     dependencies:
@@ -4353,6 +4462,8 @@ snapshots:
     dependencies:
       call-bind: 1.0.7
       get-intrinsic: 1.2.4
+
+  is-window@1.0.2: {}
 
   isarray@2.0.5: {}
 
@@ -4461,6 +4572,10 @@ snapshots:
       js-tokens: 4.0.0
 
   lru-cache@10.4.3: {}
+
+  max-array-length@1.0.0: {}
+
+  max-safe-int@1.0.0: {}
 
   merge-stream@2.0.0: {}
 
@@ -4618,6 +4733,11 @@ snapshots:
       lru-cache: 10.4.3
       minipass: 7.1.2
 
+  pick-item@1.0.4:
+    dependencies:
+      is-array-like: 1.1.2
+      random-index: 1.0.4
+
   picocolors@1.1.1: {}
 
   picomatch@2.3.1: {}
@@ -4686,6 +4806,26 @@ snapshots:
   punycode@2.3.1: {}
 
   queue-microtask@1.2.3: {}
+
+  random-country@1.0.1:
+    dependencies:
+      pick-item: 1.0.4
+
+  random-index@1.0.4:
+    dependencies:
+      max-array-length: 1.0.0
+      random-natural: 1.0.3
+
+  random-integral@1.0.3:
+    dependencies:
+      clamp: 1.0.1
+      max-safe-int: 1.0.0
+      to-integer: 1.0.1
+
+  random-natural@1.0.3:
+    dependencies:
+      max-safe-int: 1.0.0
+      random-integral: 1.0.3
 
   react-dom@19.0.0-rc-66855b96-20241106(react@19.0.0-rc-66855b96-20241106):
     dependencies:
@@ -4982,6 +5122,13 @@ snapshots:
   thenify@3.3.1:
     dependencies:
       any-promise: 1.3.0
+
+  to-integer@1.0.1:
+    dependencies:
+      is-function: 1.0.2
+      is-nil: 1.0.1
+      is-object: 1.0.2
+      is-symbol: 1.0.4
 
   to-regex-range@5.0.1:
     dependencies:
