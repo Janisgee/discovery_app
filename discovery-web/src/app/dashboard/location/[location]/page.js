@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export default function LocationPlace() {
   const params = useParams();
-  console.log(params.location);
+  console.log(params);
   const location = params.location.toUpperCase().replaceAll("%20", " ");
   return (
     <div>
@@ -17,7 +17,7 @@ export default function LocationPlace() {
         <h1 className="text-center">{location}</h1>
 
         <div className="w-full overflow-auto rounded-lg">
-          <Link href="\">
+          <Link href={`/dashboard/location/${params.location}/attraction`}>
             <CardTemplete
               imageSource="/catagory_img/attraction.jpg"
               text="Attraction"
