@@ -1,10 +1,12 @@
 "use client";
 
 import AppTemplate from "@/app/ui/template/appTemplate";
+import BookmarkCardTemplate from "@/app/ui/template/bookmarkCardTemplate";
 import { Button } from "@/app/ui/buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBinoculars } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "next/navigation";
+import Image from "next/image";
 
 export default function TripLocation() {
   const params = useParams();
@@ -43,13 +45,10 @@ export default function TripLocation() {
           <p> 16 Dec</p>
           <span className="text-right">
             <Button useFor="Add Place" link="/" color="btn-violet" />
-          </span>
-          <div>
-            <h6 className="size-8 rounded-full border-2 border-black text-center">
-              1
-            </h6>
-          </div>
+          </span>{" "}
         </div>
+        <BookmarkCardTemplate />
+        <BookmarkCardTemplate />
       </AppTemplate>
     </div>
   );
