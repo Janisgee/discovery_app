@@ -14,6 +14,7 @@ export default function Home() {
   const [country1, setCountry1] = useState("");
   const [country2, setCountry2] = useState("");
   const [country3, setCountry3] = useState("");
+  // const [searchCountry, setSearchCountry] = useState("");
 
   const router = useRouter();
 
@@ -41,8 +42,37 @@ export default function Home() {
       alert("Please enter a location");
       return;
     }
+    // setSearchCountry(searchData);
+    // fetchSearchCountry(searchData);
     router.push(`/dashboard/location/${encodeURIComponent(searchData)}`);
   };
+
+  // const fetchSearchCountry = async (searchData) => {
+  //   const data = { country: searchData };
+  //   console.log(searchData);
+  //   const request = new Request("http://localhost:8080/searchCountry", {
+  //     method: "POST", // HTTP method
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(data),
+  //   });
+
+  //   try {
+  //     const response = await fetch(request);
+  //     if (!response.ok) {
+  //       throw new Error(`Failed to fetch: ${response.statusText}`);
+  //     }
+
+  //     const responseData = await response.json();
+  //     console.log("Server Response:", responseData);
+
+  //     router.push(`/dashboard/location/${encodeURIComponent(searchData)}`);
+  //   } catch (error) {
+  //     console.error("Error fetching search country:", error);
+  //     alert("Error fetching country data. Please try again later.");
+  //   }
+  // };
 
   // Generate a random country when the component mounts
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import { faFileLines, faHeart } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 
 export default function HomeTemplate({ children }) {
   return (
@@ -8,8 +8,12 @@ export default function HomeTemplate({ children }) {
       <div className="px-10 py-5">
         <div className="block-center">
           <div className="flex w-full max-w-sm justify-between">
-            <FontAwesomeIcon icon={faFileLines} size="3x" />
-            <FontAwesomeIcon icon={faHeart} size="3x" />
+            <Link href={`/dashboard/trips`}>
+              <FontAwesomeIcon icon={faFileLines} size="3x" />
+            </Link>
+            <Link href={`/dashboard/bookmark`}>
+              <FontAwesomeIcon icon={faHeart} size="3x" />
+            </Link>
           </div>
         </div>
       </div>

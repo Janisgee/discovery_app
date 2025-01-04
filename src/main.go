@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 )
 
 type SearchResult struct {
@@ -20,6 +21,10 @@ type Response struct {
 	Places []SearchResult `json:"places"`
 }
 
+type SearchCountry struct {
+	Country string `json:"country"`
+}
+
 func main() {
 
 	// Load environment file
@@ -30,15 +35,20 @@ func main() {
 	}
 
 	// Connect to web server port: 8080
-	m := http.NewServeMux()
+	router := http.NewServeMux()
 
-	m.HandleFunc("/", handlePage)
+	// router.HandleFunc("/", handlePage)
+	router.HandleFunc("/searchCountry", handleSearchCountry)
 
+	// Use CORS middleware to handle cross-origin requests
+	handler := cors.Default().Handler(router)
+
+	// Get the server port from environment variables
 	port := os.Getenv("PORT")
 
 	addr := ":" + port
 	srv := http.Server{
-		Handler:      m,
+		Handler:      handler,
 		Addr:         addr,
 		WriteTimeout: 30 * time.Second,
 		ReadTimeout:  30 * time.Second,
@@ -53,44 +63,42 @@ func main() {
 
 }
 
-func handlePage(w http.ResponseWriter, r *http.Request) {
-
-	// Openai response
-	resp, err := handleSearch()
-	if err != nil {
-		fmt.Printf("error in searching %s \n", err)
-	}
-
-	// Print the parsed attractions
-	var resultString string
-	for i, attraction := range resp.Places {
-		fmt.Printf("%d. Name: %s\n   Description: %s\n   Image: %s\n\n",
-			i+1, attraction.Name, attraction.Description, attraction.Image)
-		resultString += fmt.Sprintf("<p>%d. Name: %s<br>Description: %s<br>Image: <img src='%s' alt='%s'></p>",
-			i+1, attraction.Name, attraction.Description, attraction.Image, attraction.Name)
-	}
-
-	w.Header().Set("Content-Type", "text/html")
-	w.WriteHeader(200)
-	page := fmt.Sprintf(`<html>
-	<head></head>
+// handlePage generates the HTML response with the attractions data
+func handlePage(w http.ResponseWriter, response *Response) {
+	page := `<html>
+	<head><title>Attractions</title></head>
 	<body>
-	<p> Hi there, welcome to Discovery App! </p>
-	<p> Generated Attractions in Perth:</p>
-	<p>%s</p>
-	</body>
-	</html>
-	`, resultString)
+	<h1>Attractions</h1>
+	<p>Here are 3 attractions:</p>`
 
-	_, err = w.Write([]byte(page))
+	// Add each attraction to the page
+	for i, attraction := range response.Places {
+		page += fmt.Sprintf(`
+		<div>
+			<h2>%d. %s</h2>
+			<p>%s</p>
+			<img src="%s" alt="%s" style="width:300px; height:auto;">
+		</div>
+		`, i+1, attraction.Name, attraction.Description, attraction.Image, attraction.Name)
+	}
+
+	// End the HTML page
+	page += `</body></html>`
+
+	// Set the content type and write the response
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(http.StatusOK)
+	_, err := w.Write([]byte(page))
 	if err != nil {
-		fmt.Printf("error in writing web page: %s\n ", err)
+		http.Error(w, "Failed to write HTML response", http.StatusInternalServerError)
 	}
 }
 
-func handleSearch() (*Response, error) {
+// handleSearch generates a prompt to fetch attractions for a given location
 
-	prompt := "Get 3 attractions in Perth, using a field 'places' containing 'image' (a URL to an image),'name' (the attraction name),'description' (a 10-word description)."
+func handleSearch(location string) (*Response, error) {
+
+	prompt := fmt.Sprintf("Get 3 attractions in %s, using a field 'places' containing 'image' (a URL to an image), 'name' (the attraction name), and 'description' (a 10-word description).", location)
 
 	// Get response from openai
 	json_content, err := GetOpenAIResponse(prompt)

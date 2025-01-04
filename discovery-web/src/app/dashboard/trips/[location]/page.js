@@ -3,10 +3,7 @@
 import AppTemplate from "@/app/ui/template/appTemplate";
 import BookmarkCardTemplate from "@/app/ui/template/bookmarkCardTemplate";
 import { Button } from "@/app/ui/buttons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBinoculars } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "next/navigation";
-import Image from "next/image";
 
 export default function TripLocation() {
   const params = useParams();

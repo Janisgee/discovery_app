@@ -1,16 +1,43 @@
 "use client";
-
+import { useState } from "react";
+import { useParams } from "next/navigation";
 import AppTemplate from "@/app/ui/template/appTemplate";
 
-import { useParams } from "next/navigation";
 import CardTemplete from "@/app/ui/template/cardTemplate";
 
 import Link from "next/link";
 
 export default function LocationPlace() {
+  const [catagory, setCatagory] = useState("");
   const params = useParams();
-  console.log(params);
   const location = params.location.toUpperCase().replaceAll("%20", " ");
+
+  // const fetchSearchCountry = async () => {
+  //   const data = { country: location };
+
+  //   const request = new Request("http://localhost:8080/searchCountry", {
+  //     method: "POST", // HTTP method
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(data),
+  //   });
+
+  //   try {
+  //     const response = await fetch(request);
+
+  //     if (response.ok) {
+  //       const htmlContent = await response.text(); // Use text() to handle HTML response
+  //       console.log(htmlContent);
+  //       router.push(`/dashboard/location/${encodeURIComponent(searchData)}`);
+  //     } else {
+  //       console.error("Error fetching search country:", response.statusText);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching search country:", error);
+  //   }
+  // };
+
   return (
     <div>
       <AppTemplate>
