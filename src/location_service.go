@@ -9,7 +9,7 @@ import (
 )
 
 type LocationService interface {
-	GetDetails(location string) ([]LocationDetails, error)
+	GetDetails(location string, category string) ([]LocationDetails, error)
 }
 
 type LocationDetails struct {
@@ -22,8 +22,8 @@ type GptLocationService struct {
 	gptClient *openai.Client
 }
 
-func (svc *GptLocationService) GetDetails(location string) ([]LocationDetails, error) {
-	prompt := fmt.Sprintf("Get 3 attractions in %s, using a field 'places' containing 'image' (a URL to an image), 'name' (the attraction name), and 'description' (a 10-word description).", location)
+func (svc *GptLocationService) GetDetails(location string, category string) ([]LocationDetails, error) {
+	prompt := fmt.Sprintf("Get 3 %s in %s, using a field 'places' containing 'image' (a URL to an image), 'name' (the attraction name), and 'description' (a 10-word description).", category, location)
 
 	completion, err := svc.gptClient.CreateChatCompletion(
 		context.Background(),

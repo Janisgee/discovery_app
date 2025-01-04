@@ -7,8 +7,8 @@ import (
 )
 
 type SearchCountry struct {
-	Country string `json:"country"`
-	Category string `json:"category"`
+	Country  string `json:"country"`
+	Catagory string `json:"catagory"`
 }
 
 // handleSearchCountry processes the incoming POST request for a country search
@@ -34,7 +34,7 @@ func (svr *ApiServer) handleSearchCountry(w http.ResponseWriter, r *http.Request
 
 	// Handle the page and get attractions for the provided country
 
-	response, err := svr.locationSvc.GetDetails(input.Country, input.Category)
+	response, err := svr.locationSvc.GetDetails(input.Country, input.Catagory)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error processing search: %s", err), http.StatusInternalServerError)
 		return
