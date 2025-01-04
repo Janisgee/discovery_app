@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/rs/cors"
-	"github.com/sashabaranov/go-openai"
 	"github.com/urfave/negroni"
 	"log/slog"
 	"math/rand/v2"
@@ -15,13 +14,13 @@ import (
 const RequestId = "requestId"
 
 type ApiServer struct {
-	env       *EnvConfig
-	oaiClient *openai.Client
+	env         *EnvConfig
+	locationSvc LocationService
 }
 
-func NewApiServer(env *EnvConfig, oaiClient *openai.Client) *ApiServer {
+func NewApiServer(env *EnvConfig, locationSvc LocationService) *ApiServer {
 	return &ApiServer{
-		env, oaiClient,
+		env, locationSvc,
 	}
 }
 
@@ -29,7 +28,7 @@ func (svr *ApiServer) Run() error {
 	router := http.NewServeMux()
 
 	// router.HandleFunc("/", handlePage)
-	router.HandleFunc("/searchCountry", handleSearchCountry)
+	router.HandleFunc("/searchCountry", svr.handleSearchCountry)
 
 	// Use CORS middleware to handle cross-origin requests
 	handler := requestTelemetryMiddleware(cors.Default().Handler(router))
