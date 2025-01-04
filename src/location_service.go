@@ -53,7 +53,7 @@ func (svc *GptLocationService) GetDetails(location string, category string) ([]L
 
 	err = json.Unmarshal([]byte(content), &response)
 	if err != nil {
-		return nil, fmt.Errorf("ChatGpt json error: %v\n", err)
+		return nil, fmt.Errorf("ChatGpt json error: %v\n ", err)
 	}
 
 	return response.Places, nil

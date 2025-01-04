@@ -11,7 +11,9 @@ import (
 	"time"
 )
 
-const RequestId = "requestId"
+type RequestId string
+
+const RequestIdKey = RequestId("requestId")
 
 type ApiServer struct {
 	env         *EnvConfig
@@ -51,7 +53,7 @@ func requestTelemetryMiddleware(next http.Handler) http.Handler {
 		// Generate random id for this request
 		reqId := rand.Uint32()
 		// Copy the original request context and create a new one with added request id
-		newCtx := context.WithValue(r.Context(), RequestId, reqId)
+		newCtx := context.WithValue(r.Context(), RequestIdKey, reqId)
 		// Recreate request with new context
 		r = r.WithContext(newCtx)
 
