@@ -6,9 +6,14 @@ import (
 	"net/http"
 )
 
+type SearchCountry struct {
+	Country  string `json:"country"`
+	Catagory string `json:"catagory"`
+}
+
 // handleSearchCountry processes the incoming POST request for a country search
 
-func handleSearchCountry(w http.ResponseWriter, r *http.Request) {
+func (svr *ApiServer) handleSearchCountry(w http.ResponseWriter, r *http.Request) {
 	// Only allow POST requests
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
@@ -28,10 +33,24 @@ func handleSearchCountry(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Received country name: %s, catagory:%s\n", input.Country, input.Catagory)
 
 	// Handle the page and get attractions for the provided country
-	response, err := handleSearch(input.Country, input.Catagory)
+
+	response, err := svr.locationSvc.GetDetails(input.Country, input.Catagory)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error processing search: %s", err), http.StatusInternalServerError)
 		return
 	}
-	handlePage(w, response)
+
+	// Create the JSON response
+	jsData, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, "Failed to serialize response", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(http.StatusOK)
+	_, err = w.Write(jsData)
+	if err != nil {
+		http.Error(w, "Failed to write HTML response", http.StatusInternalServerError)
+	}
 }
