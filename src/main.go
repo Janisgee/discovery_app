@@ -3,12 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/sashabaranov/go-openai"
+	"log"
+	"log/slog"
 	"net/http"
 	"os"
-	"time"
-
-	"github.com/joho/godotenv"
-	"github.com/rs/cors"
 )
 
 type SearchResult struct {
@@ -27,41 +26,24 @@ type SearchCountry struct {
 }
 
 func main() {
+	// Setup logger
+	jsonLogs := slog.New(slog.NewJSONHandler(os.Stderr, nil))
+	slog.SetDefault(jsonLogs)
 
 	// Load environment file
-	err := godotenv.Load()
+	env, err := startupGetEnv()
 	if err != nil {
-		fmt.Printf("error loading .env file :%s \n ", err)
+		fmt.Printf("error loading environment config :%s \n ", err)
 		os.Exit(1)
 	}
 
-	// Connect to web server port: 8080
-	router := http.NewServeMux()
+	gptClient := openai.NewClient(env.GptKey)
+	server := NewApiServer(env, gptClient)
 
-	// router.HandleFunc("/", handlePage)
-	router.HandleFunc("/searchCountry", handleSearchCountry)
-
-	// Use CORS middleware to handle cross-origin requests
-	handler := cors.Default().Handler(router)
-
-	// Get the server port from environment variables
-	port := os.Getenv("PORT")
-
-	addr := ":" + port
-	srv := http.Server{
-		Handler:      handler,
-		Addr:         addr,
-		WriteTimeout: 30 * time.Second,
-		ReadTimeout:  30 * time.Second,
-	}
-
-	// This blocks forever, until the server has an unrecoverable error
-	fmt.Printf("server started on %s\n", addr)
-	err = srv.ListenAndServe()
+	err = server.Run()
 	if err != nil {
-		fmt.Printf("%s\n ", err)
+		log.Fatal(err)
 	}
-
 }
 
 // handlePage generates the HTML response with the attractions data
