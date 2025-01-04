@@ -15,7 +15,7 @@ export default function CatagoryTemplate({ catagory }) {
   const location = params.location.toUpperCase().replaceAll("%20", " ");
 
   const fetchSearchCountry = async () => {
-    const data = { country: location };
+    const data = { country: location, catagory: catagory };
 
     const request = new Request("http://localhost:8080/searchCountry", {
       method: "POST", // HTTP method
