@@ -51,6 +51,7 @@ func (svr *ApiServer) Run() error {
 func requestTelemetryMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Generate random id for this request
+		/* #nosec */
 		reqId := rand.Uint32()
 		// Copy the original request context and create a new one with added request id
 		newCtx := context.WithValue(r.Context(), RequestIdKey, reqId)
