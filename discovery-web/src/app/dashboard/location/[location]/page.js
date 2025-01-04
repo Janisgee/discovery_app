@@ -50,25 +50,33 @@ export default function LocationPlace() {
               text="Attraction"
             />
           </Link>
-          <Link href="">
+          <Link href={`/dashboard/location/${params.location}/restaurant`}>
             <CardTemplete
               imageSource="/catagory_img/restaurant.jpg"
               text="Restaurant"
             />
           </Link>
-          <CardTemplete
-            imageSource="/catagory_img/shopping.jpg"
-            text="Shopping"
-          />
-          <CardTemplete
-            imageSource="/catagory_img/activity.jpg"
-            text="Activity"
-          />
-          <CardTemplete imageSource="/catagory_img/hotel.jpg" text="Hotel" />
-          <CardTemplete
-            imageSource="/catagory_img/petrol_station.jpg"
-            text="Petrol Station"
-          />
+          <Link href={`/dashboard/location/${params.location}/shopping`}>
+            <CardTemplete
+              imageSource="/catagory_img/shopping.jpg"
+              text="Shopping"
+            />
+          </Link>
+          <Link href={`/dashboard/location/${params.location}/activity`}>
+            <CardTemplete
+              imageSource="/catagory_img/activity.jpg"
+              text="Activity"
+            />
+          </Link>
+          <Link href={`/dashboard/location/${params.location}/hotel`}>
+            <CardTemplete imageSource="/catagory_img/hotel.jpg" text="Hotel" />
+          </Link>
+          <Link href={`/dashboard/location/${params.location}/petrol_station`}>
+            <CardTemplete
+              imageSource="/catagory_img/petrol_station.jpg"
+              text="Petrol Station"
+            />
+          </Link>
         </div>
       </AppTemplate>
     </div>

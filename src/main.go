@@ -65,30 +65,37 @@ func main() {
 
 // handlePage generates the HTML response with the attractions data
 func handlePage(w http.ResponseWriter, response *Response) {
-	page := `<html>
-	<head><title>Attractions</title></head>
-	<body>
-	<h1>Attractions</h1>
-	<p>Here are 3 attractions:</p>`
+	// page := ``
 
-	// Add each attraction to the page
-	for i, attraction := range response.Places {
-		page += fmt.Sprintf(`
-		<div>
-			<h2>%d. %s</h2>
-			<p>%s</p>
-			<img src="%s" alt="%s" style="width:300px; height:auto;">
-		</div>
-		`, i+1, attraction.Name, attraction.Description, attraction.Image, attraction.Name)
+	// `<html>
+	// <head><title>Attractions</title></head>
+	// <body>
+	// <h1>Attractions</h1>
+	// <p>Here are 3 attractions:</p>`
+
+	// Add each attraction to the page'
+	js_data, err := json.Marshal(response.Places)
+	if err != nil {
+		http.Error(w, "Failed to serialize response", http.StatusInternalServerError)
+		return
 	}
+	// for _, attraction := range response.Places {
+	// 	page += fmt.Sprintf(`
+	// 	<div>
+	// 		<h2>%s</h2>
+	// 		<p>%s</p>
+	// 		<img src="%s" alt="%s" style="width:300px; height:auto;">
+	// 	</div>
+	// 	`, attraction.Name, attraction.Description, attraction.Image, attraction.Name)
+	// }
 
 	// End the HTML page
-	page += `</body></html>`
+	// page += `</body></html>`
 
 	// Set the content type and write the response
 	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusOK)
-	_, err := w.Write([]byte(page))
+	_, err = w.Write(js_data)
 	if err != nil {
 		http.Error(w, "Failed to write HTML response", http.StatusInternalServerError)
 	}
