@@ -22,7 +22,8 @@ type Response struct {
 }
 
 type SearchCountry struct {
-	Country string `json:"country"`
+	Country  string `json:"country"`
+	Catagory string `json:"catagory"`
 }
 
 func main() {
@@ -103,9 +104,9 @@ func handlePage(w http.ResponseWriter, response *Response) {
 
 // handleSearch generates a prompt to fetch attractions for a given location
 
-func handleSearch(location string) (*Response, error) {
+func handleSearch(location string, catagory string) (*Response, error) {
 
-	prompt := fmt.Sprintf("Get 3 attractions in %s, using a field 'places' containing 'image' (a URL to an image), 'name' (the attraction name), and 'description' (a 10-word description).", location)
+	prompt := fmt.Sprintf("Get 3 %s in %s, using a field 'places' containing 'image' (a URL to an image), 'name' (the attraction name), and 'description' (a 10-word description).", catagory, location)
 
 	// Get response from openai
 	json_content, err := GetOpenAIResponse(prompt)

@@ -25,10 +25,10 @@ func handleSearchCountry(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Process the input data
-	fmt.Printf("Received country name: %s\n", input.Country)
+	fmt.Printf("Received country name: %s, catagory:%s\n", input.Country, input.Catagory)
 
 	// Handle the page and get attractions for the provided country
-	response, err := handleSearch(input.Country)
+	response, err := handleSearch(input.Country, input.Catagory)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error processing search: %s", err), http.StatusInternalServerError)
 		return

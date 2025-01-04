@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+
 import { useParams } from "next/navigation";
 import AppTemplate from "@/app/ui/template/appTemplate";
 
@@ -8,7 +8,6 @@ import CardTemplete from "@/app/ui/template/cardTemplate";
 import Link from "next/link";
 
 export default function LocationPlace() {
-  const [catagory, setCatagory] = useState("");
   const params = useParams();
   const location = params.location.toUpperCase().replaceAll("%20", " ");
 
