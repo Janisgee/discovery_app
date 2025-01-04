@@ -40,6 +40,7 @@ func (svr *ApiServer) handleSearchCountry(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	// Create the JSON response
 	jsData, err := json.Marshal(response)
 	if err != nil {
 		http.Error(w, "Failed to serialize response", http.StatusInternalServerError)

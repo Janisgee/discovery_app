@@ -50,7 +50,7 @@ func requestTelemetryMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Generate random id for this request
 		reqId := rand.Uint32()
-		// Create new context with request ID
+		// Copy the original request context and create a new one with added request id
 		newCtx := context.WithValue(r.Context(), RequestId, reqId)
 		// Recreate request with new context
 		r = r.WithContext(newCtx)
@@ -58,7 +58,7 @@ func requestTelemetryMiddleware(next http.Handler) http.Handler {
 		// Wrap the response writer so we can capture status code
 		nw := negroni.NewResponseWriter(w)
 
-		// Continue to handle request
+		// Continue to handle request, afterward we will have a response and status code
 		next.ServeHTTP(nw, r)
 
 		// Basic log of request and resulting status
