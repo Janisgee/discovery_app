@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/rs/cors"
-	"github.com/urfave/negroni"
 	"log/slog"
 	"math/rand/v2"
 	"net/http"
 	"time"
+
+	"github.com/rs/cors"
+	"github.com/urfave/negroni"
 )
 
 type RequestId string
@@ -29,8 +30,11 @@ func NewApiServer(env *EnvConfig, locationSvc LocationService) *ApiServer {
 func (svr *ApiServer) Run() error {
 	router := http.NewServeMux()
 
-	// router.HandleFunc("/", handlePage)
+	// router for search country place
 	router.HandleFunc("/searchCountry", svr.handleSearchCountry)
+
+	// router for search place details
+	router.HandleFunc("/searchPlace", svr.handleSearchPlaceDetails)
 
 	// Use CORS middleware to handle cross-origin requests
 	handler := requestTelemetryMiddleware(cors.Default().Handler(router))

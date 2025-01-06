@@ -29,7 +29,7 @@ export default function CatagoryTemplate({ catagory }) {
       const response = await fetch(request);
 
       if (response.ok) {
-        const htmlContent = await response.json(); // Use text() to handle HTML response
+        const htmlContent = await response.json(); // Use json() to handle HTML response
         console.log(htmlContent);
         setContent(htmlContent);
       } else {
