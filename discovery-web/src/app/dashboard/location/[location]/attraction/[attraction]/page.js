@@ -17,7 +17,7 @@ export default function AttractionPlace() {
   const location = params.location.toUpperCase().replaceAll("%20", " ");
 
   const fetchSearchPlaceDetails = async () => {
-    const data = { place: location };
+    const data = { place: attraction };
 
     const request = new Request("http://localhost:8080/searchPlace", {
       method: "POST", // HTTP method

@@ -71,7 +71,7 @@ func (svc *GptLocationService) GetDetails(location string, category string) ([]L
 }
 
 func (svc *GptLocationService) GetPlaceDetails(location string) ([]PlaceDetails, error) {
-	prompt := fmt.Sprintf("Get details of %s, using a field 'place_details' containing 'description'(around 20 words),'location' (address), 'opening_hours' (everyday operation hour), 'history' (around 50 words), 'key_features' (around 80 words) and 'conclusion'(around 30 words conclusion for the place).", location)
+	prompt := fmt.Sprintf("Get details of %s, using a field 'place_details' containing 'description'(around 20 words),'location' (address), 'opening_hours' (everyday operation hour), 'history' (around 50 words), 'key_features' (around 100 words) and 'conclusion'(around 40 words conclusion for the place).", location)
 
 	// fmt.Printf("GetPlaceDetails location: %s \n")
 	completion, err := svc.gptClient.CreateChatCompletion(
