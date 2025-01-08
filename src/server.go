@@ -31,10 +31,10 @@ func (svr *ApiServer) Run() error {
 	router := http.NewServeMux()
 
 	// router for search country place
-	router.HandleFunc("/searchCountry", svr.handleSearchCountry)
+	router.HandleFunc("/searchCountry", svr.gptSearchCountry)
 
 	// router for search place details
-	router.HandleFunc("/searchPlace", svr.handleSearchPlaceDetails)
+	router.HandleFunc("/searchPlace", svr.gptSearchPlaceDetails)
 
 	// Use CORS middleware to handle cross-origin requests
 	handler := requestTelemetryMiddleware(cors.Default().Handler(router))

@@ -11,9 +11,9 @@ type SearchCountry struct {
 	Catagory string `json:"catagory"`
 }
 
-// handleSearchCountry processes the incoming POST request for a country search
+// gptSearchCountry processes the incoming POST request for a country search
 
-func (svr *ApiServer) handleSearchCountry(w http.ResponseWriter, r *http.Request) {
+func (svr *ApiServer) gptSearchCountry(w http.ResponseWriter, r *http.Request) {
 	// Only allow POST requests
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)

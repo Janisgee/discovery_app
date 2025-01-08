@@ -12,9 +12,9 @@ type SearchPlaceDetails struct {
 	Place string `json:"place"`
 }
 
-// handleSearchPlaceDetails processes the incoming POST request for a place search
+// gptSearchPlaceDetails processes the incoming POST request for a place search
 
-func (svr *ApiServer) handleSearchPlaceDetails(w http.ResponseWriter, r *http.Request) {
+func (svr *ApiServer) gptSearchPlaceDetails(w http.ResponseWriter, r *http.Request) {
 	// Only allow POST requests
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
