@@ -1,12 +1,13 @@
 -- +goose Up
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 CREATE TABLE users (
-  id INTEGER PRIMARY KEY,
-  name TEXT NOT NULL,
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  username TEXT NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_at TIMESTAMP NOT NULL,
   email TEXT NOT NULL UNIQUE,
-  hashed_password TEXT NOT NULL 
-DEFAULT 'unset'
+  hashed_password TEXT NOT NULL
 );
 
 -- +goose Down
