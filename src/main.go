@@ -10,9 +10,9 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-type state struct {
-	db *database.Queries
-}
+// type state struct {
+// 	db *database.Queries
+// }
 
 func main() {
 	// Setup logger
@@ -35,7 +35,7 @@ func main() {
 	}
 
 	// Use generated database package to create a new *database.Queries
-	dbQueries := database.New(db)
+	// dbQueries := database.New(db)
 
 	// Ensure the connection is successful
 	err = db.Ping()
