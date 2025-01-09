@@ -36,6 +36,12 @@ func (svr *ApiServer) Run() error {
 	// router for search place details
 	router.HandleFunc("/searchPlace", svr.gptSearchPlaceDetails)
 
+	// router for receive login details
+	router.HandleFunc("/api/login", svr.userLoginHandler)
+
+	// Router for receive signup details
+	router.HandleFunc("/api/signup", svr.userSignupHandler)
+
 	// Use CORS middleware to handle cross-origin requests
 	handler := requestTelemetryMiddleware(cors.Default().Handler(router))
 
