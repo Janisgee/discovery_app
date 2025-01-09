@@ -1,10 +1,14 @@
 -- name: CreateUser :one
-ISERT INTO users (id, created_at, updated_at, email, hashed_password)
-VALUES {
-  gen_randowm_uuid(),
-  NOW(),
-  NOW(),
-  $1,
-  $2
-}
+INSERT INTO users (id, username, created_at, updated_at, email, hashed_password)
+VALUES(
+gen_random_uuid(),
+$1,
+NOW(),
+NOW(),
+$2,
+$3
+)
 RETURNING *;
+
+-- name: GetUser :one
+SELECT * FROM users WHERE username = $1 LIMIT 1;
