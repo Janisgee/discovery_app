@@ -31,7 +31,7 @@ func (svr *ApiServer) gptSearchPlaceDetails(w http.ResponseWriter, r *http.Reque
 	}
 
 	// Process the input data
-	fmt.Printf("Received place name (line32): %s \n", input.Place)
+	fmt.Printf("Received place name (line34): %s \n", input.Place)
 
 	// Handle the page and get place details for the provided place
 
