@@ -11,7 +11,7 @@ export default function App() {
       <div className="my-20 ">
         <h1>Discover Your Side!</h1>
       </div>
-      <Button useFor="Login" link="/dashboard/home" color="btn-violet" />
+      <Button useFor="Login" link="/dashboard/login" color="btn-violet" />
     </div>
   );
 }
