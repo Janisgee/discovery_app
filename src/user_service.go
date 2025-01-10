@@ -27,9 +27,9 @@ func (svc *PostgresUserService) CreateUser(username string, email string, passwo
 	ctx := context.Background()
 
 	// Check if queries username is in database
-	_, err := svc.dbQueries.GetUser(ctx, username)
+	_, err := svc.dbQueries.GetUser(ctx, email)
 	if err == nil {
-		return nil, errors.New("already have the same username saved in database as the input username")
+		return nil, errors.New("already have the same email saved in database")
 	}
 
 	// Hashed password
