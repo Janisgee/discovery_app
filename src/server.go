@@ -19,12 +19,17 @@ const RequestIdKey = RequestId("requestId")
 type ApiServer struct {
 	env         *EnvConfig
 	locationSvc LocationService
+	userSvc     UserService
 }
 
-func NewApiServer(env *EnvConfig, locationSvc LocationService) *ApiServer {
+func NewApiServer(env *EnvConfig, locationSvc LocationService, userSvc UserService) *ApiServer {
 	return &ApiServer{
-		env, locationSvc,
+		env, locationSvc, userSvc,
 	}
+}
+
+func (svr *ApiServer) UnhandledError(e error) {
+	slog.Error("Unhandled error serving request", "error", e)
 }
 
 func (svr *ApiServer) Run() error {
