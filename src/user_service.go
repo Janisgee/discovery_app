@@ -5,10 +5,14 @@ import (
 	"discoveryapp/internal/database"
 	"errors"
 	"fmt"
+
+	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService interface {
 	CreateUser(username string, email string, password string) (*User, error)
+	VerifyUserLogin(email string, password string) (*uuid.UUID, error)
 }
 
 // User struct to hold input data
@@ -58,4 +62,25 @@ func (svc *PostgresUserService) CreateUser(username string, email string, passwo
 		Email:    userData.Email}
 
 	return createdUser, nil
+}
+
+/////////////////////////////////////////////////////////////////////
+
+func (svc *PostgresUserService) VerifyUserLogin(email string, password string) (*uuid.UUID, error) {
+	// Create an empty context
+	ctx := context.Background()
+
+	// Check if queries username is in database
+	user, err := svc.dbQueries.GetUser(ctx, email)
+	if err != nil {
+		return nil, errors.New("cannot find input email from database")
+	}
+
+	// Valified database hashed password and user input hashed password
+	err = bcrypt.CompareHashAndPassword([]byte(user.HashedPassword), []byte(password))
+	if err != nil {
+		return nil, errors.New("fail to login as password is not correct. Please try again")
+	}
+
+	return &user.ID, nil
 }

@@ -2,8 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"log/slog"
 	"net/http"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 func (svr *ApiServer) userLoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -26,32 +29,37 @@ func (svr *ApiServer) userLoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create a response struct to send back as JSON
-	response := map[string]interface{}{
-		"message": "Received user login info.",
-		"email":   newLogin.Email,
-	}
-
-	// Set Content-Type to JSON and send a response
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK) // 200 OK
-
-	// Send JSON response
-	err = json.NewEncoder(w).Encode(response)
-	if err != nil {
-		// Handle error when encoding response
-		http.Error(w, "Failed to send response", http.StatusInternalServerError)
+	// Validate the input fields (basic checks)
+	if newLogin.Email == "" || newLogin.Password == "" {
+		http.Error(w, "Missing required fields", http.StatusBadRequest)
 		return
 	}
 
-	// Hash user password
-	hashedPassword, err := hashPassword(newLogin.Password)
+	validUserId, err := svr.userSvc.VerifyUserLogin(newLogin.Email, newLogin.Password)
 	if err != nil {
-		fmt.Println("Error in hashing user login password:", err)
-	} else {
-		fmt.Println("Hashed Password:", hashedPassword)
+		slog.Warn("Failed login attempt", "error", err)
+		http.Error(w, "Fail to login user", http.StatusUnauthorized)
+		return
 	}
 
+	// Create a session token
+	token := uuid.NewString()
+	expiryTime := time.Now().Add(600 * time.Second) // expires in 10 min
+
+	// Store the session in server memory
+	svr.memoryUserSessions[token] = UserSession{
+		userId:     validUserId,
+		expiryTime: expiryTime,
+	}
+
+	// Set the session id cookie in response, not visible to Javascript (HttpOnly)
+	http.SetCookie(w, &http.Cookie{
+		Name:     "DA_SESSION_ID",
+		Value:    token,
+		Expires:  expiryTime,
+		HttpOnly: true,
+	})
+	w.WriteHeader(http.StatusOK) // 200 OK
 }
 
 // User creation handler

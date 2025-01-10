@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/rs/cors"
 	"github.com/urfave/negroni"
 )
@@ -16,15 +17,21 @@ type RequestId string
 
 const RequestIdKey = RequestId("requestId")
 
+type UserSession struct {
+	userId     *uuid.UUID
+	expiryTime time.Time
+}
+
 type ApiServer struct {
-	env         *EnvConfig
-	locationSvc LocationService
-	userSvc     UserService
+	env                *EnvConfig
+	locationSvc        LocationService
+	userSvc            UserService
+	memoryUserSessions map[string]UserSession
 }
 
 func NewApiServer(env *EnvConfig, locationSvc LocationService, userSvc UserService) *ApiServer {
 	return &ApiServer{
-		env, locationSvc, userSvc,
+		env, locationSvc, userSvc, map[string]UserSession{},
 	}
 }
 
