@@ -5,13 +5,6 @@ import (
 	"net/http"
 )
 
-// User struct to hold input data
-type User struct {
-	Username        string `json:"username"`
-	Email           string `json:"email"`
-	Hashed_password string `json:"password"`
-}
-
 func (svr *ApiServer) userSignupHandler(w http.ResponseWriter, r *http.Request) {
 	type signupDetail struct {
 		Username string `json:"username"`
@@ -33,18 +26,32 @@ func (svr *ApiServer) userSignupHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	// Validate the input fields (basic checks)
+	if newSignup.Username == "" || newSignup.Email == "" || newSignup.Password == "" {
+		http.Error(w, "Missing required fields", http.StatusBadRequest)
+		return
+	}
+
+	// Call CreateUser from the user service to create the user
+	user, err := svr.userSvc.CreateUser(newSignup.Username, newSignup.Email, newSignup.Password)
+	if err != nil {
+		svr.UnhandledError(err)
+		http.Error(w, "Failed to create user", http.StatusInternalServerError)
+		return
+	}
+
 	// Create a response struct to send back as JSON
 	response := map[string]interface{}{
 		"message":  "Received user signup info.",
-		"username": newSignup.Username,
-		"email":    newSignup.Email,
+		"username": user.Username,
+		"email":    user.Email,
 	}
 
 	// Set Content-Type to JSON and send a response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK) // 200 OK
 
-	// Send JSON response
+	// Send JSON response back to client
 	err = json.NewEncoder(w).Encode(response)
 	if err != nil {
 		// Handle error when encoding response

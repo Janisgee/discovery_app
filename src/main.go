@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"discoveryapp/internal/database"
 	"log"
 	"log/slog"
 	"os"
@@ -10,11 +11,8 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-// type state struct {
-// 	db *database.Queries
-// }
-
 func main() {
+
 	// Setup logger
 	jsonLogs := slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	slog.SetDefault(jsonLogs)
@@ -34,22 +32,20 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Use generated database package to create a new *database.Queries
-	// dbQueries := database.New(db)
+	defer db.Close()
 
-	// Ensure the connection is successful
-	err = db.Ping()
-	if err != nil {
-		slog.Error("Unable to ping the database", "error", err)
-		os.Exit(1)
-	}
+	// Use generated database package to create a new *database.Queries instance
+	dbQueries := database.New(db)
+
+	// Create user service to run the queries
+	var userSvc UserService = &PostgresUserService{dbQueries}
 
 	slog.Info("Successfully connected to the database!")
 
 	// ChatGPT search
 	gptClient := openai.NewClient(env.GptKey)
 	var locationSvc LocationService = &GptLocationService{gptClient}
-	server := NewApiServer(env, locationSvc)
+	server := NewApiServer(env, locationSvc, userSvc)
 
 	// Start the API server
 	err = server.Run()
