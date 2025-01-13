@@ -17,6 +17,10 @@ type RequestId string
 
 const RequestIdKey = RequestId("requestId")
 
+type contextKey string
+
+const currentUserSessionKey contextKey = "CurrentUserSession"
+
 type UserSession struct {
 	userId     *uuid.UUID
 	expiryTime time.Time
@@ -39,14 +43,32 @@ func (svr *ApiServer) UnhandledError(e error) {
 	slog.Error("Unhandled error serving request", "error", e)
 }
 
+func GetCurrentUserId(r *http.Request) *uuid.UUID {
+	// Retrieve the value from the request context
+	value := r.Context().Value(currentUserSessionKey)
+
+	// Check if the value is of type uuid.UUID
+	userId, ok := value.(uuid.UUID)
+	if !ok || userId == uuid.Nil {
+		// If the value is not a uuid.UUID or is the zero UUID, return nil
+		return nil
+	}
+	// return the userId if it is valid
+	return &userId
+}
+
 func (svr *ApiServer) Run() error {
 	router := http.NewServeMux()
 
 	// router for search country place
-	router.HandleFunc("/searchCountry", svr.gptSearchCountry)
+	router.HandleFunc("/searchCountry", func(w http.ResponseWriter, r *http.Request) {
+		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.gptSearchCountry)).ServeHTTP(w, r)
+	})
 
 	// router for search place details
-	router.HandleFunc("/searchPlace", svr.gptSearchPlaceDetails)
+	router.HandleFunc("/searchPlace", func(w http.ResponseWriter, r *http.Request) {
+		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.gptSearchPlaceDetails)).ServeHTTP(w, r)
+	})
 
 	// router for receive login details
 	router.HandleFunc("/api/login", svr.userLoginHandler)
@@ -55,7 +77,7 @@ func (svr *ApiServer) Run() error {
 	router.HandleFunc("/api/signup", svr.userSignupHandler)
 
 	// Use CORS middleware to handle cross-origin requests
-	handler := requestTelemetryMiddleware(cors.Default().Handler(router))
+	handler := requestTelemetryMiddleware((cors.Default().Handler(router)))
 
 	server := http.Server{
 		Handler:      handler,
@@ -94,5 +116,48 @@ func requestTelemetryMiddleware(next http.Handler) http.Handler {
 			"resStatus", nw.Status(),
 			"source", r.RemoteAddr,
 		)
+	})
+}
+
+func (svr *ApiServer) currentUserSessionMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Fetch the session ID from the request cookie
+		// TODO: Can be nil
+		sessionId, err := r.Cookie("DA_SESSION_ID")
+		if err != nil {
+			slog.Warn("Failed to get request cookie of field: 'DA_SESSION_ID'")
+			http.Error(w, "Failed to get request cookie of field: 'DA_SESSION_ID'", http.StatusBadRequest)
+			return
+		}
+		if sessionId == nil {
+			// If there's no session ID, continue to the next handler
+			next.ServeHTTP(w, r)
+			return
+		}
+		// TODO: Can be nil
+		currentUserSession, exists := svr.memoryUserSessions[sessionId.Value]
+		if !exists {
+			// If no user session exists for this session ID, continue to the next handler
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// if the session has not expired (Add userId from the UserSession)
+		if currentUserSession.expiryTime.After(time.Now()) {
+			// Copy the original request context and create a new one with added request id
+			// TODO: Cannot Store pointer?
+			// TODO: Change the 'current user session' string to a context key like ábove
+			// Stores the userId in the request context, making it accessible to downstream handlers.
+			newCtx := context.WithValue(r.Context(), currentUserSessionKey, *currentUserSession.userId)
+			r = r.WithContext(newCtx)
+
+			// TODO: Update the expiry time in memory to extend the session
+			newExpiryTime := time.Now().Add(600 * time.Second)
+			currentUserSession.expiryTime = newExpiryTime
+			svr.memoryUserSessions[sessionId.Value] = currentUserSession
+
+		}
+
+		next.ServeHTTP(w, r)
 	})
 }

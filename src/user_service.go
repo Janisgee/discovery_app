@@ -5,6 +5,7 @@ import (
 	"discoveryapp/internal/database"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -13,6 +14,7 @@ import (
 type UserService interface {
 	CreateUser(username string, email string, password string) (*User, error)
 	VerifyUserLogin(email string, password string) (*uuid.UUID, error)
+	GetUserInfo(email string) (*User, error)
 }
 
 // User struct to hold input data
@@ -62,6 +64,29 @@ func (svc *PostgresUserService) CreateUser(username string, email string, passwo
 		Email:    userData.Email}
 
 	return createdUser, nil
+}
+
+// Get user info
+func (svc *PostgresUserService) GetUserInfo(email string) (*User, error) {
+	// Get username from input email
+	// Create an empty context
+	ctx := context.Background()
+
+	// Check if queries username is in database
+	userInfo, err := svc.dbQueries.GetUser(ctx, email)
+	if err != nil {
+		slog.Warn("Fail to get user info from input email", "error", err)
+		return nil, errors.New("fail to get user info from input email")
+	}
+
+	fmt.Printf("The retrieved user data:%v\n", userInfo)
+
+	// Return the user info
+	userInformation := &User{
+		Username: userInfo.Username,
+		Email:    userInfo.Email}
+
+	return userInformation, nil
 }
 
 /////////////////////////////////////////////////////////////////////
