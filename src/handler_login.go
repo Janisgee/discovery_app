@@ -59,7 +59,32 @@ func (svr *ApiServer) userLoginHandler(w http.ResponseWriter, r *http.Request) {
 		Expires:  expiryTime,
 		HttpOnly: true,
 	})
+
+	// Get username from user input email
+	userInfo, err := svr.userSvc.GetUserInfo(newLogin.Email)
+	if err != nil {
+		slog.Warn("Fail to get user info from login input email", "error", err)
+		http.Error(w, "Fail to get user info from login input email", http.StatusUnauthorized)
+		return
+	}
+
+	// Console response struct to send back as JSON
+	response := map[string]interface{}{
+		"message":  "User has been logged in.",
+		"username": userInfo.Username,
+		"email":    userInfo.Email,
+	}
+
+	// Set Content-Type to JSON and send a response
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK) // 200 OK
+
+	// Send JSON response back to client
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		http.Error(w, "Failed to send response", http.StatusInternalServerError)
+		return
+	}
 }
 
 // User creation handler
