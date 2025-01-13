@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { Button } from "@/app/ui/buttons";
 
 export default function Login() {
@@ -41,7 +43,7 @@ export default function Login() {
       const responseData = await response.json();
       console.log("Server Response:", responseData);
 
-      // router.push(`/dashboard/home`);
+      router.push(`/dashboard/home`);
     } catch (error) {
       console.error("Error fetching user home page:", error);
       // alert("Error fetching user home page. Please try again later.");
