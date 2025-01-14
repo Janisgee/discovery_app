@@ -1,10 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
 import { Button } from "@/app/ui/buttons";
+import Link from "next/link";
 
 export default function Login() {
+  const router = useRouter();
   const handleLoginData = (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -19,7 +20,6 @@ export default function Login() {
       alert("Please enter a password.");
       return;
     }
-
     fetchLoginData(input_email, input_password);
   };
 
@@ -42,8 +42,11 @@ export default function Login() {
 
       const responseData = await response.json();
       console.log("Server Response:", responseData);
+      console.log("Server Response:", responseData.username);
 
-      router.push(`/dashboard/home`);
+      if (responseData.username != "") {
+        router.push(`/${encodeURIComponent(responseData.username)}/home`);
+      }
     } catch (error) {
       console.error("Error fetching user home page:", error);
       // alert("Error fetching user home page. Please try again later.");
@@ -108,12 +111,11 @@ export default function Login() {
           <p className="text-s pb-4 text-gray-500 ">
             Don&apos;t have an account?
           </p>
-          <a
-            className="inline-block align-baseline text-sm font-bold text-blue-500 hover:text-blue-800"
-            href="/dashboard/signup"
-          >
-            Sign up now!
-          </a>
+          <Link href={`/signup`}>
+            <p className="inline-block align-baseline text-sm font-bold text-blue-500 hover:text-blue-800">
+              Sign up now!
+            </p>
+          </Link>
         </div>
         <p className="text-center text-xs text-gray-500">
           &copy;2024 Discovery App. All rights reserved.

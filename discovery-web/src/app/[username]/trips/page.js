@@ -1,11 +1,12 @@
 "use client";
-
+import { useParams } from "next/navigation";
 import { DatePicker } from "@nextui-org/date-picker";
 import AppTemplate from "@/app/ui/template/appTemplate";
 import { today } from "@internationalized/date";
 import { Button } from "@/app/ui/buttons";
 
 export default function Trips() {
+  const params = useParams();
   return (
     <div>
       <AppTemplate>
@@ -49,7 +50,7 @@ export default function Trips() {
           <div className="mt-24 text-center">
             <Button
               useFor="✒️ Start Planning"
-              link="/dashboard/trips/hong%20kong"
+              link={`/${params.username}/trips/hong%20kong`}
               color="btn-violet"
             />
           </div>
