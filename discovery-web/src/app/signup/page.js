@@ -1,7 +1,13 @@
 "use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/app/ui/buttons";
 
 export default function Signup() {
+  const [passwordSuggest, setpasswordSuggest] = useState("");
+
+  const router = useRouter();
   const handleSignupData = (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -38,17 +44,27 @@ export default function Signup() {
     try {
       const response = await fetch(request);
       if (!response.ok) {
+        // Get error response from password validation
+        const responseData = await response.json();
+        console.log("Server Error Response for signup:", responseData);
+        setpasswordSuggest(capitalizeFirstLetter(responseData.error));
         throw new Error(`Failed to fetch: ${response.statusText}`);
       }
 
       const responseData = await response.json();
       console.log("Server Response for signup:", responseData);
 
+      router.push(`/${encodeURIComponent(responseData.username)}/home`);
+
       // router.push(`/dashboard/home`);
     } catch (error) {
       console.error("Error fetching user sign up:", error);
       // alert("Error fetching user home page. Please try again later.");
     }
+  };
+
+  const capitalizeFirstLetter = (sentence) => {
+    return String(sentence).charAt(0).toUpperCase() + String(sentence).slice(1);
   };
 
   return (
@@ -107,7 +123,9 @@ export default function Signup() {
               placeholder="******************"
             />
             <p className="text-xs italic text-red-500">
-              Please choose a password.
+              {passwordSuggest == ""
+                ? "Please choose a password."
+                : passwordSuggest}
             </p>
           </div>
           <div className="flex items-center">

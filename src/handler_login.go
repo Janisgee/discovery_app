@@ -58,6 +58,8 @@ func (svr *ApiServer) userLoginHandler(w http.ResponseWriter, r *http.Request) {
 		Value:    token,
 		Expires:  expiryTime,
 		HttpOnly: true,
+		SameSite: http.SameSiteNoneMode,
+		Path:     "/",
 	})
 
 	// Get username from user input email

@@ -69,6 +69,10 @@ func (svr *ApiServer) Run() error {
 	router.HandleFunc("/searchPlace", func(w http.ResponseWriter, r *http.Request) {
 		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.gptSearchPlaceDetails)).ServeHTTP(w, r)
 	})
+	// Router for receive logout request
+	router.HandleFunc("/api/logout", func(w http.ResponseWriter, r *http.Request) {
+		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userLogoutHandler)).ServeHTTP(w, r)
+	})
 
 	// router for receive login details
 	router.HandleFunc("/api/login", svr.userLoginHandler)
