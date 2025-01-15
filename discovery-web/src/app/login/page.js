@@ -99,12 +99,12 @@ export default function Login() {
           </div>
           <div className="flex items-center justify-between">
             <button className="btn-violet font-space_mono">Login</button>
-            <a
+            <Link
+              href="/forgetPassword"
               className="inline-block align-baseline text-sm font-bold text-blue-500 hover:text-blue-800"
-              href="#"
             >
               Forgot Password?
-            </a>
+            </Link>
           </div>
         </form>
         <div className="mb-4 rounded-xl bg-slate-100 py-6  text-center">
