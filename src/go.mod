@@ -16,4 +16,10 @@ require golang.org/x/crypto v0.32.0
 
 require github.com/google/uuid v1.6.0
 
-require github.com/wagslane/go-password-validator v0.3.0
+require (
+	github.com/wagslane/go-password-validator v0.3.0
+	golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8
+	gopkg.in/mail.v2 v2.3.1
+)
+
+require gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
