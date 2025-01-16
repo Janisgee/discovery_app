@@ -39,5 +39,10 @@ func (svr *ApiServer) userLogoutHandler(w http.ResponseWriter, r *http.Request) 
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	// Response with a success logout message
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Logged out successfully"))
+	_, err = w.Write([]byte("Logged out successfully"))
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
 }
