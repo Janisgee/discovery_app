@@ -58,7 +58,9 @@ export default function AttractionPlace() {
     <div>
       <AppTemplate>
         <div className="flex items-center justify-between gap-3 pt-5">
-          <Link href={`/dashboard/location/${params.location}/attraction`}>
+          <Link
+            href={`/${params.username}/location/${params.location}/attraction`}
+          >
             <FontAwesomeIcon icon={faCircleArrowLeft} size="2x" />
           </Link>
           <h1 className="text-center text-xl">{attraction}</h1>

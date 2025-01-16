@@ -40,7 +40,7 @@ func main() {
 	// Create user service to run the queries
 	var userSvc UserService = &PostgresUserService{dbQueries}
 
-	slog.Info("Successfully connected to the database!")
+	slog.Info("Successfully connected to the database!", "Connection String", dbQueries)
 
 	// ChatGPT search
 	gptClient := openai.NewClient(env.GptKey)

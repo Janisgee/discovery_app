@@ -50,7 +50,7 @@ export default function CatagoryTemplate({ catagory }) {
       itemList.push(
         <li key={index}>
           <Link
-            href={`/dashboard/location/${params.location}/${catagory}/${item.name}`}
+            href={`/${params.username}/location/${params.location}/${catagory}/${item.name}`}
           >
             <ItemTemplete
               imageSource="/user_img/default.jpg"
@@ -68,7 +68,7 @@ export default function CatagoryTemplate({ catagory }) {
       <div className="mb-8 text-center">
         <h2>{location}</h2>
         <div className="grid grid-cols-4">
-          <Link href={`/dashboard/location/${params.location}`}>
+          <Link href={`/${params.username}/location/${params.location}`}>
             <FontAwesomeIcon icon={faCircleArrowLeft} size="2x" />
           </Link>
           <p className="col-span-2 text-2xl font-bold">

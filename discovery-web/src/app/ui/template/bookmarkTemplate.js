@@ -15,11 +15,13 @@ import {
   faBaseballBatBall,
   faBed,
   faGasPump,
+  faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { Button } from "@/app/ui/buttons";
 
 export default function BookmarkTemplate({ place, children }) {
+  const params = useParams();
   return (
     <div className="background-yellow font-inter">
       <div className="p-5">
@@ -27,20 +29,22 @@ export default function BookmarkTemplate({ place, children }) {
           <div className="mb-5 flex items-center justify-between">
             <span>
               <span className="mr-5">
-                <Link href="/dashboard/home">
+                <Link href={`/${params.username}/home`}>
                   <FontAwesomeIcon icon={faHouse} size="3x" />
                 </Link>
               </span>
-              <Link href={`/dashboard/trips`}>
+              <Link href={`/${params.username}/trips`}>
                 <FontAwesomeIcon icon={faFileLines} size="3x" />
               </Link>
             </span>
             <span className="flex items-center">
-              <Link href={`/dashboard/bookmark`}>
+              <Link href={`/${params.username}/bookmark`}>
                 <FontAwesomeIcon icon={faHeart} size="3x" />
               </Link>
-              <span className="ml-2 inline items-start text-xl">
-                <Button useFor="JG" link="/dashboard/home" color="btn-grey" />
+              <span className="ml-5">
+                <Link href="/">
+                  <FontAwesomeIcon icon={faRightFromBracket} size="3x" />
+                </Link>
               </span>
             </span>
           </div>

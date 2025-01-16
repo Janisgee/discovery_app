@@ -2,7 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"log/slog"
 	"net/http"
+	"strings"
+
+	passwordvalidator "github.com/wagslane/go-password-validator"
 )
 
 func (svr *ApiServer) userSignupHandler(w http.ResponseWriter, r *http.Request) {
@@ -31,9 +36,23 @@ func (svr *ApiServer) userSignupHandler(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, "Missing required fields", http.StatusBadRequest)
 		return
 	}
+	// Check password strength
+	const minEntropyBits = 60
+	err = passwordvalidator.Validate(newSignup.Password, minEntropyBits)
+	if err != nil {
+		slog.Warn("Password is not strong enough.Plesae signup again with a stronger password. Suggestion:", "error", err)
+		errMessage := fmt.Sprintf("%v", err)
+		sendErrorResponse(w, http.StatusBadRequest, errMessage)
+		return
+	}
+
+	// Trim space and store lowercase from input
+	trimedUsername := strings.TrimSpace(newSignup.Username)
+	trimedEmail := strings.TrimSpace(strings.ToLower(newSignup.Email))
+	trimedPassword := strings.TrimSpace(newSignup.Password)
 
 	// Call CreateUser from the user service to create the user
-	user, err := svr.userSvc.CreateUser(newSignup.Username, newSignup.Email, newSignup.Password)
+	user, err := svr.userSvc.CreateUser(trimedUsername, trimedEmail, trimedPassword)
 	if err != nil {
 		svr.UnhandledError(err)
 		http.Error(w, "Failed to create user", http.StatusInternalServerError)

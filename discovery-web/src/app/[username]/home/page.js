@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +18,7 @@ export default function Home() {
   const [country3, setCountry3] = useState("");
   // const [searchCountry, setSearchCountry] = useState("");
 
+  const params = useParams();
   const router = useRouter();
 
   const generateRandomCountry = () => {
@@ -44,35 +47,10 @@ export default function Home() {
     }
     // setSearchCountry(searchData);
     // fetchSearchCountry(searchData);
-    router.push(`/dashboard/location/${encodeURIComponent(searchData)}`);
+    router.push(
+      `/${params.username}/location/${encodeURIComponent(searchData)}`,
+    );
   };
-
-  // const fetchSearchCountry = async (searchData) => {
-  //   const data = { country: searchData };
-  //   console.log(searchData);
-  //   const request = new Request("http://localhost:8080/searchCountry", {
-  //     method: "POST", // HTTP method
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(data),
-  //   });
-
-  //   try {
-  //     const response = await fetch(request);
-  //     if (!response.ok) {
-  //       throw new Error(`Failed to fetch: ${response.statusText}`);
-  //     }
-
-  //     const responseData = await response.json();
-  //     console.log("Server Response:", responseData);
-
-  //     router.push(`/dashboard/location/${encodeURIComponent(searchData)}`);
-  //   } catch (error) {
-  //     console.error("Error fetching search country:", error);
-  //     alert("Error fetching country data. Please try again later.");
-  //   }
-  // };
 
   // Generate a random country when the component mounts
   useEffect(() => {
@@ -90,11 +68,15 @@ export default function Home() {
             width={128}
             height={128}
           />
-          <h6 className="">Janis Chan</h6>
+          <h6 className="">{params.username}</h6>
           <p className="text-color-dark_grey">7 bookmark places</p>
         </div>
         <div className="block-center flex-col">
-          <Button useFor="✒️ Plan New Trip" link="/" color="btn-violet" />
+          <Button
+            useFor="✒️ Plan New Trip"
+            link={`/${params.username}/trips`}
+            color="btn-violet"
+          />
 
           <form onSubmit={handleSearchSubmit}>
             <div className="block-center flex-row">
@@ -120,19 +102,25 @@ export default function Home() {
           <h3>Popular Destination</h3>
           {/* <div className='w-full h-96 overflow-hidden inline-block rounded-lg'> */}
           <div className="h-96 w-full overflow-auto rounded-lg">
-            <Link href={`/dashboard/location/${encodeURIComponent(country1)}`}>
+            <Link
+              href={`/${params.username}/location/${encodeURIComponent(country1)}`}
+            >
               <CardTemplete
                 imageSource="/place_img/paris-france.jpg"
                 text={country1}
               />
             </Link>
-            <Link href={`/dashboard/location/${encodeURIComponent(country2)}`}>
+            <Link
+              href={`/${params.username}/location/${encodeURIComponent(country2)}`}
+            >
               <CardTemplete
                 imageSource="/place_img/paris-france.jpg"
                 text={country2}
               />
             </Link>
-            <Link href={`/dashboard/location/${encodeURIComponent(country3)}`}>
+            <Link
+              href={`/${params.username}/location/${encodeURIComponent(country3)}`}
+            >
               <CardTemplete
                 imageSource="/place_img/paris-france.jpg"
                 text={country3}
