@@ -80,6 +80,9 @@ func (svr *ApiServer) Run() error {
 	// Router for receive signup details
 	router.HandleFunc("/api/signup", svr.userSignupHandler)
 
+	// Router for receive forget password email
+	router.HandleFunc("/api/forgetPassword", svr.userForgetPasswordHandler)
+
 	// Use CORS middleware to handle cross-origin requests
 	handler := requestTelemetryMiddleware((cors.Default().Handler(router)))
 
@@ -148,14 +151,12 @@ func (svr *ApiServer) currentUserSessionMiddleware(next http.Handler) http.Handl
 
 		// if the session has not expired (Add userId from the UserSession)
 		if currentUserSession.expiryTime.After(time.Now()) {
-			// Copy the original request context and create a new one with added request id
-			// TODO: Cannot Store pointer?
-			// TODO: Change the 'current user session' string to a context key like ábove
+
 			// Stores the userId in the request context, making it accessible to downstream handlers.
 			newCtx := context.WithValue(r.Context(), currentUserSessionKey, *currentUserSession.userId)
 			r = r.WithContext(newCtx)
 
-			// TODO: Update the expiry time in memory to extend the session
+			//Update the expiry time in memory to extend the session
 			newExpiryTime := time.Now().Add(600 * time.Second)
 			currentUserSession.expiryTime = newExpiryTime
 			svr.memoryUserSessions[sessionId.Value] = currentUserSession

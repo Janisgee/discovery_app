@@ -47,9 +47,6 @@ func main() {
 	var locationSvc LocationService = &GptLocationService{gptClient}
 	server := NewApiServer(env, locationSvc, userSvc)
 
-	// mailService send email from mailTrap (testing)
-	mailService()
-
 	// Start the API server
 	err = server.Run()
 	if err != nil {
