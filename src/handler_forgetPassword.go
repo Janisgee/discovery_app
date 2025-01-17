@@ -60,8 +60,6 @@ func (svr *ApiServer) userForgetPasswordHandler(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	fmt.Printf("User_email:%s\n User_id:%s", userInfo.Email, userInfo.ID)
-
 	// Store hashedEmailPw into UserEmailPw table
 	err = svr.userSvc.CreateUserEmailPw(userInfo.Email, string(emailVerPWhash), userInfo.ID)
 
