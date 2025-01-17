@@ -55,7 +55,7 @@ func (svr *ApiServer) userForgetPasswordHandler(w http.ResponseWriter, r *http.R
 
 	emailVerPWhash, err := bcrypt.GenerateFromPassword([]byte(emailVerPassword), bcrypt.DefaultCost)
 	if err != nil {
-		slog.Warn("bcrypt err:", err)
+		slog.Warn("bcrypt err:", "error", err)
 		http.Error(w, "Fail to generate hash email password", http.StatusUnauthorized)
 		return
 	}
