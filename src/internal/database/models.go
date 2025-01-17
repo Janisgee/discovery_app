@@ -32,10 +32,10 @@ type User struct {
 }
 
 type Usersemailpw struct {
-	ID            uuid.UUID
-	Email         string
-	CreatedAt     time.Time
-	ExpiredAt     time.Time
-	HashedEmailpw string
-	UserID        uuid.UUID
+	ID          uuid.UUID
+	Email       string
+	CreatedAt   time.Time
+	ExpiredAt   time.Time
+	PwResetCode string
+	UserID      uuid.UUID
 }

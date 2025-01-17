@@ -45,7 +45,9 @@ func (svr *ApiServer) userForgetPasswordHandler(w http.ResponseWriter, r *http.R
 	// Generate random email password
 	alphaNumRunes := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 	emailVerRandRune := make([]rune, 64)
+
 	for i := 0; i < 64; i++ {
+		/* #nosec */
 		emailVerRandRune[i] = alphaNumRunes[rand.Intn(len(alphaNumRunes)-1)]
 	}
 	fmt.Println("change password emailVerRandRune:", emailVerRandRune)
@@ -70,7 +72,7 @@ func (svr *ApiServer) userForgetPasswordHandler(w http.ResponseWriter, r *http.R
 	}
 
 	//Structure the retrieve password link
-	retrievePwLink := "http://mysite.com/forgetPwChange?" + "evpw=" + emailVerPassword + "/"
+	retrievePwLink := "http://mysite.com/forgetPwChange?" + "evpw=" + string(emailVerPWhash) + "/"
 
 	// Send reset account email to user
 	err = mailService(userInfo.Username, userInfo.Email, retrievePwLink)

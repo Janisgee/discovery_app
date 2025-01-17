@@ -30,9 +30,9 @@ type User struct {
 
 // UserEmailPw struct
 type UserEmailPw struct {
-	Email          string    `json:"email"`
-	Hashed_emailPw string    `json:"hashed_emailPw"`
-	User_id        uuid.UUID `json:"user_id"`
+	Email       string    `json:"email"`
+	PwResetCode string    `json:"pw_reset_code"`
+	UserID      uuid.UUID `json:"user_id"`
 }
 
 type PostgresUserService struct {
@@ -107,9 +107,9 @@ func (svc *PostgresUserService) CreateUserEmailPw(email string, hashedEmailPw st
 
 	// Create user if username is not exit in database
 	params := database.CreateUserEmailPwParams{
-		Email:         email,
-		HashedEmailpw: hashedEmailPw,
-		UserID:        user_id,
+		Email:       email,
+		PwResetCode: hashedEmailPw,
+		UserID:      user_id,
 	}
 
 	_, err := svc.dbQueries.CreateUserEmailPw(ctx, params)

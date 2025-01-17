@@ -12,7 +12,7 @@ import (
 )
 
 const createUserEmailPw = `-- name: CreateUserEmailPw :one
-INSERT INTO usersEmailPw (id, email, created_at, expired_at, hashed_emailPw, user_id)
+INSERT INTO usersEmailPw (id, email, created_at, expired_at, pw_reset_code, user_id)
 VALUES(
 gen_random_uuid(),
 $1,
@@ -26,43 +26,43 @@ DO UPDATE
 SET 
     created_at = NOW(),
     expired_at = NOW() + INTERVAL '10 minute',
-    hashed_emailPw = EXCLUDED.hashed_emailPw
-RETURNING id, email, created_at, expired_at, hashed_emailpw, user_id
+    pw_reset_code = EXCLUDED.pw_reset_code
+RETURNING id, email, created_at, expired_at, pw_reset_code, user_id
 `
 
 type CreateUserEmailPwParams struct {
-	Email         string
-	HashedEmailpw string
-	UserID        uuid.UUID
+	Email       string
+	PwResetCode string
+	UserID      uuid.UUID
 }
 
 func (q *Queries) CreateUserEmailPw(ctx context.Context, arg CreateUserEmailPwParams) (Usersemailpw, error) {
-	row := q.db.QueryRowContext(ctx, createUserEmailPw, arg.Email, arg.HashedEmailpw, arg.UserID)
+	row := q.db.QueryRowContext(ctx, createUserEmailPw, arg.Email, arg.PwResetCode, arg.UserID)
 	var i Usersemailpw
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
 		&i.CreatedAt,
 		&i.ExpiredAt,
-		&i.HashedEmailpw,
+		&i.PwResetCode,
 		&i.UserID,
 	)
 	return i, err
 }
 
 const getUserEmailPw = `-- name: GetUserEmailPw :one
-SELECT id, email, created_at, expired_at, hashed_emailpw, user_id FROM usersEmailPw WHERE hashed_emailPw = $1 AND expired_at > Now() LIMIT 1
+SELECT id, email, created_at, expired_at, pw_reset_code, user_id FROM usersEmailPw WHERE pw_reset_code = $1 AND expired_at > Now() LIMIT 1
 `
 
-func (q *Queries) GetUserEmailPw(ctx context.Context, hashedEmailpw string) (Usersemailpw, error) {
-	row := q.db.QueryRowContext(ctx, getUserEmailPw, hashedEmailpw)
+func (q *Queries) GetUserEmailPw(ctx context.Context, pwResetCode string) (Usersemailpw, error) {
+	row := q.db.QueryRowContext(ctx, getUserEmailPw, pwResetCode)
 	var i Usersemailpw
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
 		&i.CreatedAt,
 		&i.ExpiredAt,
-		&i.HashedEmailpw,
+		&i.PwResetCode,
 		&i.UserID,
 	)
 	return i, err

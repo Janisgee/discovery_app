@@ -1,5 +1,5 @@
 -- name: CreateUserEmailPw :one
-INSERT INTO usersEmailPw (id, email, created_at, expired_at, hashed_emailPw, user_id)
+INSERT INTO usersEmailPw (id, email, created_at, expired_at, pw_reset_code, user_id)
 VALUES(
 gen_random_uuid(),
 $1,
@@ -13,8 +13,8 @@ DO UPDATE
 SET 
     created_at = NOW(),
     expired_at = NOW() + INTERVAL '10 minute',
-    hashed_emailPw = EXCLUDED.hashed_emailPw
+    pw_reset_code = EXCLUDED.pw_reset_code
 RETURNING *;
 
 -- name: GetUserEmailPw :one
-SELECT * FROM usersEmailPw WHERE hashed_emailPw = $1 AND expired_at > Now() LIMIT 1;
+SELECT * FROM usersEmailPw WHERE pw_reset_code = $1 AND expired_at > Now() LIMIT 1;

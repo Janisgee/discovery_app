@@ -6,7 +6,7 @@ CREATE TABLE usersEmailPw (
   email TEXT NOT NULL ,
   created_at TIMESTAMP NOT NULL,
   expired_at TIMESTAMP NOT NULL,
-  hashed_emailPw TEXT NOT NULL,
+  pw_reset_code TEXT NOT NULL,
   user_id UUID NOT NULL,
   UNIQUE(user_id, email),
   FOREIGN KEY (user_id)REFERENCES users(id) ON DELETE CASCADE

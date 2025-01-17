@@ -69,6 +69,7 @@ export default function ForgetPassword() {
               className="focus:shadow-outline mb-3 w-full appearance-none rounded border border-red-500 px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
               id="new_password"
               type="password"
+              placeholder="******************"
             />
             <label
               className="mb-2 block text-sm font-bold text-gray-700"
@@ -81,6 +82,7 @@ export default function ForgetPassword() {
               className="focus:shadow-outline mb-3 w-full appearance-none rounded border border-red-500 px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
               id="confirm_password"
               type="password"
+              placeholder="******************"
             />
             <p className="text-xs italic text-red-500">
               Please type your new password.
