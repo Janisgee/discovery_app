@@ -40,7 +40,7 @@ func (svr *ApiServer) userResetPasswordHandler(w http.ResponseWriter, r *http.Re
 	// Validate connection link if it has record in database
 	// Get user email from pw reset code if pw code is still valid.
 	pwCode := strings.TrimSuffix(resetInfo.PwResetCode, "/")
-	fmt.Printf("pwResetCode:%s", pwCode)
+
 	userEmail, err := svr.userSvc.GetUserEmailFromEmailPw(pwCode)
 	if err != nil {
 		svr.UnhandledError(err)
