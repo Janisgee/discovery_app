@@ -133,7 +133,7 @@ func (svc *PostgresUserService) GetUserEmailFromEmailPw(pwResetCode string) (str
 	emailPwInfo, err := svc.dbQueries.GetUserEmailPw(ctx, pwResetCode)
 	if err != nil {
 		slog.Warn("error in getting user's email pw information from database", "error", err)
-		return "", errors.New("error in getting user's email pw information from database")
+		return "", errors.New(err.Error())
 	}
 
 	fmt.Println("Email pw information has been retrieved")

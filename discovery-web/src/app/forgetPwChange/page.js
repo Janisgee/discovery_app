@@ -43,8 +43,17 @@ export default function ForgetPassword() {
 
     try {
       const response = await fetch(request);
+      console.log(response.status);
       if (!response.ok) {
-        throw new Error(`Failed to fetch: ${response.statusText}`);
+        // Handle error response, check for Unauthorized status
+        if (response.status == 401) {
+          router.push("/unauthorized-link");
+          return;
+        } else {
+          // For other errors, handle as text (non-JSON responses)
+          const errorText = await response.text();
+          throw new Error(`Failed to fetch: ${errorText}`);
+        }
       }
 
       const responseData = await response.json();
@@ -52,7 +61,9 @@ export default function ForgetPassword() {
 
       router.push(`/resetPwSuccess`);
     } catch (error) {
-      console.error("Error fetching reset password page:", error);
+      console.error("Error fetching reset password page:->", error);
+
+      // If an error occurs, redirect to the fail page
       router.push(`/resetPwFail`);
     }
   };

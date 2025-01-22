@@ -23,6 +23,7 @@ func (svr *ApiServer) userResetPasswordHandler(w http.ResponseWriter, r *http.Re
 	var resetInfo resetPw
 	err := json.NewDecoder(r.Body).Decode(&resetInfo)
 	if err != nil {
+
 		http.Error(w, "Failed to decode user reset password data", http.StatusBadRequest)
 		return
 	}
@@ -44,6 +45,10 @@ func (svr *ApiServer) userResetPasswordHandler(w http.ResponseWriter, r *http.Re
 	userEmail, err := svr.userSvc.GetUserEmailFromEmailPw(pwCode)
 	if err != nil {
 		svr.UnhandledError(err)
+		if err.Error() == "sql: no rows in result set" {
+			http.Error(w, "Unauthorized reset link", http.StatusUnauthorized)
+			return
+		}
 		http.Error(w, "Failed to get user email from pw reset code", http.StatusInternalServerError)
 		return
 	}
