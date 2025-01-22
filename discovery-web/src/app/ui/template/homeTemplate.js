@@ -23,12 +23,15 @@ export default function HomeTemplate({ children }) {
     try {
       const response = await fetch(request);
       if (!response.ok) {
-        throw new Error(`Failed to logout: ${response.statusText}`);
+        const errorText = await response.text();
+        throw new Error(`Logout failed: ${errorText}`);
       }
       console.log("Logged out successfully");
       router.push("/");
     } catch (error) {
       console.error("Error logging out:", error);
+      // Show a user-friendly message (optional)
+      alert("An error occurred while logging out. Please try again.");
     }
   };
   return (
