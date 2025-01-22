@@ -36,7 +36,7 @@ export default function ForgetPassword() {
 
       const responseData = await response.json();
       console.log("Server Response:", responseData);
-      console.log("Server Response:", responseData.retrievePwLink);
+      console.log("Server Response:", responseData.hashedEmailPassword);
 
       router.push(`/forgetPassword/email-sent`);
     } catch (error) {

@@ -12,3 +12,10 @@ RETURNING *;
 
 -- name: GetUser :one
 SELECT * FROM users WHERE email = $1 LIMIT 1;
+
+-- name: UpdateUserPw :one
+UPDATE users
+SET updated_at = NOW(),
+hashed_password = $1
+WHERE email = $2
+RETURNING *;

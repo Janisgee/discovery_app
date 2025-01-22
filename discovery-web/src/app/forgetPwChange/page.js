@@ -1,25 +1,39 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { Button } from "@/app/ui/buttons";
 
 export default function ForgetPassword() {
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const pwResetCode = searchParams.get("evpw");
+
   const handleInputEmail = async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const input_email = formData.get("email");
-    if (!input_email) {
-      alert("Please enter an email.");
+    const input_newPw = formData.get("new_password");
+    const input_confirmPw = formData.get("confirm_password");
+    if (!input_newPw || !input_confirmPw) {
+      alert("Please enter fill in a new password.");
       return;
     }
-    fetchForgetPassword(input_email);
+    if (input_newPw != input_confirmPw) {
+      alert("Please enter same password into the confirm password field.");
+      return;
+    }
+    fetchResetNewPw(input_newPw, input_confirmPw, pwResetCode);
   };
 
-  const fetchForgetPassword = async (inputEmail) => {
-    const data = { email: inputEmail };
-    const request = new Request("http://localhost:8080/api/forgetPassword", {
+  const fetchResetNewPw = async (newPw, confirmPw, pwResetCode) => {
+    const data = {
+      newPw: newPw,
+      confirmPw: confirmPw,
+      pwResetCode: pwResetCode,
+    };
+    const request = new Request("http://localhost:8080/api/resetPassword", {
       method: "POST", // HTTP method
       headers: {
         "Content-Type": "application/json",
@@ -35,12 +49,11 @@ export default function ForgetPassword() {
 
       const responseData = await response.json();
       console.log("Server Response:", responseData);
-      console.log("Server Response:", responseData.retrievePwLink);
 
-      router.push(`/forgetPassword/email-sent`);
+      router.push(`/resetPwSuccess`);
     } catch (error) {
-      console.error("Error fetching forget password page:", error);
-      // alert("Error fetching user home page. Please try again later.");
+      console.error("Error fetching reset password page:", error);
+      router.push(`/resetPwFail`);
     }
   };
   return (

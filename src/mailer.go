@@ -15,7 +15,7 @@ func mailService(nameToEmail string, emailTo string, hashedPassword string) erro
 	m.SetHeader("Subject", "Set or reset your password")
 
 	// Format the body
-	body := fmt.Sprintf(`Hello <b>$%s</b>!<h3>We have received a request to set or reset your password. Please click below link to reset your password.</h3>%s<br><p>If you did not request to set a new password or change your password, you can disregard this email and your password will remain the same.</p><p>Should you experience any issues accessing your Discovery App account, please contact us immediately.</p>Sincerely,<br>Discovery App`, nameToEmail, hashedPassword)
+	body := fmt.Sprintf(`Hello <b>%s</b>,<h3>We have received a request to set or reset your password. Please click below link to reset your password.</h3>%s<br><p>If you did not request to set a new password or change your password, you can disregard this email and your password will remain the same.</p><p>Should you experience any issues accessing your Discovery App account, please contact us immediately.</p>Sincerely,<br>Discovery App`, nameToEmail, hashedPassword)
 
 	m.SetBody("text/html", body)
 	// m.Attach("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTy3tp8KjQ8wP9i1hyZ0n2WLSbVkxHRwKldfw&s")
