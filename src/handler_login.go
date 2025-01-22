@@ -59,6 +59,7 @@ func (svr *ApiServer) userLoginHandler(w http.ResponseWriter, r *http.Request) {
 		Expires:  expiryTime,
 		HttpOnly: true,
 		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
 		Path:     "/",
 	})
 

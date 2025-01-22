@@ -87,7 +87,11 @@ func (svr *ApiServer) Run() error {
 	router.HandleFunc("/api/resetPassword", svr.userResetPasswordHandler)
 
 	// Use CORS middleware to handle cross-origin requests
-	handler := requestTelemetryMiddleware((cors.Default().Handler(router)))
+	handler := requestTelemetryMiddleware((cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3000"},
+		AllowCredentials: true,
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+	}).Handler(router)))
 
 	server := http.Server{
 		Handler:      handler,
@@ -131,12 +135,18 @@ func requestTelemetryMiddleware(next http.Handler) http.Handler {
 
 func (svr *ApiServer) currentUserSessionMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		// Log all cookies in the request for debugging purposes
+		for _, cookie := range r.Cookies() {
+			slog.Info("Request Cookie", "name", cookie.Name, "value", cookie.Value)
+		}
+
 		// Fetch the session ID from the request cookie
 		// TODO: Can be nil
 		sessionId, err := r.Cookie("DA_SESSION_ID")
 		if err != nil {
 			slog.Warn("Failed to get request cookie of field: 'DA_SESSION_ID'")
-			http.Error(w, "Failed to get request cookie of field: 'DA_SESSION_ID'", http.StatusBadRequest)
+			http.Error(w, "Missing session ID", http.StatusBadRequest)
 			return
 		}
 		if sessionId == nil {

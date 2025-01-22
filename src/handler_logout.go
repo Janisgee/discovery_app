@@ -30,10 +30,12 @@ func (svr *ApiServer) userLogoutHandler(w http.ResponseWriter, r *http.Request) 
 		Expires:  time.Unix(0, 0), // Expired immediately
 		HttpOnly: true,
 		Path:     "/",
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
 	})
 
 	// Set CORS headers for allow cookies to be sent along with cross-origin requests from server
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000/")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
