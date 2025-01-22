@@ -83,6 +83,9 @@ func (svr *ApiServer) Run() error {
 	// Router for receive forget password email
 	router.HandleFunc("/api/forgetPassword", svr.userForgetPasswordHandler)
 
+	// Router for receive new password
+	router.HandleFunc("/api/resetPassword", svr.userResetPasswordHandler)
+
 	// Use CORS middleware to handle cross-origin requests
 	handler := requestTelemetryMiddleware((cors.Default().Handler(router)))
 

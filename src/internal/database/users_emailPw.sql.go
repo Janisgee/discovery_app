@@ -50,6 +50,25 @@ func (q *Queries) CreateUserEmailPw(ctx context.Context, arg CreateUserEmailPwPa
 	return i, err
 }
 
+const deleteUserEmailPw = `-- name: DeleteUserEmailPw :one
+DELETE FROM usersEmailPw WHERE pw_reset_code = $1 
+RETURNING id, email, created_at, expired_at, pw_reset_code, user_id
+`
+
+func (q *Queries) DeleteUserEmailPw(ctx context.Context, pwResetCode string) (Usersemailpw, error) {
+	row := q.db.QueryRowContext(ctx, deleteUserEmailPw, pwResetCode)
+	var i Usersemailpw
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.CreatedAt,
+		&i.ExpiredAt,
+		&i.PwResetCode,
+		&i.UserID,
+	)
+	return i, err
+}
+
 const getUserEmailPw = `-- name: GetUserEmailPw :one
 SELECT id, email, created_at, expired_at, pw_reset_code, user_id FROM usersEmailPw WHERE pw_reset_code = $1 AND expired_at > Now() LIMIT 1
 `

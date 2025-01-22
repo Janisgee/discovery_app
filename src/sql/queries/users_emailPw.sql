@@ -18,3 +18,7 @@ RETURNING *;
 
 -- name: GetUserEmailPw :one
 SELECT * FROM usersEmailPw WHERE pw_reset_code = $1 AND expired_at > Now() LIMIT 1;
+
+-- name: DeleteUserEmailPw :one
+DELETE FROM usersEmailPw WHERE pw_reset_code = $1 
+RETURNING *;

@@ -16,6 +16,8 @@ type UserService interface {
 	VerifyUserLogin(email string, password string) (*uuid.UUID, error)
 	GetUserInfo(email string) (*User, error)
 	CreateUserEmailPw(email string, hashedEmailPw string, user_id uuid.UUID) error
+	GetUserEmailFromEmailPw(pwResetCode string) (string, error)
+	ResetUserPw(email string, password string, pw_reset_code string) (*User, error)
 }
 
 // User struct to hold input data for GET & SET
@@ -123,6 +125,22 @@ func (svc *PostgresUserService) CreateUserEmailPw(email string, hashedEmailPw st
 	return nil
 }
 
+// //////////////////////////////////////////////////////
+func (svc *PostgresUserService) GetUserEmailFromEmailPw(pwResetCode string) (string, error) {
+	// Create an empty context
+	ctx := context.Background()
+
+	emailPwInfo, err := svc.dbQueries.GetUserEmailPw(ctx, pwResetCode)
+	if err != nil {
+		slog.Warn("error in getting user's email pw information from database", "error", err)
+		return "", errors.New("error in getting user's email pw information from database")
+	}
+
+	fmt.Println("Email pw information has been retrieved")
+
+	return emailPwInfo.Email, nil
+}
+
 /////////////////////////////////////////////////////////////////////
 
 func (svc *PostgresUserService) VerifyUserLogin(email string, password string) (*uuid.UUID, error) {
@@ -142,4 +160,43 @@ func (svc *PostgresUserService) VerifyUserLogin(email string, password string) (
 	}
 
 	return &user.ID, nil
+}
+
+// //////////////////////////////////////////////////
+func (svc *PostgresUserService) ResetUserPw(email string, password string, pw_reset_code string) (*User, error) {
+	// Create an empty context
+	ctx := context.Background()
+
+	// Hashed password
+	hashedpw, err := hashPassword(password)
+	if err != nil {
+		return nil, errors.New("fail to hash password")
+	}
+
+	// Update user password in user database
+	params := database.UpdateUserPwParams{
+		HashedPassword: hashedpw,
+		Email:          email,
+	}
+	userInfo, err := svc.dbQueries.UpdateUserPw(ctx, params)
+	if err != nil {
+		return nil, errors.New("already have the same email saved in database")
+	}
+
+	fmt.Printf("The user password is successfully updated.\n User password updated at:%v\n", userInfo.UpdatedAt)
+
+	// Delete user email pw info from database
+	deletedPwInfo, err := svc.dbQueries.DeleteUserEmailPw(ctx, pw_reset_code)
+	if err != nil {
+		return nil, errors.New("password reset code can not be deleted")
+	}
+	fmt.Printf("The user password code info is successfully deleted.\n User email password code:%v\n", deletedPwInfo.PwResetCode)
+
+	// Return the user info
+	userInformation := &User{
+		ID:       userInfo.ID,
+		Username: userInfo.Username,
+		Email:    userInfo.Email}
+
+	return userInformation, nil
 }

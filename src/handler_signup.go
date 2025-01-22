@@ -46,6 +46,13 @@ func (svr *ApiServer) userSignupHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	// Check password strength
+	err = checkPasswordStrength(newSignup.Password)
+	if err != nil {
+		errMessage := fmt.Sprintf("%v", err)
+		sendErrorResponse(w, http.StatusBadRequest, errMessage)
+	}
+
 	// Trim space and store lowercase from input
 	trimedUsername := strings.TrimSpace(newSignup.Username)
 	trimedEmail := strings.TrimSpace(strings.ToLower(newSignup.Email))
