@@ -2,15 +2,15 @@
 import { useParams } from "next/navigation";
 import PlaceTemplate from "@/app/ui/template/placeTemplate";
 
-export default function AttractionPlace() {
-  const { username, location, attraction } = useParams();
+export default function PetrolStationPlace() {
+  const { username, location, petrol_station } = useParams();
 
   return (
     <PlaceTemplate
       username={username}
       location={location}
-      place={attraction}
-      catagory="attraction"
+      place={petrol_station}
+      catagory="petrol_station"
     />
   );
 }
