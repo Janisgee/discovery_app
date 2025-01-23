@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"log/slog"
+	"net/http"
+	"time"
 
 	passwordvalidator "github.com/wagslane/go-password-validator"
 	"golang.org/x/crypto/bcrypt"
@@ -31,4 +33,32 @@ func checkPasswordStrength(password string) error {
 		return err
 	}
 	return nil
+}
+
+// Set Cookie
+func setSectionCookie(w http.ResponseWriter, token string, expiryTime time.Time) {
+	// Set the session id cookie in response, not visible to Javascript (HttpOnly)
+	http.SetCookie(w, &http.Cookie{
+		Name:     "DA_SESSION_ID",
+		Value:    token,
+		Expires:  expiryTime,
+		HttpOnly: true,
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
+		Path:     "/",
+	})
+}
+
+// Clear the session cookie
+func clearSectionCookie(w http.ResponseWriter) {
+	// Set the session id cookie in response, not visible to Javascript (HttpOnly)
+	http.SetCookie(w, &http.Cookie{
+		Name:     "DA_SESSION_ID",
+		Value:    "",
+		Expires:  time.Unix(0, 0), // Expired immediately
+		HttpOnly: true,
+		Path:     "/",
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
+	})
 }
