@@ -11,17 +11,19 @@ import Link from "next/link";
 export default function CatagoryTemplate({ catagory }) {
   const [content, setContent] = useState([]);
   const params = useParams();
-  console.log(params);
-  const location = params.location.toUpperCase().replaceAll("%20", " ");
+
+  const location = decodeURIComponent(params.location).toUpperCase();
+  const twoWordCatagory = catagory.replaceAll("_", " ");
 
   const fetchSearchCountry = async () => {
-    const data = { country: location, catagory: catagory };
+    const data = { country: location, catagory: twoWordCatagory };
 
     const request = new Request("http://localhost:8080/searchCountry", {
       method: "POST", // HTTP method
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify(data),
     });
 
@@ -72,7 +74,7 @@ export default function CatagoryTemplate({ catagory }) {
             <FontAwesomeIcon icon={faCircleArrowLeft} size="2x" />
           </Link>
           <p className="col-span-2 text-2xl font-bold">
-            [ {catagory.toUpperCase()} ]
+            [ {twoWordCatagory.toUpperCase()} ]
           </p>
         </div>
       </div>

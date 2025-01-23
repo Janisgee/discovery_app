@@ -1,7 +1,7 @@
 import AppTemplate from "@/app/ui/template/appTemplate";
 import CatagoryTemplate from "@/app/ui/template/catagoryTemplate";
 
-export default function Petrol_station() {
+export default function PetrolStation() {
   return (
     <div>
       <AppTemplate>
