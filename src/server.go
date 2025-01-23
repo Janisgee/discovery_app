@@ -140,9 +140,7 @@ func (svr *ApiServer) currentUserSessionMiddleware(next http.Handler) http.Handl
 		for _, cookie := range r.Cookies() {
 			slog.Info("Request Cookie", "name", cookie.Name, "value", cookie.Value)
 		}
-
 		// Fetch the session ID from the request cookie
-		// TODO: Can be nil
 		sessionId, err := r.Cookie("DA_SESSION_ID")
 		if err != nil {
 			slog.Warn("Failed to get request cookie of field: 'DA_SESSION_ID'")
@@ -154,7 +152,7 @@ func (svr *ApiServer) currentUserSessionMiddleware(next http.Handler) http.Handl
 			next.ServeHTTP(w, r)
 			return
 		}
-		// TODO: Can be nil
+
 		currentUserSession, exists := svr.memoryUserSessions[sessionId.Value]
 		if !exists {
 			// If no user session exists for this session ID, continue to the next handler

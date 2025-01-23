@@ -52,16 +52,9 @@ func (svr *ApiServer) userLoginHandler(w http.ResponseWriter, r *http.Request) {
 		expiryTime: expiryTime,
 	}
 
-	// Set the session id cookie in response, not visible to Javascript (HttpOnly)
-	http.SetCookie(w, &http.Cookie{
-		Name:     "DA_SESSION_ID",
-		Value:    token,
-		Expires:  expiryTime,
-		HttpOnly: true,
-		SameSite: http.SameSiteNoneMode,
-		Secure:   true,
-		Path:     "/",
-	})
+	// TODO: Move Session cookie handling to reusable function
+
+	setSectionCookie(w, token, expiryTime)
 
 	// Get username from user input email
 	userInfo, err := svr.userSvc.GetUserInfo(newLogin.Email)
