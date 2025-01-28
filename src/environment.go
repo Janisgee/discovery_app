@@ -10,6 +10,7 @@ type EnvConfig struct {
 	Version              string `env:"APP_VERSION" envDefault:"local"`
 	WebPort              uint16 `env:"WEB_PORT" envDefault:"8080"`
 	GptKey               string `env:"OPENAI_API_KEY,required"`
+	GMapsKey             string `env:"GMAPS_API_KEY,required"`
 	PsqlConnectionString string `env:"PSQL_CONNECTION_STRING,required"`
 }
 
