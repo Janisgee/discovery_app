@@ -1,23 +1,29 @@
 "use client";
-
+import { Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/app/ui/buttons";
+import { Spinner } from "../ui/spinner";
 import Link from "next/link";
 
 export default function Login() {
   const router = useRouter();
   const handleLoginData = (e) => {
     e.preventDefault();
+
     const formData = new FormData(e.currentTarget);
-    const input_email = formData.get("login_email");
-    const input_password = formData.get("login_password");
+    // const input_email = formData.get("login_email");
+    // const input_password = formData.get("login_password");
+    const input_email = "davidjonesgan@gmail.com";
+    const input_password = "ilovemymum123";
 
     if (!input_email) {
       alert("Please enter an email.");
+
       return;
     }
     if (!input_password) {
       alert("Please enter a password.");
+
       return;
     }
     fetchLoginData(input_email, input_password);
@@ -36,6 +42,7 @@ export default function Login() {
     });
 
     try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const response = await fetch(request);
       if (!response.ok) {
         throw new Error(`Failed to fetch: ${response.statusText}`);
