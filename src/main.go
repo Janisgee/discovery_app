@@ -45,7 +45,14 @@ func main() {
 	// ChatGPT search
 	gptClient := openai.NewClient(env.GptKey)
 	var locationSvc LocationService = &GptLocationService{gptClient}
-	server := NewApiServer(env, locationSvc, userSvc)
+
+	placesSvc, err := NewGooglePlacesService(env.GMapsKey)
+	if err != nil {
+		slog.Error("Unable to connect google maps service", "error", err)
+		os.Exit(1)
+	}
+
+	server := NewApiServer(env, locationSvc, userSvc, placesSvc)
 
 	// Start the API server
 	err = server.Run()
