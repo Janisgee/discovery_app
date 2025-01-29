@@ -42,4 +42,8 @@ func (svr *ApiServer) autocompleteCitiesSearch(w http.ResponseWriter, r *http.Re
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	_, err = w.Write(jsData)
+	if err != nil {
+		slog.Warn("Failed to write JS to http response", "error", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
 }
