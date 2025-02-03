@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"reflect"
 )
 
 func (svr *ApiServer) userBookmarkHandler(w http.ResponseWriter, r *http.Request) {
@@ -33,14 +32,7 @@ func (svr *ApiServer) userBookmarkHandler(w http.ResponseWriter, r *http.Request
 
 	// Get user detail
 	user_id := GetCurrentUserId(r)
-	fmt.Println("GetCurrentUserId Place id Refect type:", reflect.TypeOf(newBookmark.PlaceID))
-	fmt.Println("GetCurrentUserId newbookmark placeID: ", newBookmark.PlaceID)
-	fmt.Println("CreateUserBookmark Username: ", newBookmark.Username)
-	fmt.Println("CreateUserBookmark placeID: ", newBookmark.PlaceID)
-	fmt.Println("CreateUserBookmark PlaceName: ", newBookmark.PlaceName)
-	fmt.Println("CreateUserBookmark PlaceText: ", newBookmark.PlaceText)
-	//TODO *user_id CANNOT FOUND
-	fmt.Println("CreateUserBookmark user_id: ", *user_id)
+
 	// Check if bookmark place has been stored in database
 	_, err = svr.bookmarkPlaceService.GetBookmarkPlaceDetails(newBookmark.PlaceID)
 	if err != nil {
