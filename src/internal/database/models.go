@@ -12,7 +12,7 @@ import (
 )
 
 type Place struct {
-	ID          uuid.UUID
+	ID          string
 	PlaceName   string
 	Country     string
 	City        string
@@ -29,6 +29,16 @@ type User struct {
 	UpdatedAt      time.Time
 	Email          string
 	HashedPassword string
+}
+
+type UsersBookmark struct {
+	ID        uuid.UUID
+	UserID    uuid.UUID
+	Username  string
+	PlaceID   string
+	PlaceName string
+	PlaceText string
+	CreatedAt time.Time
 }
 
 type Usersemailpw struct {
