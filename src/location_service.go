@@ -11,16 +11,19 @@ import (
 
 type LocationService interface {
 	GetDetails(location string, category string) ([]LocationDetails, error)
-	GetPlaceDetails(location string) ([]PlaceDetails, error)
+	GetPlaceDetails(location string) (*PlaceDetails, error)
 }
 
 type LocationDetails struct {
 	Image       string `json:"image"`
 	Name        string `json:"name"`
+	PlaceID     string `json:"place_id"`
 	Description string `json:"description"`
 }
 
 type PlaceDetails struct {
+	City          string `json:"city"`
+	Country       string `json:"country"`
 	Description   string `json:"description"`
 	Location      string `json:"location"`
 	Opening_hours string `json:"opening_hours"`
@@ -34,7 +37,7 @@ type GptLocationService struct {
 }
 
 func (svc *GptLocationService) GetDetails(location string, category string) ([]LocationDetails, error) {
-	prompt := fmt.Sprintf("Get 3 %s in %s, using a field 'places' containing 'image' (a URL to an image), 'name' (the attraction name), and 'description' (a 10-word description).", category, location)
+	prompt := fmt.Sprintf("Get 3 %s in %s, using a field 'places' containing 'image' (a URL to an image), 'name' (the attraction name), 'place_id'(google place id of %s)  and 'description' (a 10-word description).", category, location, location)
 
 	completion, err := svc.gptClient.CreateChatCompletion(
 		context.Background(),
@@ -70,8 +73,8 @@ func (svc *GptLocationService) GetDetails(location string, category string) ([]L
 	return response.Places, nil
 }
 
-func (svc *GptLocationService) GetPlaceDetails(location string) ([]PlaceDetails, error) {
-	prompt := fmt.Sprintf("Get details of %s, using a field 'place_details' containing 'description'(around 20 words),'location' (address), 'opening_hours' (everyday operation hour), 'history' (around 50 words), 'key_features' (around 100 words) and 'conclusion'(around 40 words conclusion for the place).", location)
+func (svc *GptLocationService) GetPlaceDetails(location string) (*PlaceDetails, error) {
+	prompt := fmt.Sprintf("Get details of %s, using a field 'place_details' containing 'city'(which city %s belong to),'country'(which country %s belong to),'description'(around 20 words),'location' (address), 'opening_hours' (everyday operation hour), 'history' (around 50 words), 'key_features' (around 100 words) and 'conclusion'(around 40 words conclusion for the place).", location, location, location)
 
 	// fmt.Printf("GetPlaceDetails location: %s \n")
 	completion, err := svc.gptClient.CreateChatCompletion(
@@ -106,5 +109,5 @@ func (svc *GptLocationService) GetPlaceDetails(location string) ([]PlaceDetails,
 		return nil, fmt.Errorf("ChatGpt json error: %v\n ", err)
 	}
 
-	return []PlaceDetails{response.Place_details}, nil
+	return &response.Place_details, nil
 }

@@ -51,15 +51,13 @@ export default function CatagoryTemplate({ catagory }) {
     content.forEach((item, index) => {
       itemList.push(
         <li key={index}>
-          <Link
-            href={`/${params.username}/location/${params.location}/${catagory}/${item.name}`}
-          >
-            <ItemTemplete
-              imageSource="/user_img/default.jpg"
-              title={`${item.name}`}
-              text={`${item.description}`}
-            ></ItemTemplete>
-          </Link>
+          <ItemTemplete
+            imageSource="/user_img/default.jpg"
+            title={`${item.name}`}
+            text={`${item.description}`}
+            placeID={`${item.place_id}`}
+            catagory={catagory}
+          ></ItemTemplete>
         </li>,
       );
     });

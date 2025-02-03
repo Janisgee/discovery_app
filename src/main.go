@@ -52,7 +52,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	server := NewApiServer(env, locationSvc, userSvc, placesSvc)
+	// Create bookmark place service to run the queries
+	var bookmarkPlaceSvc BookmarkPlaceService = &PostgresBookmarkService{dbQueries}
+
+	server := NewApiServer(env, locationSvc, userSvc, placesSvc, bookmarkPlaceSvc)
 
 	// Start the API server
 	err = server.Run()

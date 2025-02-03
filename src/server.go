@@ -27,16 +27,17 @@ type UserSession struct {
 }
 
 type ApiServer struct {
-	env                *EnvConfig
-	locationSvc        LocationService
-	userSvc            UserService
-	memoryUserSessions map[string]UserSession
-	placesService      PlacesService
+	env                  *EnvConfig
+	locationSvc          LocationService
+	userSvc              UserService
+	memoryUserSessions   map[string]UserSession
+	placesService        PlacesService
+	bookmarkPlaceService BookmarkPlaceService
 }
 
-func NewApiServer(env *EnvConfig, locationSvc LocationService, userSvc UserService, placesService PlacesService) *ApiServer {
+func NewApiServer(env *EnvConfig, locationSvc LocationService, userSvc UserService, placesService PlacesService, bookmarkPlaceService BookmarkPlaceService) *ApiServer {
 	return &ApiServer{
-		env, locationSvc, userSvc, map[string]UserSession{}, placesService,
+		env, locationSvc, userSvc, map[string]UserSession{}, placesService, bookmarkPlaceService,
 	}
 }
 
@@ -61,6 +62,7 @@ func GetCurrentUserId(r *http.Request) *uuid.UUID {
 func (svr *ApiServer) Run() error {
 	router := http.NewServeMux()
 
+	// router for cities search autocomplete
 	router.HandleFunc("/api/place/autocomplete", svr.autocompleteCitiesSearch)
 
 	// router for search country place
@@ -75,6 +77,11 @@ func (svr *ApiServer) Run() error {
 	// Router for receive logout request
 	router.HandleFunc("/api/logout", func(w http.ResponseWriter, r *http.Request) {
 		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userLogoutHandler)).ServeHTTP(w, r)
+	})
+
+	// Router for bookmark new place for user
+	router.HandleFunc("/api/bookmark", func(w http.ResponseWriter, r *http.Request) {
+		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userBookmarkHandler)).ServeHTTP(w, r)
 	})
 
 	// router for receive login details

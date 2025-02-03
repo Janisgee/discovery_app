@@ -30,16 +30,8 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
       if (response.ok) {
         const htmlContent = await response.json(); // Use json() to handle HTML response
         console.log("Received content:", htmlContent);
-        if (htmlContent.length == 1) {
-          setContent(htmlContent[0]);
-        }
-      } else {
-        const errorText = await response.text();
-        console.error(
-          "Error fetching search place:",
-          response.statusText,
-          errorText,
-        );
+
+        setContent(htmlContent);
       }
     } catch (error) {
       console.error("Error fetching search place:", error);
