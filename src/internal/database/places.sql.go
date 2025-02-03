@@ -13,12 +13,12 @@ import (
 const createPlace = `-- name: CreatePlace :one
 INSERT INTO places (id, place_name, country, city, category, place_detail,created_at, updated_at)
 VALUES(
-gen_random_uuid(),  
-$1,
+$1,  
 $2,
 $3,
 $4,
 $5,
+$6,
 NOW(),
 NOW()
 )
@@ -26,6 +26,7 @@ RETURNING id, place_name, country, city, category, place_detail, created_at, upd
 `
 
 type CreatePlaceParams struct {
+	ID          string
 	PlaceName   string
 	Country     string
 	City        string
@@ -35,12 +36,33 @@ type CreatePlaceParams struct {
 
 func (q *Queries) CreatePlace(ctx context.Context, arg CreatePlaceParams) (Place, error) {
 	row := q.db.QueryRowContext(ctx, createPlace,
+		arg.ID,
 		arg.PlaceName,
 		arg.Country,
 		arg.City,
 		arg.Category,
 		arg.PlaceDetail,
 	)
+	var i Place
+	err := row.Scan(
+		&i.ID,
+		&i.PlaceName,
+		&i.Country,
+		&i.City,
+		&i.Category,
+		&i.PlaceDetail,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getPlace = `-- name: GetPlace :one
+SELECT id, place_name, country, city, category, place_detail, created_at, updated_at FROM places WHERE id = $1 LIMIT 1
+`
+
+func (q *Queries) GetPlace(ctx context.Context, id string) (Place, error) {
+	row := q.db.QueryRowContext(ctx, getPlace, id)
 	var i Place
 	err := row.Scan(
 		&i.ID,

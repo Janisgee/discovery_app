@@ -1,6 +1,6 @@
 -- +goose Up
 CREATE TABLE places (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id TEXT PRIMARY KEY UNIQUE,
   place_name TEXT NOT NULL UNIQUE,
   country TEXT NOT NULL,
   city TEXT NOT NULL,
