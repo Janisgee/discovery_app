@@ -48,3 +48,52 @@ func (q *Queries) CreateUserBookmark(ctx context.Context, arg CreateUserBookmark
 	)
 	return i, err
 }
+
+const deleteUserBookmark = `-- name: DeleteUserBookmark :one
+DELETE FROM users_bookmark WHERE place_id = $1 AND user_id = $2 
+RETURNING id, user_id, username, place_id, place_name, place_text, created_at
+`
+
+type DeleteUserBookmarkParams struct {
+	PlaceID string
+	UserID  uuid.UUID
+}
+
+func (q *Queries) DeleteUserBookmark(ctx context.Context, arg DeleteUserBookmarkParams) (UsersBookmark, error) {
+	row := q.db.QueryRowContext(ctx, deleteUserBookmark, arg.PlaceID, arg.UserID)
+	var i UsersBookmark
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Username,
+		&i.PlaceID,
+		&i.PlaceName,
+		&i.PlaceText,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getUserBookmark = `-- name: GetUserBookmark :one
+SELECT id, user_id, username, place_id, place_name, place_text, created_at FROM users_bookmark WHERE place_id = $1 AND user_id = $2 LIMIT 1
+`
+
+type GetUserBookmarkParams struct {
+	PlaceID string
+	UserID  uuid.UUID
+}
+
+func (q *Queries) GetUserBookmark(ctx context.Context, arg GetUserBookmarkParams) (UsersBookmark, error) {
+	row := q.db.QueryRowContext(ctx, getUserBookmark, arg.PlaceID, arg.UserID)
+	var i UsersBookmark
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Username,
+		&i.PlaceID,
+		&i.PlaceName,
+		&i.PlaceText,
+		&i.CreatedAt,
+	)
+	return i, err
+}
