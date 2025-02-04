@@ -84,6 +84,11 @@ func (svr *ApiServer) Run() error {
 		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userBookmarkHandler)).ServeHTTP(w, r)
 	})
 
+	// Router for unbookmark place for user
+	router.HandleFunc("/api/unBookmark", func(w http.ResponseWriter, r *http.Request) {
+		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userUnBookmarkHandler)).ServeHTTP(w, r)
+	})
+
 	// router for receive login details
 	router.HandleFunc("/api/login", svr.userLoginHandler)
 
@@ -154,7 +159,7 @@ func (svr *ApiServer) currentUserSessionMiddleware(next http.Handler) http.Handl
 		sessionId, err := r.Cookie("DA_SESSION_ID")
 		if err != nil {
 			slog.Warn("Failed to get request cookie of field: 'DA_SESSION_ID'")
-			http.Error(w, "Missing session ID", http.StatusBadRequest)
+			http.Error(w, "Missing session ID", http.StatusUnauthorized)
 			return
 		}
 		if sessionId == nil {

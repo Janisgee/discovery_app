@@ -5,7 +5,6 @@ import (
 	"discoveryapp/internal/database"
 	"encoding/json"
 	"errors"
-	"log"
 	"log/slog"
 
 	"github.com/google/uuid"
@@ -13,8 +12,10 @@ import (
 
 type BookmarkPlaceService interface {
 	CreatePlaceData(place_id string, place_name string, country string, city string, catagory string, place_detail *PlaceDetails) error
-	GetBookmarkPlaceDetails(place_id string) (*Place, error)
+	GetPlaceDatabaseDetails(place_id string) (*Place, error)
 	CreateUserBookmark(user_id uuid.UUID, username string, place_id string, place_name string, place_text string) (*UserBookmarkPlace, error)
+	DeleteUserBookmark(user_id uuid.UUID, place_id string) (*UserBookmarkPlace, error)
+	CheckPlaceHasBookmarkedByUser(place_id string, user_id uuid.UUID) (bool, error)
 }
 
 // type PlaceDetail struct {
@@ -78,7 +79,7 @@ func (svc *PostgresBookmarkService) CreatePlaceData(place_id string, place_name 
 }
 
 // ////////////////////////////////////////////////////////////////////
-func (svc *PostgresBookmarkService) GetBookmarkPlaceDetails(place_id string) (*Place, error) {
+func (svc *PostgresBookmarkService) GetPlaceDatabaseDetails(place_id string) (*Place, error) {
 
 	// Create an empty context
 	ctx := context.Background()
@@ -86,16 +87,16 @@ func (svc *PostgresBookmarkService) GetBookmarkPlaceDetails(place_id string) (*P
 	// Check if place inside database
 	placeInfo, err := svc.dbQueries.GetPlace(ctx, place_id)
 	if err != nil {
+		// no place store in db
 		slog.Warn("Fail to get place details from provided place id", "error", err)
 		return nil, errors.New("fail to get place details from provided place id")
 	}
 
 	// Unmarshal the JSONB column into the struct
 	var placeDetail PlaceDetails
-	var placeDetailBytes []byte
-	err = json.Unmarshal(placeDetailBytes, &placeDetail)
+	err = json.Unmarshal(placeInfo.PlaceDetail, &placeDetail)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("Error unmarshal JSONB place detail", "error", err)
 		return nil, errors.New("error unmarshal JSONB place detail")
 	}
 
@@ -138,4 +139,48 @@ func (svc *PostgresBookmarkService) CreateUserBookmark(user_id uuid.UUID, userna
 	}
 
 	return bookmarkPlace, nil
+}
+
+func (svc *PostgresBookmarkService) CheckPlaceHasBookmarkedByUser(place_id string, user_id uuid.UUID) (bool, error) {
+	// Create an empty context
+	ctx := context.Background()
+
+	// Create user bookmark into database
+	params := database.GetUserBookmarkParams{
+		PlaceID: place_id,
+		UserID:  user_id,
+	}
+
+	_, err := svc.dbQueries.GetUserBookmark(ctx, params)
+	if err != nil {
+		slog.Warn("Fail to retrieve place data from user bookmark list", "error", err)
+		return false, errors.New("fail to retrieve place data from user bookmark list")
+	}
+
+	return true, nil
+}
+
+func (svc *PostgresBookmarkService) DeleteUserBookmark(user_id uuid.UUID, place_id string) (*UserBookmarkPlace, error) {
+
+	// Create an empty context
+	ctx := context.Background()
+
+	// Delete User Bookmark
+	params := database.DeleteUserBookmarkParams{
+		PlaceID: place_id,
+		UserID:  user_id,
+	}
+	unBookmarkUserRecord, err := svc.dbQueries.DeleteUserBookmark(ctx, params)
+	if err != nil {
+		slog.Warn("Fail to unbookmark user place", "error", err)
+		return nil, errors.New("fail to unbookmark user place")
+	}
+
+	// Return user unbookmark place
+	unBookmarkPlace := &UserBookmarkPlace{
+		UserID:  unBookmarkUserRecord.UserID,
+		PlaceID: unBookmarkUserRecord.PlaceID,
+	}
+
+	return unBookmarkPlace, nil
 }

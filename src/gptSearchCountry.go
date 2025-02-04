@@ -40,6 +40,17 @@ func (svr *ApiServer) gptSearchCountry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// TODO: Bookmark query
+	// type PlaceDetailsWithBookmark struct {
+	// 	Details     PlaceDetails
+	// 	HasBookmark bool
+	// }
+
+	// responseData = PlaceDetailsWithBookmark{
+	// 	Details:     response,
+	// 	HasBookmark: getFromOtherService,
+	// }
+
 	// Create the JSON response
 	jsData, err := json.Marshal(response)
 	if err != nil {
