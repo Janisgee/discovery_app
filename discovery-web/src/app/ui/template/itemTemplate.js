@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
 import Image from "next/image";
@@ -18,18 +18,20 @@ export default function ItemTemplete({
 }) {
   const [emptyHeart, setEmptyHeart] = useState(true);
   const params = useParams();
+  const router = useRouter();
 
   const handlePlaceBookmark = (e) => {
     e.preventDefault();
     setEmptyHeart(!emptyHeart);
     if (emptyHeart == false) {
       alert(`Unbookmark place: ${title}!`);
+      fetchBookmark("http://localhost:8080/api/unBookmark");
     } else {
       alert(`Bookmark place: ${title}!`);
-      fetchBookmark();
+      fetchBookmark("http://localhost:8080/api/bookmark");
     }
   };
-  const fetchBookmark = async () => {
+  const fetchBookmark = async (requestLinkToServer) => {
     const data = {
       username: params.username,
       place_name: title,
@@ -38,7 +40,7 @@ export default function ItemTemplete({
       catagory: catagory,
     };
 
-    const request = new Request("http://localhost:8080/api/bookmark", {
+    const request = new Request(requestLinkToServer, {
       method: "POST", // HTTP method
       headers: {
         "Content-Type": "application/json",
@@ -49,15 +51,20 @@ export default function ItemTemplete({
 
     try {
       const response = await fetch(request);
-
       if (response.ok) {
         const htmlContent = await response.json(); // Use json() to handle HTML response
         console.log(htmlContent);
       } else {
-        console.error("Error fetching search country:", response.statusText);
+        if (response.status == 401) {
+          alert(
+            `Please login again as 10 mins session expired without taking action.`,
+          );
+          router.push(`/login`);
+        }
+        console.error("Error fetching bookmark request:", response.statusText);
       }
     } catch (error) {
-      console.error("Error fetching search country:", error);
+      console.error("Error fetching bookmark request:", error);
     }
   };
 

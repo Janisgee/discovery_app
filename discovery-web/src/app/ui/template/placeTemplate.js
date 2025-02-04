@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import AppTemplate from "@/app/ui/template/appTemplate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,6 +11,8 @@ import Link from "next/link";
 
 export default function PlaceTemplate({ username, location, place, catagory }) {
   const [content, setContent] = useState([]);
+
+  const router = useRouter();
   const decodeURIPlace = decodeURIComponent(place).toUpperCase();
 
   const fetchSearchPlaceDetails = async () => {
@@ -32,6 +35,14 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
         console.log("Received content:", htmlContent);
 
         setContent(htmlContent);
+      } else {
+        if (response.status == 401) {
+          alert(
+            `Please login again as 10 mins session expired without taking action.`,
+          );
+          router.push(`/login`);
+        }
+        console.error("Error fetching search place:", response.statusText);
       }
     } catch (error) {
       console.error("Error fetching search place:", error);
