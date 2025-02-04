@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import ItemTemplete from "@/app/ui/template/itemTemplate";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
@@ -11,6 +11,7 @@ import Link from "next/link";
 export default function CatagoryTemplate({ catagory }) {
   const [content, setContent] = useState([]);
   const params = useParams();
+  const router = useRouter();
 
   const location = decodeURIComponent(params.location).toUpperCase();
   const twoWordCatagory = catagory.replaceAll("_", " ");
@@ -35,6 +36,13 @@ export default function CatagoryTemplate({ catagory }) {
         console.log(htmlContent);
         setContent(htmlContent);
       } else {
+        if (response.status == 401) {
+          alert(
+            `Please login again as 10 mins session expired without taking action.`,
+          );
+          router.push(`/login`);
+        }
+
         console.error("Error fetching search country:", response.statusText);
       }
     } catch (error) {
