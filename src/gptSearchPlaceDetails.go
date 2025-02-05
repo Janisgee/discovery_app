@@ -42,7 +42,6 @@ func (svr *ApiServer) gptSearchPlaceDetails(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	fmt.Println("GetPlaceDatabaseDetails Helllllllo place_id:", place_id)
 	// Check if place has been stored in database
 	placeInDB, err := svr.bookmarkPlaceService.GetPlaceDatabaseDetails(place_id)
 	if err != nil {
@@ -56,13 +55,6 @@ func (svr *ApiServer) gptSearchPlaceDetails(w http.ResponseWriter, r *http.Reque
 			return
 		}
 
-		fmt.Println("CreatePlaceData: placeID", place_id)
-		fmt.Println("CreatePlaceData: place name", input.Place)
-		fmt.Println("CreatePlaceData: place country", response.Country)
-		fmt.Println("CreatePlaceData: place city", response.City)
-		fmt.Println("CreatePlaceData: catagory", input.Catagory)
-		fmt.Println("CreatePlaceData: place details", response)
-
 		// Store place into place Data
 		err = svr.bookmarkPlaceService.CreatePlaceData(place_id, input.Place, response.Country, response.City, input.Catagory, response)
 		if err != nil {
@@ -71,7 +63,7 @@ func (svr *ApiServer) gptSearchPlaceDetails(w http.ResponseWriter, r *http.Reque
 			return
 		}
 
-		fmt.Println("XXXXXXXXXXXXXXXXXXXX Go through CHATGPT to see place detail")
+		fmt.Println("Go through CHATGPT to see place detail")
 		// Create the JSON response
 		jsData, err := json.Marshal(response)
 		if err != nil {
@@ -86,12 +78,12 @@ func (svr *ApiServer) gptSearchPlaceDetails(w http.ResponseWriter, r *http.Reque
 			log.Printf("Failed to write JSON response: %s\n", err)
 			http.Error(w, "Failed to write JSON response", http.StatusInternalServerError)
 		}
-		fmt.Println(" SSSSSStore data into database through CHATGPT ")
+		fmt.Println("Store data into database through CHATGPT")
 		return
 	}
 
 	// [YES]
-	fmt.Println("XXXXXXXXXXXXXXXXXXXX Go through database to see place detail")
+	fmt.Println("Go through database to see place detail")
 	// Create the JSON response
 	jsData, err := json.Marshal(placeInDB.PlaceDetail)
 	if err != nil {

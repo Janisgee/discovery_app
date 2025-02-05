@@ -126,10 +126,6 @@ func (svr *ApiServer) userBookmarkHandler(w http.ResponseWriter, r *http.Request
 			"PlaceID": userBookmarkDetail.PlaceID,
 		}
 
-		fmt.Println("Response 1: message", newBookmark.PlaceName+" has been bookmarked")
-		fmt.Println("Response 2: userID", userBookmarkDetail.UserID)
-		fmt.Println("Response 3: placeID", userBookmarkDetail.PlaceID)
-
 		// Set Content-Type to JSON and send a response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK) // 200 OK
@@ -149,10 +145,6 @@ func (svr *ApiServer) userBookmarkHandler(w http.ResponseWriter, r *http.Request
 		"UserID":  user_id,
 		"PlaceID": newBookmark.PlaceID,
 	}
-
-	fmt.Println("Response 1: message", newBookmark.PlaceName+" has been bookmarked")
-	fmt.Println("Response 2: userID", user_id)
-	fmt.Println("Response 3: placeID", newBookmark.PlaceID)
 
 	// Set Content-Type to JSON and send a response
 	w.Header().Set("Content-Type", "application/json")
