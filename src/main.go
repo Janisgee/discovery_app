@@ -46,6 +46,7 @@ func main() {
 	gptClient := openai.NewClient(env.GptKey)
 	var locationSvc LocationService = &GptLocationService{gptClient}
 
+	// Google place service
 	placesSvc, err := NewGooglePlacesService(env.GMapsKey)
 	if err != nil {
 		slog.Error("Unable to connect google maps service", "error", err)
