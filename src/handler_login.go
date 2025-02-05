@@ -52,8 +52,6 @@ func (svr *ApiServer) userLoginHandler(w http.ResponseWriter, r *http.Request) {
 		expiryTime: expiryTime,
 	}
 
-	// TODO: Move Session cookie handling to reusable function
-
 	setSectionCookie(w, token, expiryTime)
 
 	// Get username from user input email

@@ -18,13 +18,6 @@ type BookmarkPlaceService interface {
 	CheckPlaceHasBookmarkedByUser(place_id string, user_id uuid.UUID) (bool, error)
 }
 
-// type PlaceDetail struct {
-// 	Description  string `json:"description"`
-// 	Address      string `json:"address"`
-// 	OpeningHours string `json:"history"`
-// 	KeyFeatures  string `json:"key_feature"`
-// }
-
 // Place struct to hold input
 type Place struct {
 	ID          string       `json:"id"`

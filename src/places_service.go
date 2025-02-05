@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log/slog"
 
 	"google.golang.org/api/option"
 	"google.golang.org/api/places/v1"
@@ -21,6 +22,7 @@ type GooglePlacesService struct {
 	ggPlacesClient *places.Service
 }
 
+// Create a google client
 func NewGooglePlacesService(key string) (*GooglePlacesService, error) {
 	service, err := places.NewService(context.Background(), option.WithAPIKey(key))
 	if err != nil {
@@ -41,6 +43,12 @@ func (svc *GooglePlacesService) AutocompleteCities(search string, lang string) (
 	if err != nil {
 		return nil, err
 	}
+
+	testing, err := svc.ggPlacesClient.Places.Get("places/ChIJpU8j7H-1HGARxU4d9u5v9qA").Fields("id", "displayName").Do()
+	if err != nil {
+		slog.Error("failed to get place by id", "error", err)
+	}
+	slog.Info("Places result", "place", testing)
 
 	cities := make([]CityResult, len(result.Suggestions))
 
