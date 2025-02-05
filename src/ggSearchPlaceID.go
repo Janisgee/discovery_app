@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"net/url"
 	"os"
 )
 
@@ -26,9 +25,8 @@ func getPlaceID(location string) (string, error) {
 	}
 	// Construct the URL for the Google Places API FindPlaceFromText request
 	baseURL := "https://maps.googleapis.com/maps/api/place/findplacefromtext/json"
-	escapedQuery := url.QueryEscape(location)
-	requestURL := fmt.Sprintf("%s?input=%s&inputtype=textquery&fields=place_id&key=%s", baseURL, escapedQuery, env.GMapsKey)
-
+	requestURL := fmt.Sprintf("%s?input=%s&inputtype=textquery&fields=place_id&key=%s", baseURL, location, env.GMapsKey)
+	fmt.Printf("RequestURL to google api: %s", requestURL)
 	// Send the HTTP GET request to Google Places API
 	/* #nosec */
 	resp, err := http.Get(requestURL)

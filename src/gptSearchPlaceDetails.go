@@ -34,11 +34,11 @@ func (svr *ApiServer) gptSearchPlaceDetails(w http.ResponseWriter, r *http.Reque
 	// Process the input data
 	fmt.Printf("Received place name (line34): %s \n", input.Place)
 
-	// Search place place id from ChatGPT
+	// Search place place id from Google map
 	place_id, err := getPlaceID(input.Place)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Error getting place id for the %s from ChatGPT:%s", input.Place, err), http.StatusInternalServerError)
-		slog.Error("error getting place id for the search place from ChatGPT", "error", err)
+		http.Error(w, fmt.Sprintf("Error getting place id for the %s from Google map:%s", input.Place, err), http.StatusInternalServerError)
+		slog.Error("error getting place id for the search place from Google map", "error", err)
 		return
 	}
 
