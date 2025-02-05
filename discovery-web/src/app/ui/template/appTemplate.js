@@ -11,8 +11,6 @@ import {
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { Button } from "@/app/ui/buttons";
-
 export default function AppTemplate({ children }) {
   const params = useParams();
   return (
