@@ -1,5 +1,4 @@
 -- name: CreatePlace :one
-
 INSERT INTO places (id, place_name, country, city, category, place_detail,created_at, updated_at)
 VALUES(
 $1,  
@@ -11,7 +10,7 @@ $6,
 NOW(),
 NOW()
 )
-On CONFLICT (id, place_name)
+On CONFLICT (id, place_name,country, city)
 DO NOTHING
 RETURNING *;
 

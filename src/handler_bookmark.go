@@ -58,6 +58,42 @@ func (svr *ApiServer) userUnBookmarkHandler(w http.ResponseWriter, r *http.Reque
 
 }
 
+func (svr *ApiServer) userGetBookmarkHandler(w http.ResponseWriter, r *http.Request) {
+	// Only allow GET requests
+	if r.Method != http.MethodGet {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Get user detail
+	user_id := GetCurrentUserId(r)
+
+	// Check if place has been bookmarked by user (Return true or false)
+	placeIDList, err := svr.bookmarkPlaceService.GetAllBookmarkedPlaceID(*user_id)
+	if err != nil {
+		http.Error(w, "Fail to get all place ID from user bookmark database", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Console response struct to send back as JSON
+	response := map[string]interface{}{
+		"message": "Place ID that user has been bookmarked",
+		"PlaceID": placeIDList,
+	}
+
+	// Set Content-Type to JSON and send a response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK) // 200 OK
+
+	// Send JSON response back to client
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		http.Error(w, "Failed to send response", http.StatusInternalServerError)
+		return
+	}
+
+}
+
 func (svr *ApiServer) userBookmarkHandler(w http.ResponseWriter, r *http.Request) {
 	type placeRequest struct {
 		Username  string `json:"username"`

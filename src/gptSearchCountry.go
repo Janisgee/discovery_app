@@ -40,16 +40,17 @@ func (svr *ApiServer) gptSearchCountry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: Bookmark query
-	// type PlaceDetailsWithBookmark struct {
-	// 	Details     PlaceDetails
-	// 	HasBookmark bool
-	// }
+	// Get user detail
+	user_id := GetCurrentUserId(r)
 
-	// responseData = PlaceDetailsWithBookmark{
-	// 	Details:     response,
-	// 	HasBookmark: getFromOtherService,
-	// }
+	// Check if place has been bookmarked by user (Return true or false)
+	for i := range response {
+
+		result, _ := svr.bookmarkPlaceService.CheckPlaceHasBookmarkedByUser(response[i].PlaceID, *user_id)
+		// Assign hasBookmark value for each country after check
+		response[i].HasBookmark = result
+
+	}
 
 	// Create the JSON response
 	jsData, err := json.Marshal(response)

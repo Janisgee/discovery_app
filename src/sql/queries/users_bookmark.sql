@@ -9,6 +9,9 @@ RETURNING *;
 -- name: GetUserBookmark :one
 SELECT * FROM users_bookmark WHERE place_id = $1 AND user_id = $2 LIMIT 1;
 
+-- name: GetAllUserBookmarkPlaceID :many
+SELECT place_id FROM users_bookmark WHERE user_id = $1;
+
 -- name: DeleteUserBookmark :one
 DELETE FROM users_bookmark WHERE place_id = $1 AND user_id = $2 
 RETURNING *;
