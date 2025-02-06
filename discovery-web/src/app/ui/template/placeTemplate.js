@@ -5,12 +5,15 @@ import { useRouter } from "next/navigation";
 
 import AppTemplate from "@/app/ui/template/appTemplate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleArrowLeft, faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
+import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function PlaceTemplate({ username, location, place, catagory }) {
   const [content, setContent] = useState([]);
+  const [hasBookmark, setHasBookmark] = useState(false);
 
   const router = useRouter();
   const decodeURIPlace = decodeURIComponent(place).toUpperCase();
@@ -34,7 +37,13 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
         const htmlContent = await response.json(); // Use json() to handle HTML response
         console.log("Received content:", htmlContent);
 
-        setContent(htmlContent);
+        setContent(htmlContent.PlaceInfo);
+
+        if (htmlContent.HasBookmark) {
+          setHasBookmark(true);
+        } else {
+          setHasBookmark(false);
+        }
       } else {
         if (response.status == 401) {
           alert(
@@ -62,7 +71,10 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
             <FontAwesomeIcon icon={faCircleArrowLeft} size="2x" />
           </Link>
           <h1 className="text-center text-xl">{decodeURIPlace}</h1>
-          <FontAwesomeIcon icon={faHeart} size="2x" />
+          <FontAwesomeIcon
+            icon={hasBookmark ? faHeartSolid : faHeartRegular}
+            size="2x"
+          />
         </div>
         <Image
           src="/place_img/paris-france.jpg"

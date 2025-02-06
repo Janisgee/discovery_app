@@ -8,7 +8,7 @@ CREATE TABLE places (
   place_detail JSONB NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_at TIMESTAMP NOT NULL,
-  CONSTRAINT places_name_country_city_key UNIQUE(place_name, country, city) -- (place_name + country + city) should be unique
+  CONSTRAINT places_id_place_name_country_city_key UNIQUE(id, place_name, country, city) -- (place_name + country + city) should be unique
 );
 
 -- +goose Down

@@ -15,21 +15,22 @@ export default function ItemTemplete({
   text,
   placeID,
   catagory,
+  hasbookmark,
 }) {
-  const [emptyHeart, setEmptyHeart] = useState(true);
+  const [emptyHeart, setEmptyHeart] = useState(!hasbookmark);
   const params = useParams();
   const router = useRouter();
 
   const handlePlaceBookmark = (e) => {
     e.preventDefault();
-    setEmptyHeart(!emptyHeart);
-    if (emptyHeart == false) {
+    if (!emptyHeart) {
       alert(`Unbookmark place: ${title}!`);
       fetchBookmark("http://localhost:8080/api/unBookmark");
     } else {
       alert(`Bookmark place: ${title}!`);
       fetchBookmark("http://localhost:8080/api/bookmark");
     }
+    setEmptyHeart(!emptyHeart);
   };
   const fetchBookmark = async (requestLinkToServer) => {
     const data = {

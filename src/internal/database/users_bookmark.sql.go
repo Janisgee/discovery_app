@@ -74,6 +74,33 @@ func (q *Queries) DeleteUserBookmark(ctx context.Context, arg DeleteUserBookmark
 	return i, err
 }
 
+const getAllUserBookmarkPlaceID = `-- name: GetAllUserBookmarkPlaceID :many
+SELECT place_id FROM users_bookmark WHERE user_id = $1
+`
+
+func (q *Queries) GetAllUserBookmarkPlaceID(ctx context.Context, userID uuid.UUID) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, getAllUserBookmarkPlaceID, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var place_id string
+		if err := rows.Scan(&place_id); err != nil {
+			return nil, err
+		}
+		items = append(items, place_id)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getUserBookmark = `-- name: GetUserBookmark :one
 SELECT id, user_id, username, place_id, place_name, place_text, created_at FROM users_bookmark WHERE place_id = $1 AND user_id = $2 LIMIT 1
 `

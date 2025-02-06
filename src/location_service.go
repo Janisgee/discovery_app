@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"strings"
 
 	"github.com/sashabaranov/go-openai"
 )
@@ -19,6 +20,7 @@ type LocationDetails struct {
 	Name        string `json:"name"`
 	PlaceID     string `json:"place_id"`
 	Description string `json:"description"`
+	HasBookmark bool   `json:"hasbookmark"`
 }
 
 type PlaceDetails struct {
@@ -37,7 +39,7 @@ type GptLocationService struct {
 }
 
 func (svc *GptLocationService) GetDetails(location string, category string) ([]LocationDetails, error) {
-	prompt := fmt.Sprintf("Get 3 %s in %s, using a field 'places' containing 'image' (a URL to an image), 'name' (the attraction name), 'place_id'(google place id of %s)  and 'description' (a 10-word description).", category, location, location)
+	prompt := fmt.Sprintf("Get 3 %s in %s, using a field 'places' containing 'image' (a URL to an image), 'name' (the attraction name) and 'description' (a 10-word description).", category, location)
 
 	completion, err := svc.gptClient.CreateChatCompletion(
 		context.Background(),
@@ -68,6 +70,23 @@ func (svc *GptLocationService) GetDetails(location string, category string) ([]L
 	err = json.Unmarshal([]byte(content), &response)
 	if err != nil {
 		return nil, fmt.Errorf("ChatGpt json error: %v\n ", err)
+	}
+
+	// Inject place_id field manually
+	for i := range response.Places {
+		if response.Places[i].PlaceID == "" { // Check if place_id is missing
+			// Encoded space to %20
+			encodeLocation := strings.ReplaceAll(response.Places[i].Name, " ", "%20")
+
+			// Search place place id from Google map
+			place_id, err := getPlaceID(encodeLocation)
+			if err != nil {
+				slog.Warn("Error getting place id for the search place from Google map in GetPlaceDetail")
+				return nil, fmt.Errorf("error getting place id for the search place from Google map in GetPlaceDetail: %v\n ", err)
+			}
+			response.Places[i].PlaceID = place_id
+
+		}
 	}
 
 	return response.Places, nil
