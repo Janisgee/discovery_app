@@ -73,7 +73,7 @@ export default function ItemTemplete({
     <div className="mb-10 max-w-xl">
       <div className="mb-8 flex items-center justify-between gap-3">
         <Link
-          href={`/${params.username}/location/${params.location}/${catagory}/${title}`}
+          href={`/${params.username}/location/${params.location}/${catagory}/${title}=${placeID}`}
         >
           <div className="flex items-center justify-between gap-3">
             <div className="size-28">

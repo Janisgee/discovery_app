@@ -78,3 +78,14 @@ func (q *Queries) GetPlace(ctx context.Context, id string) (Place, error) {
 	)
 	return i, err
 }
+
+const getPlaceIDFromDB = `-- name: GetPlaceIDFromDB :one
+SELECT id FROM places WHERE place_name = $1 LIMIT 1
+`
+
+func (q *Queries) GetPlaceIDFromDB(ctx context.Context, placeName string) (string, error) {
+	row := q.db.QueryRowContext(ctx, getPlaceIDFromDB, placeName)
+	var id string
+	err := row.Scan(&id)
+	return id, err
+}

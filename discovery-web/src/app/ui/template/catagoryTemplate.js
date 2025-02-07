@@ -18,6 +18,7 @@ export default function CatagoryTemplate({ catagory }) {
 
   const fetchSearchCountry = async () => {
     const data = { country: location, catagory: twoWordCatagory };
+    console.log("country:", location, "catagory:", twoWordCatagory);
 
     const request = new Request("http://localhost:8080/searchCountry", {
       method: "POST", // HTTP method
@@ -50,41 +51,7 @@ export default function CatagoryTemplate({ catagory }) {
     }
   };
 
-  // const fetchUserBookmark = async () => {
-  //   const request = new Request("http://localhost:8080/api/getBookmark", {
-  //     method: "GET", // HTTP method
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     credentials: "include",
-  //   });
-
-  //   try {
-  //     const response = await fetch(request, { next: { revalidate: 600 } });
-
-  //     if (response.ok) {
-  //       const responseData = await response.json(); // Use json() to handle HTML response
-  //       console.log(responseData);
-  //     } else {
-  //       if (response.status == 401) {
-  //         alert(
-  //           `Please login again as 10 mins session expired without taking action.`,
-  //         );
-  //         router.push(`/login`);
-  //       }
-
-  //       console.error(
-  //         "Error fetching bookmarked placeID from user:",
-  //         response.statusText,
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching bookmarked placeID from user:", error);
-  //   }
-  // };
-
   useEffect(() => {
-    // fetchUserBookmark();
     fetchSearchCountry();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

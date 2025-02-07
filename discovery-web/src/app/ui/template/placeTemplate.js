@@ -15,11 +15,66 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
   const [content, setContent] = useState([]);
   const [hasBookmark, setHasBookmark] = useState(false);
 
+  // Split location_name & placeID
+  const placeArray = place.split("%3D");
+  const placeName = placeArray[0];
+  const placeID = placeArray[1];
+
   const router = useRouter();
-  const decodeURIPlace = decodeURIComponent(place).toUpperCase();
+  const decodeURIPlace = decodeURIComponent(placeName);
+  const toUpperCasePlace = decodeURIPlace.toUpperCase();
+
+  const handlePlaceBookmark = (e) => {
+    e.preventDefault();
+    if (hasBookmark) {
+      alert(`Unbookmark place: ${decodeURIPlace}!`);
+      fetchBookmarkActionInPlaceDetail("http://localhost:8080/api/unBookmark");
+    } else {
+      alert(`Bookmark place: ${decodeURIPlace}!`);
+      fetchBookmarkActionInPlaceDetail(
+        "http://localhost:8080/api/bookmarkByPlaceName",
+      );
+    }
+    setHasBookmark(!hasBookmark);
+  };
+
+  const fetchBookmarkActionInPlaceDetail = async (requestLinkToServer) => {
+    const data = {
+      username: username,
+      place_name: decodeURIPlace,
+      place_id: placeID,
+    };
+
+    const request = new Request(requestLinkToServer, {
+      method: "POST", // HTTP method
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+
+    try {
+      const response = await fetch(request);
+      if (response.ok) {
+        const htmlContent = await response.json(); // Use json() to handle HTML response
+        console.log(htmlContent);
+      } else {
+        if (response.status == 401) {
+          alert(
+            `Please login again as 10 mins session expired without taking action.`,
+          );
+          router.push(`/login`);
+        }
+        console.error("Error fetching bookmark request:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching bookmark request:", error);
+    }
+  };
 
   const fetchSearchPlaceDetails = async () => {
-    const data = { place: place, catagory: catagory };
+    const data = { place: placeName, catagory: catagory };
 
     const request = new Request("http://localhost:8080/searchPlace", {
       method: "POST", // HTTP method
@@ -70,11 +125,13 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
           <Link href={`/${username}/location/${location}/${catagory}`}>
             <FontAwesomeIcon icon={faCircleArrowLeft} size="2x" />
           </Link>
-          <h1 className="text-center text-xl">{decodeURIPlace}</h1>
-          <FontAwesomeIcon
-            icon={hasBookmark ? faHeartSolid : faHeartRegular}
-            size="2x"
-          />
+          <h1 className="text-center text-xl">{toUpperCasePlace}</h1>
+          <button onClick={handlePlaceBookmark}>
+            <FontAwesomeIcon
+              icon={hasBookmark ? faHeartSolid : faHeartRegular}
+              size="2x"
+            />
+          </button>
         </div>
         <Image
           src="/place_img/paris-france.jpg"
