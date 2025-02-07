@@ -13,10 +13,10 @@ import (
 type BookmarkPlaceService interface {
 	CreatePlaceData(place_id string, place_name string, country string, city string, catagory string, place_detail *PlaceDetails) error
 	GetPlaceDatabaseDetails(place_id string) (*Place, error)
-	CreateUserBookmark(user_id uuid.UUID, username string, place_id string, place_name string, place_text string) (*UserBookmarkPlace, error)
+	CreateUserBookmark(user_id uuid.UUID, username string, place_id string, place_name string, catagory string, place_text string) (*UserBookmarkPlace, error)
 	DeleteUserBookmark(user_id uuid.UUID, place_id string) (*UserBookmarkPlace, error)
 	CheckPlaceHasBookmarkedByUser(place_id string, user_id uuid.UUID) (bool, error)
-	GetAllBookmarkedPlaceID(user_id uuid.UUID) ([]string, error)
+	GetAllBookmarkedPlace(user_id uuid.UUID) ([]database.GetAllUserBookmarkPlaceIDRow, error)
 	GetPlaceIDFromDB(placeName string) (string, error)
 }
 
@@ -37,18 +37,29 @@ type UserBookmarkPlace struct {
 	Username  string    `json:"username"`
 	PlaceID   string    `json:"place_id"`
 	PlaceName string    `json:"place_name"`
+	Catagory  string    `json:"catagory"`
 	PlaceText string    `json:"place_text"`
 }
+
+// type BookmarkANDplaceData struct {
+// 	PlaceID   string `json:"place_id"`
+// 	PlaceName string `json:"place_name"`
+// 	Catagory  string `json:"catagory"`
+// 	PlaceText string `json:"place_text"`
+// 	Country   string `json:"country"`
+// 	City      string `json:"city"`
+// }
 
 type PostgresBookmarkService struct {
 	dbQueries *database.Queries
 }
 
-func (svc *PostgresBookmarkService) GetAllBookmarkedPlaceID(user_id uuid.UUID) ([]string, error) {
+func (svc *PostgresBookmarkService) GetAllBookmarkedPlace(user_id uuid.UUID) ([]database.GetAllUserBookmarkPlaceIDRow, error) {
 	// Create an empty context
 	ctx := context.Background()
 
 	// Get all user bookmarked place ID
+
 	allPlaceIDList, err := svc.dbQueries.GetAllUserBookmarkPlaceID(ctx, user_id)
 	if err != nil {
 		slog.Warn("Fail to get place ID from user bookmarked database", "error", err)
@@ -134,7 +145,7 @@ func (svc *PostgresBookmarkService) GetPlaceIDFromDB(placeName string) (string, 
 	return place_id, nil
 }
 
-func (svc *PostgresBookmarkService) CreateUserBookmark(user_id uuid.UUID, username string, place_id string, place_name string, place_text string) (*UserBookmarkPlace, error) {
+func (svc *PostgresBookmarkService) CreateUserBookmark(user_id uuid.UUID, username string, place_id string, place_name string, catagory string, place_text string) (*UserBookmarkPlace, error) {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -144,6 +155,7 @@ func (svc *PostgresBookmarkService) CreateUserBookmark(user_id uuid.UUID, userna
 		Username:  username,
 		PlaceID:   place_id,
 		PlaceName: place_name,
+		Catagory:  catagory,
 		PlaceText: place_text,
 	}
 

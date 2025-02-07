@@ -58,7 +58,7 @@ func (svr *ApiServer) userUnBookmarkHandler(w http.ResponseWriter, r *http.Reque
 
 }
 
-func (svr *ApiServer) userGetBookmarkHandler(w http.ResponseWriter, r *http.Request) {
+func (svr *ApiServer) userGetAllBookmarkHandler(w http.ResponseWriter, r *http.Request) {
 	// Only allow GET requests
 	if r.Method != http.MethodGet {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
@@ -68,8 +68,8 @@ func (svr *ApiServer) userGetBookmarkHandler(w http.ResponseWriter, r *http.Requ
 	// Get user detail
 	user_id := GetCurrentUserId(r)
 
-	// Check if place has been bookmarked by user (Return true or false)
-	placeIDList, err := svr.bookmarkPlaceService.GetAllBookmarkedPlaceID(*user_id)
+	// Get all bookmark list from user
+	placeIDList, err := svr.bookmarkPlaceService.GetAllBookmarkedPlace(*user_id)
 	if err != nil {
 		http.Error(w, "Fail to get all place ID from user bookmark database", http.StatusMethodNotAllowed)
 		return
@@ -77,8 +77,8 @@ func (svr *ApiServer) userGetBookmarkHandler(w http.ResponseWriter, r *http.Requ
 
 	// Console response struct to send back as JSON
 	response := map[string]interface{}{
-		"message": "Place ID that user has been bookmarked",
-		"PlaceID": placeIDList,
+		"message":         "Place ID that user has been bookmarked",
+		"BookmarkedPlace": placeIDList,
 	}
 
 	// Set Content-Type to JSON and send a response
@@ -129,7 +129,7 @@ func (svr *ApiServer) userBookmarkByPlaceNameHandler(w http.ResponseWriter, r *h
 	if !result {
 
 		// Bookmark place
-		bookmarkPlace, err := svr.bookmarkPlaceService.CreateUserBookmark(*user_id, bookmarkRequest.Username, bookmarkRequest.PlaceID, bookmarkRequest.PlaceName, placeInfo.PlaceDetail.Description)
+		bookmarkPlace, err := svr.bookmarkPlaceService.CreateUserBookmark(*user_id, bookmarkRequest.Username, bookmarkRequest.PlaceID, bookmarkRequest.PlaceName, placeInfo.Category, placeInfo.PlaceDetail.Description)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("Error creating user bookmark at place detail page: %s", err), http.StatusInternalServerError)
 			slog.Error("Error creating user bookmark at place detail page", "error", err)
@@ -230,7 +230,7 @@ func (svr *ApiServer) userBookmarkHandler(w http.ResponseWriter, r *http.Request
 
 		// Found place from database.
 		// Store bookmark in user_bookmark database
-		userBookmarkDetail, err := svr.bookmarkPlaceService.CreateUserBookmark(*user_id, newBookmark.Username, newBookmark.PlaceID, newBookmark.PlaceName, newBookmark.PlaceText)
+		userBookmarkDetail, err := svr.bookmarkPlaceService.CreateUserBookmark(*user_id, newBookmark.Username, newBookmark.PlaceID, newBookmark.PlaceName, newBookmark.Catagory, newBookmark.PlaceText)
 		if err != nil {
 			http.Error(w, "Failed to create user bookmark database for the place.", http.StatusBadRequest)
 			slog.Error("failed to create user bookmark database for the place", "error", err)

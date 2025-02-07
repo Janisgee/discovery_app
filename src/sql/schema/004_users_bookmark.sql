@@ -7,6 +7,7 @@ CREATE TABLE users_bookmark (
   username TEXT NOT NULL,
   place_id TEXT NOT NULL,
   place_name TEXT NOT NULL,
+  catagory TEXT NOT NULL,
   place_text TEXT NOT NULL,
   created_at TIMESTAMP NOT NULL,
   FOREIGN KEY (user_id)REFERENCES users(id) ON DELETE CASCADE,

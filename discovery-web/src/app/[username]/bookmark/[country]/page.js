@@ -9,7 +9,7 @@ import AppTemplate from "@/app/ui/template/appTemplate";
 import CardTemplete from "@/app/ui/template/cardTemplate";
 import Link from "next/link";
 
-export default function Bookmark() {
+export default function BookmarkCountry() {
   const [content, setContent] = useState(null);
   const params = useParams();
   const fetchAllBookmark = async () => {
@@ -49,26 +49,25 @@ export default function Bookmark() {
 
   let itemList = [];
   if (content != null && content.BookmarkedPlace.length > 1) {
-    // Filter the country be unique exclude duplicate
-    const uniqueCountries = Object.values(
-      content.BookmarkedPlace.reduce((acc, item) => {
-        if (!acc[item.Country]) {
-          acc[item.Country] = item;
-        }
-        return acc;
-      }, {}),
+    // Filter the city be unique exclude duplicate
+    const filterByCountry = Object.values(
+      content.BookmarkedPlace.filter((item) => item.Country == params.country),
     );
-    console.log(uniqueCountries);
-    // Sort country assending order
-    const sortedCountry = uniqueCountries.sort((a, b) =>
-      a.Country.localeCompare(b.Country),
+    console.log(filterByCountry);
+    // Sort city assending order
+    const sortedCity = filterByCountry.sort((a, b) =>
+      a.City.localeCompare(b.City),
     );
-    sortedCountry.forEach((item, index) => {
+
+    sortedCity.forEach((item, index) => {
       itemList.push(
-        <Link href={`/${params.username}/bookmark/${item.Country}`} key={index}>
+        <Link
+          href={`/${params.username}/bookmark/${item.Country}/${item.City}`}
+          key={index}
+        >
           <CardTemplete
             imageSource="/catagory_img/attraction.jpg"
-            text={item.Country}
+            text={item.City}
           />
         </Link>,
       );
@@ -82,7 +81,7 @@ export default function Bookmark() {
           <Link href={`/${params.username}/bookmark`}>
             <FontAwesomeIcon icon={faCircleArrowLeft} size="2x" />
           </Link>
-          <h2 className="text-center">Bookmark Country</h2>
+          <h2 className="text-center">Bookmark City</h2>
         </div>
         <div className="w-full overflow-auto rounded-lg">
           <ul>{itemList}</ul>

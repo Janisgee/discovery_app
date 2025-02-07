@@ -80,8 +80,8 @@ func (svr *ApiServer) Run() error {
 	})
 
 	// Router for get all bookmark new place for user
-	router.HandleFunc("/api/getBookmark", func(w http.ResponseWriter, r *http.Request) {
-		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userGetBookmarkHandler)).ServeHTTP(w, r)
+	router.HandleFunc("/api/getAllBookmark", func(w http.ResponseWriter, r *http.Request) {
+		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userGetAllBookmarkHandler)).ServeHTTP(w, r)
 	})
 	// Router for bookmark new place for user
 	router.HandleFunc("/api/bookmark", func(w http.ResponseWriter, r *http.Request) {
