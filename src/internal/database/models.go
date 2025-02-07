@@ -37,6 +37,7 @@ type UsersBookmark struct {
 	Username  string
 	PlaceID   string
 	PlaceName string
+	Catagory  string
 	PlaceText string
 	CreatedAt time.Time
 }

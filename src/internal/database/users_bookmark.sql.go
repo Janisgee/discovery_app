@@ -12,12 +12,12 @@ import (
 )
 
 const createUserBookmark = `-- name: CreateUserBookmark :one
-INSERT INTO users_bookmark (id, user_id, username, place_id, place_name,place_text, created_at)
+INSERT INTO users_bookmark (id, user_id, username, place_id, place_name, catagory, place_text, created_at)
 VALUES(
   gen_random_uuid(),
-  $1, $2, $3, $4,$5, NOW()
+  $1, $2, $3, $4,$5, $6, NOW()
 )
-RETURNING id, user_id, username, place_id, place_name, place_text, created_at
+RETURNING id, user_id, username, place_id, place_name, catagory, place_text, created_at
 `
 
 type CreateUserBookmarkParams struct {
@@ -25,6 +25,7 @@ type CreateUserBookmarkParams struct {
 	Username  string
 	PlaceID   string
 	PlaceName string
+	Catagory  string
 	PlaceText string
 }
 
@@ -34,6 +35,7 @@ func (q *Queries) CreateUserBookmark(ctx context.Context, arg CreateUserBookmark
 		arg.Username,
 		arg.PlaceID,
 		arg.PlaceName,
+		arg.Catagory,
 		arg.PlaceText,
 	)
 	var i UsersBookmark
@@ -43,6 +45,7 @@ func (q *Queries) CreateUserBookmark(ctx context.Context, arg CreateUserBookmark
 		&i.Username,
 		&i.PlaceID,
 		&i.PlaceName,
+		&i.Catagory,
 		&i.PlaceText,
 		&i.CreatedAt,
 	)
@@ -51,7 +54,7 @@ func (q *Queries) CreateUserBookmark(ctx context.Context, arg CreateUserBookmark
 
 const deleteUserBookmark = `-- name: DeleteUserBookmark :one
 DELETE FROM users_bookmark WHERE place_id = $1 AND user_id = $2 
-RETURNING id, user_id, username, place_id, place_name, place_text, created_at
+RETURNING id, user_id, username, place_id, place_name, catagory, place_text, created_at
 `
 
 type DeleteUserBookmarkParams struct {
@@ -68,6 +71,7 @@ func (q *Queries) DeleteUserBookmark(ctx context.Context, arg DeleteUserBookmark
 		&i.Username,
 		&i.PlaceID,
 		&i.PlaceName,
+		&i.Catagory,
 		&i.PlaceText,
 		&i.CreatedAt,
 	)
@@ -75,22 +79,40 @@ func (q *Queries) DeleteUserBookmark(ctx context.Context, arg DeleteUserBookmark
 }
 
 const getAllUserBookmarkPlaceID = `-- name: GetAllUserBookmarkPlaceID :many
-SELECT place_id FROM users_bookmark WHERE user_id = $1
+SELECT users_bookmark.place_id, users_bookmark.place_name,users_bookmark.catagory, users_bookmark.place_text, places.country, places.city  FROM users_bookmark
+INNER JOIN places ON place_id = places.id 
+WHERE user_id = $1
 `
 
-func (q *Queries) GetAllUserBookmarkPlaceID(ctx context.Context, userID uuid.UUID) ([]string, error) {
+type GetAllUserBookmarkPlaceIDRow struct {
+	PlaceID   string
+	PlaceName string
+	Catagory  string
+	PlaceText string
+	Country   string
+	City      string
+}
+
+func (q *Queries) GetAllUserBookmarkPlaceID(ctx context.Context, userID uuid.UUID) ([]GetAllUserBookmarkPlaceIDRow, error) {
 	rows, err := q.db.QueryContext(ctx, getAllUserBookmarkPlaceID, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []string
+	var items []GetAllUserBookmarkPlaceIDRow
 	for rows.Next() {
-		var place_id string
-		if err := rows.Scan(&place_id); err != nil {
+		var i GetAllUserBookmarkPlaceIDRow
+		if err := rows.Scan(
+			&i.PlaceID,
+			&i.PlaceName,
+			&i.Catagory,
+			&i.PlaceText,
+			&i.Country,
+			&i.City,
+		); err != nil {
 			return nil, err
 		}
-		items = append(items, place_id)
+		items = append(items, i)
 	}
 	if err := rows.Close(); err != nil {
 		return nil, err
@@ -102,7 +124,7 @@ func (q *Queries) GetAllUserBookmarkPlaceID(ctx context.Context, userID uuid.UUI
 }
 
 const getUserBookmark = `-- name: GetUserBookmark :one
-SELECT id, user_id, username, place_id, place_name, place_text, created_at FROM users_bookmark WHERE place_id = $1 AND user_id = $2 LIMIT 1
+SELECT id, user_id, username, place_id, place_name, catagory, place_text, created_at FROM users_bookmark WHERE place_id = $1 AND user_id = $2 LIMIT 1
 `
 
 type GetUserBookmarkParams struct {
@@ -119,6 +141,7 @@ func (q *Queries) GetUserBookmark(ctx context.Context, arg GetUserBookmarkParams
 		&i.Username,
 		&i.PlaceID,
 		&i.PlaceName,
+		&i.Catagory,
 		&i.PlaceText,
 		&i.CreatedAt,
 	)
