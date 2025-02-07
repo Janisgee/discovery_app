@@ -16,3 +16,7 @@ RETURNING *;
 
 -- name: GetPlace :one
 SELECT * FROM places WHERE id = $1 LIMIT 1;
+
+
+-- name: GetPlaceIDFromDB :one
+SELECT id FROM places WHERE place_name = $1 LIMIT 1;

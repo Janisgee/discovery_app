@@ -79,18 +79,23 @@ func (svr *ApiServer) Run() error {
 		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userLogoutHandler)).ServeHTTP(w, r)
 	})
 
+	// Router for get all bookmark new place for user
+	router.HandleFunc("/api/getBookmark", func(w http.ResponseWriter, r *http.Request) {
+		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userGetBookmarkHandler)).ServeHTTP(w, r)
+	})
 	// Router for bookmark new place for user
 	router.HandleFunc("/api/bookmark", func(w http.ResponseWriter, r *http.Request) {
 		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userBookmarkHandler)).ServeHTTP(w, r)
-	})
-	// Router for bookmark new place for user
-	router.HandleFunc("/api/getBookmark", func(w http.ResponseWriter, r *http.Request) {
-		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userGetBookmarkHandler)).ServeHTTP(w, r)
 	})
 
 	// Router for unbookmark place for user
 	router.HandleFunc("/api/unBookmark", func(w http.ResponseWriter, r *http.Request) {
 		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userUnBookmarkHandler)).ServeHTTP(w, r)
+	})
+
+	// Router for bookmark new place for user by place name
+	router.HandleFunc("/api/bookmarkByPlaceName", func(w http.ResponseWriter, r *http.Request) {
+		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userBookmarkByPlaceNameHandler)).ServeHTTP(w, r)
 	})
 
 	// router for receive login details
