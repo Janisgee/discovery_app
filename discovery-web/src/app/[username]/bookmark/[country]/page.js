@@ -44,7 +44,6 @@ export default function BookmarkCountry() {
   //
   useEffect(() => {
     fetchAllBookmark();
-     
   }, []);
 
   let itemList = [];
@@ -53,11 +52,18 @@ export default function BookmarkCountry() {
     const filterByCountry = Object.values(
       content.BookmarkedPlace.filter((item) => item.Country == params.country),
     );
-    console.log(filterByCountry);
-    // Sort city assending order
-    const sortedCity = filterByCountry.sort((a, b) =>
-      a.City.localeCompare(b.City),
+    // Filter the city be unique exclude duplicate
+    const uniqueCity = Object.values(
+      filterByCountry.reduce((acc, item) => {
+        if (!acc[item.City]) {
+          acc[item.City] = item;
+        }
+        return acc;
+      }, {}),
     );
+    console.log(uniqueCity);
+    // Sort city assending order
+    const sortedCity = uniqueCity.sort((a, b) => a.City.localeCompare(b.City));
 
     sortedCity.forEach((item, index) => {
       itemList.push(

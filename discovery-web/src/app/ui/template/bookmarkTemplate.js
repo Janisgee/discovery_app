@@ -1,7 +1,7 @@
 "use client";
 
-import { useParams } from "next/navigation";
-
+import { useState } from "react";
+import ItemTemplete from "@/app/ui/template/itemTemplate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 
@@ -16,12 +16,52 @@ import {
   faBed,
   faGasPump,
   faRightFromBracket,
+  faCircleArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { Button } from "@/app/ui/buttons";
+export default function BookmarkTemplate({
+  username,
+  country,
+  city,
+  placeList,
+  children,
+}) {
+  const [catagoryClicked, setCatagoryClicked] = useState("attraction");
+  console.log(username);
+  console.log(city);
+  console.log(placeList);
+  console.log(username);
 
-export default function BookmarkTemplate({ place, children }) {
-  const params = useParams();
+  let itemList = [];
+  if (placeList.length > 0) {
+    // Filter the city with different catagory with click
+    const filterItem = placeList.filter(
+      (list) => list.Catagory == catagoryClicked,
+    );
+
+    filterItem.forEach((item, index) => {
+      itemList.push(
+        <Link
+          href={`/${username}/location/${city}/${item.Catagory}/${item.PlaceName}=${item.PlaceID}`}
+          key={index}
+        >
+          <ItemTemplete
+            imageSource="/user_img/default.jpg"
+            title={item.PlaceName}
+            text={item.PlaceText}
+            placeID={item.PlaceID}
+            catagory={item.Catagory}
+            hasbookmark={true}
+          ></ItemTemplete>
+        </Link>,
+      );
+    });
+  }
+
+  const handleCatagoryClick = (e, catagory) => {
+    e.preventDefault();
+    setCatagoryClicked(catagory);
+  };
   return (
     <div className="background-yellow font-inter">
       <div className="p-5">
@@ -29,16 +69,16 @@ export default function BookmarkTemplate({ place, children }) {
           <div className="mb-5 flex items-center justify-between">
             <span>
               <span className="mr-5">
-                <Link href={`/${params.username}/home`}>
+                <Link href={`/${username}/home`}>
                   <FontAwesomeIcon icon={faHouse} size="3x" />
                 </Link>
               </span>
-              <Link href={`/${params.username}/trips`}>
+              <Link href={`/${username}/trips`}>
                 <FontAwesomeIcon icon={faFileLines} size="3x" />
               </Link>
             </span>
             <span className="flex items-center">
-              <Link href={`/${params.username}/bookmark`}>
+              <Link href={`/${username}/bookmark`}>
                 <FontAwesomeIcon icon={faHeart} size="3x" />
               </Link>
               <span className="ml-5">
@@ -48,43 +88,65 @@ export default function BookmarkTemplate({ place, children }) {
               </span>
             </span>
           </div>
-          <h3 className="mb-5 text-center">Bookmark in {place}</h3>
+          <div className="flex justify-center gap-5 pt-5">
+            <Link href={`/${username}/bookmark/${country}`}>
+              <FontAwesomeIcon icon={faCircleArrowLeft} size="2x" />
+            </Link>
+            <h3 className="mb-5 text-center">Bookmark in {city}</h3>
+          </div>
           <div className="text-center">
-            <Button
-              useFor={<FontAwesomeIcon icon={faBinoculars} size="xl" />}
-              link="/"
-              color="btn-white"
-            />
-            <Button
-              useFor={<FontAwesomeIcon icon={faBurger} size="xl" />}
-              link="/"
-              color="btn-white"
-            />
-            <Button
-              useFor={<FontAwesomeIcon icon={faStore} size="xl" />}
-              link="/"
-              color="btn-white"
-            />
-            <Button
-              useFor={<FontAwesomeIcon icon={faBaseballBatBall} size="xl" />}
-              link="/"
-              color="btn-white"
-            />
-            <Button
-              useFor={<FontAwesomeIcon icon={faBed} size="xl" />}
-              link="/"
-              color="btn-white"
-            />
-            <Button
-              useFor={<FontAwesomeIcon icon={faGasPump} size="xl" />}
-              link="/"
-              color="btn-white"
-            />
+            <button
+              className={`${catagoryClicked == "attraction" ? "btn-attraction-active" : "btn-white"}`}
+              onClick={(e) => handleCatagoryClick(e, "attraction")}
+            >
+              <FontAwesomeIcon icon={faBinoculars} size="xl" />
+            </button>
+            <button
+              className="btn-white"
+              onClick={(e) => handleCatagoryClick(e, "restaurant")}
+            >
+              <FontAwesomeIcon icon={faBurger} size="xl" />
+            </button>
+            <button
+              className="btn-white"
+              onClick={(e) => handleCatagoryClick(e, "shopping")}
+            >
+              <FontAwesomeIcon icon={faStore} size="xl" />
+            </button>
+            <button
+              className="btn-white"
+              onClick={(e) => handleCatagoryClick(e, "activity")}
+            >
+              <FontAwesomeIcon icon={faBaseballBatBall} size="xl" />
+            </button>
+            <button
+              className="btn-white"
+              onClick={(e) => handleCatagoryClick(e, "hotel")}
+            >
+              <FontAwesomeIcon icon={faBed} size="xl" />
+            </button>
+            <button
+              className="btn-white"
+              onClick={(e) => handleCatagoryClick(e, "petrol_station")}
+            >
+              <FontAwesomeIcon icon={faGasPump} size="xl" />
+            </button>
           </div>
         </div>
       </div>
       <div className="rounded-t-3xl bg-white ">
-        <div className="px-10 pb-10">{children}</div>
+        <div className="px-10 pb-10">
+          <h3 className="py-4 text-center text-gray-500">
+            {catagoryClicked.toUpperCase()}
+          </h3>
+          <hr />
+          {itemList ? (
+            <div className="w-full pt-8">{itemList}</div>
+          ) : (
+            <p className="pt-8 text-center ">No Bookmark</p>
+          )}
+          {children}
+        </div>
       </div>
     </div>
   );

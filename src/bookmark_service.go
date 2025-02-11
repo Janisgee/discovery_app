@@ -17,6 +17,7 @@ type BookmarkPlaceService interface {
 	DeleteUserBookmark(user_id uuid.UUID, place_id string) (*UserBookmarkPlace, error)
 	CheckPlaceHasBookmarkedByUser(place_id string, user_id uuid.UUID) (bool, error)
 	GetAllBookmarkedPlace(user_id uuid.UUID) ([]database.GetAllUserBookmarkPlaceIDRow, error)
+	GetAllBookmarkedCity(user_id uuid.UUID, city string) ([]database.GetUserBookmarkCityInfoRow, error)
 	GetPlaceIDFromDB(placeName string) (string, error)
 }
 
@@ -52,6 +53,27 @@ type UserBookmarkPlace struct {
 
 type PostgresBookmarkService struct {
 	dbQueries *database.Queries
+}
+
+func (svc *PostgresBookmarkService) GetAllBookmarkedCity(user_id uuid.UUID, city string) ([]database.GetUserBookmarkCityInfoRow, error) {
+	// Create an empty context
+	ctx := context.Background()
+
+	// Get all user bookmarked place ID
+
+	params := database.GetUserBookmarkCityInfoParams{
+		UserID: user_id,
+		City:   city,
+	}
+
+	allCityPlaceList, err := svc.dbQueries.GetUserBookmarkCityInfo(ctx, params)
+	if err != nil {
+		slog.Warn("Fail to get place ID from user bookmarked database", "error", err)
+		return nil, errors.New("fail to get place ID from user bookmarked database")
+	}
+
+	return allCityPlaceList, nil
+
 }
 
 func (svc *PostgresBookmarkService) GetAllBookmarkedPlace(user_id uuid.UUID) ([]database.GetAllUserBookmarkPlaceIDRow, error) {

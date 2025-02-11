@@ -94,6 +94,56 @@ func (svr *ApiServer) userGetAllBookmarkHandler(w http.ResponseWriter, r *http.R
 
 }
 
+func (svr *ApiServer) userGetAllBookmarkByCityHandler(w http.ResponseWriter, r *http.Request) {
+	// Only allow GET requests
+	if r.Method != http.MethodPost {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	type request struct {
+		City string `json:"city"`
+	}
+	// Only allow POST requests
+	if r.Method != http.MethodPost {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+	// Parse incoming request body (JSON) into login detail struct
+	var locationInfo request
+	err := json.NewDecoder(r.Body).Decode(&locationInfo)
+	if err != nil {
+		http.Error(w, "Failed to decode user bookmark place name.", http.StatusBadRequest)
+		return
+	}
+	fmt.Println(locationInfo.City)
+	// Get user detail
+	user_id := GetCurrentUserId(r)
+
+	// Get all bookmark list from user
+	placeList, err := svr.bookmarkPlaceService.GetAllBookmarkedCity(*user_id, locationInfo.City)
+	if err != nil {
+		http.Error(w, "Fail to get all city information from user bookmark database", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Console response struct to send back as JSON
+	response := map[string]interface{}{
+		"PlaceList": placeList,
+	}
+
+	// Set Content-Type to JSON and send a response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK) // 200 OK
+
+	// Send JSON response back to client
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		http.Error(w, "Failed to send response", http.StatusInternalServerError)
+		return
+	}
+}
+
 func (svr *ApiServer) userBookmarkByPlaceNameHandler(w http.ResponseWriter, r *http.Request) {
 	type request struct {
 		Username  string `json:"username"`

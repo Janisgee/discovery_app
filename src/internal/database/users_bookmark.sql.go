@@ -80,7 +80,7 @@ func (q *Queries) DeleteUserBookmark(ctx context.Context, arg DeleteUserBookmark
 
 const getAllUserBookmarkPlaceID = `-- name: GetAllUserBookmarkPlaceID :many
 SELECT users_bookmark.place_id, users_bookmark.place_name,users_bookmark.catagory, users_bookmark.place_text, places.country, places.city  FROM users_bookmark
-INNER JOIN places ON place_id = places.id 
+INNER JOIN places ON users_bookmark.place_id = places.id
 WHERE user_id = $1
 `
 
@@ -146,4 +146,54 @@ func (q *Queries) GetUserBookmark(ctx context.Context, arg GetUserBookmarkParams
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const getUserBookmarkCityInfo = `-- name: GetUserBookmarkCityInfo :many
+SELECT users_bookmark.place_id, users_bookmark.place_name,users_bookmark.catagory, users_bookmark.place_text, places.country, places.city  FROM users_bookmark
+INNER JOIN places ON users_bookmark.place_id = places.id 
+WHERE user_id = $1 AND places.city=$2
+`
+
+type GetUserBookmarkCityInfoParams struct {
+	UserID uuid.UUID
+	City   string
+}
+
+type GetUserBookmarkCityInfoRow struct {
+	PlaceID   string
+	PlaceName string
+	Catagory  string
+	PlaceText string
+	Country   string
+	City      string
+}
+
+func (q *Queries) GetUserBookmarkCityInfo(ctx context.Context, arg GetUserBookmarkCityInfoParams) ([]GetUserBookmarkCityInfoRow, error) {
+	rows, err := q.db.QueryContext(ctx, getUserBookmarkCityInfo, arg.UserID, arg.City)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetUserBookmarkCityInfoRow
+	for rows.Next() {
+		var i GetUserBookmarkCityInfoRow
+		if err := rows.Scan(
+			&i.PlaceID,
+			&i.PlaceName,
+			&i.Catagory,
+			&i.PlaceText,
+			&i.Country,
+			&i.City,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

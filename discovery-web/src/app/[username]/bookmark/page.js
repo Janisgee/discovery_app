@@ -44,7 +44,6 @@ export default function Bookmark() {
   //
   useEffect(() => {
     fetchAllBookmark();
-     
   }, []);
 
   let itemList = [];
@@ -79,7 +78,7 @@ export default function Bookmark() {
     <div>
       <AppTemplate>
         <div className="flex items-center justify-center gap-3 pt-5">
-          <Link href={`/${params.username}/bookmark`}>
+          <Link href={`/${params.username}/home`}>
             <FontAwesomeIcon icon={faCircleArrowLeft} size="2x" />
           </Link>
           <h2 className="text-center">Bookmark Country</h2>

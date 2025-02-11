@@ -83,6 +83,10 @@ func (svr *ApiServer) Run() error {
 	router.HandleFunc("/api/getAllBookmark", func(w http.ResponseWriter, r *http.Request) {
 		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userGetAllBookmarkHandler)).ServeHTTP(w, r)
 	})
+	// Router for get all bookmark by city
+	router.HandleFunc("/api/getAllBookmarkByCity", func(w http.ResponseWriter, r *http.Request) {
+		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userGetAllBookmarkByCityHandler)).ServeHTTP(w, r)
+	})
 	// Router for bookmark new place for user
 	router.HandleFunc("/api/bookmark", func(w http.ResponseWriter, r *http.Request) {
 		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userBookmarkHandler)).ServeHTTP(w, r)
