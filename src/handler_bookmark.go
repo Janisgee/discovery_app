@@ -116,7 +116,7 @@ func (svr *ApiServer) userGetAllBookmarkByCityHandler(w http.ResponseWriter, r *
 		http.Error(w, "Failed to decode user bookmark place name.", http.StatusBadRequest)
 		return
 	}
-	fmt.Println(locationInfo.City)
+
 	// Get user detail
 	user_id := GetCurrentUserId(r)
 
