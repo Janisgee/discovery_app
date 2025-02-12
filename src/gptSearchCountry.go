@@ -3,7 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
+	"os"
 )
 
 type SearchCountry struct {
@@ -43,9 +45,20 @@ func (svr *ApiServer) gptSearchCountry(w http.ResponseWriter, r *http.Request) {
 	// Get user detail
 	user_id := GetCurrentUserId(r)
 
-	// Check if place has been bookmarked by user (Return true or false)
 	for i := range response {
+		if response[i].Image == "" {
+			// Get Image from Pexels
+			result, err := svr.imgSvc.GetImageURL(response[i].Name)
+			if err != nil {
+				slog.Error("Unable to get image from pexels", "error", err)
+				os.Exit(1)
+			}
+			fmt.Println("I am result!!!:", result)
 
+			// Insert Image URL
+			response[i].Image = result.ImageURL
+		}
+		// Check if place has been bookmarked by user (Return true or false)
 		result, _ := svr.bookmarkPlaceService.CheckPlaceHasBookmarkedByUser(response[i].PlaceID, *user_id)
 		// Assign hasBookmark value for each country after check
 		response[i].HasBookmark = result

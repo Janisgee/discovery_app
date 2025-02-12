@@ -126,6 +126,7 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
             <FontAwesomeIcon icon={faCircleArrowLeft} size="2x" />
           </Link>
           <h1 className="text-center text-xl">{toUpperCasePlace}</h1>
+
           <button onClick={handlePlaceBookmark}>
             <FontAwesomeIcon
               icon={hasBookmark ? faHeartSolid : faHeartRegular}
@@ -133,38 +134,42 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
             />
           </button>
         </div>
-        <Image
-          src="/place_img/paris-france.jpg"
-          className="mt-5 h-32 w-full rounded-lg object-cover"
-          alt="Image of place"
-          width={330}
-          height={130}
-        />
-        <div className="mt-5">
-          <p>{content.description}</p>
-          <div className="mt-5">
-            <h6>Location:</h6>
-            <ul>
-              <li>{content.location}</li>
-              <li>Opening Hours: {content.opening_hours}</li>
-            </ul>
-          </div>{" "}
-          <div className="mt-5">
-            <h6>History:</h6>
-            <ul>
-              <li>{content.history}</li>
-            </ul>
+        {content.length != 0 && (
+          <div>
+            <Image
+              src={content.image_url}
+              className="mt-5 h-80 w-full rounded-lg object-cover"
+              alt={`Image of ${decodeURIPlace}`}
+              width={330}
+              height={330}
+            />
+            <div className="mt-5">
+              <p>{content.description}</p>
+              <div className="mt-5">
+                <h6>Location:</h6>
+                <ul>
+                  <li>{content.location}</li>
+                  <li>Opening Hours: {content.opening_hours}</li>
+                </ul>
+              </div>{" "}
+              <div className="mt-5">
+                <h6>History:</h6>
+                <ul>
+                  <li>{content.history}</li>
+                </ul>
+              </div>
+              <div className="mt-5">
+                <h6>Key Features:</h6>
+                <ul>
+                  <li>{content.key_features}</li>
+                </ul>
+              </div>
+              <div className="mt-5">
+                <p>{content.conclusion}</p>
+              </div>
+            </div>
           </div>
-          <div className="mt-5">
-            <h6>Key Features:</h6>
-            <ul>
-              <li>{content.key_features}</li>
-            </ul>
-          </div>
-          <div className="mt-5">
-            <p>{content.conclusion}</p>
-          </div>
-        </div>
+        )}
       </AppTemplate>
     </div>
   );

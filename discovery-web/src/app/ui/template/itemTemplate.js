@@ -76,7 +76,7 @@ export default function ItemTemplete({
           href={`/${params.username}/location/${params.location}/${catagory}/${title}=${placeID}`}
         >
           <div className="flex items-center justify-between gap-3">
-            <div className="size-28">
+            <div className="">
               <Image
                 src={imageSource}
                 className="size-full rounded-lg object-cover"
