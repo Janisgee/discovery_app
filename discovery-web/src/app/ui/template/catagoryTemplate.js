@@ -61,7 +61,7 @@ export default function CatagoryTemplate({ catagory }) {
       itemList.push(
         <li key={index}>
           <ItemTemplete
-            imageSource="/user_img/default.jpg"
+            imageSource={item.image}
             title={item.name}
             text={item.description}
             placeID={item.place_id}

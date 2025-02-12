@@ -33,11 +33,12 @@ type ApiServer struct {
 	memoryUserSessions   map[string]UserSession
 	placesService        PlacesService
 	bookmarkPlaceService BookmarkPlaceService
+	imgSvc               *ImageService
 }
 
-func NewApiServer(env *EnvConfig, locationSvc LocationService, userSvc UserService, placesService PlacesService, bookmarkPlaceService BookmarkPlaceService) *ApiServer {
+func NewApiServer(env *EnvConfig, locationSvc LocationService, userSvc UserService, placesService PlacesService, bookmarkPlaceService BookmarkPlaceService, imgSvc *ImageService) *ApiServer {
 	return &ApiServer{
-		env, locationSvc, userSvc, map[string]UserSession{}, placesService, bookmarkPlaceService,
+		env, locationSvc, userSvc, map[string]UserSession{}, placesService, bookmarkPlaceService, imgSvc,
 	}
 }
 

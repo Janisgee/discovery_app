@@ -26,6 +26,7 @@ type LocationDetails struct {
 type PlaceDetails struct {
 	City          string `json:"city"`
 	Country       string `json:"country"`
+	ImageURL      string `json:"image_url"`
 	Description   string `json:"description"`
 	Location      string `json:"location"`
 	Opening_hours string `json:"opening_hours"`
@@ -39,7 +40,7 @@ type GptLocationService struct {
 }
 
 func (svc *GptLocationService) GetDetails(location string, category string) ([]LocationDetails, error) {
-	prompt := fmt.Sprintf("Get 3 %s in %s, using a field 'places' containing 'image' (a URL to an image), 'name' (the attraction name) and 'description' (a 10-word description).", category, location)
+	prompt := fmt.Sprintf("Get 3 %s in %s, using a field 'places' containing  'name' (the attraction name) and 'description' (a 10-word description).", category, location)
 
 	completion, err := svc.gptClient.CreateChatCompletion(
 		context.Background(),
@@ -74,6 +75,7 @@ func (svc *GptLocationService) GetDetails(location string, category string) ([]L
 
 	// Inject place_id field manually
 	for i := range response.Places {
+
 		if response.Places[i].PlaceID == "" { // Check if place_id is missing
 			// Encoded space to %20
 			encodeLocation := strings.ReplaceAll(response.Places[i].Name, " ", "%20")

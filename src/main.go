@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"discoveryapp/internal/database"
+	"fmt"
 	"log"
 	"log/slog"
 	"os"
@@ -42,6 +43,15 @@ func main() {
 
 	slog.Info("Successfully connected to the database!", "Connection String", dbQueries)
 
+	// Connect to pexels image client
+	imageSvc := NewPexelsService(env.PexelsKey)
+	result, err := imageSvc.GetImageURL("Tokyo")
+	if err != nil {
+		slog.Error("Unable to get image from pexels", "error", err)
+		os.Exit(1)
+	}
+	fmt.Println(result)
+
 	// ChatGPT search
 	gptClient := openai.NewClient(env.GptKey)
 	var locationSvc LocationService = &GptLocationService{gptClient}
@@ -56,7 +66,7 @@ func main() {
 	// Create bookmark place service to run the queries
 	var bookmarkPlaceSvc BookmarkPlaceService = &PostgresBookmarkService{dbQueries}
 
-	server := NewApiServer(env, locationSvc, userSvc, placesSvc, bookmarkPlaceSvc)
+	server := NewApiServer(env, locationSvc, userSvc, placesSvc, bookmarkPlaceSvc, imageSvc)
 
 	// Start the API server
 	err = server.Run()

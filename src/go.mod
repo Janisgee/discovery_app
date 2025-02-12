@@ -17,6 +17,7 @@ require golang.org/x/crypto v0.32.0
 require github.com/google/uuid v1.6.0
 
 require (
+	github.com/kosa3/pexels-go v0.0.6
 	github.com/wagslane/go-password-validator v0.3.0
 	golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8
 	google.golang.org/api v0.219.0

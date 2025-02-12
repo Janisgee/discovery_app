@@ -6,6 +6,7 @@ import (
 	"log"
 	"log/slog"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -56,6 +57,16 @@ func (svr *ApiServer) gptSearchPlaceDetails(w http.ResponseWriter, r *http.Reque
 			http.Error(w, fmt.Sprintf("Error getting place detail: %s", err), http.StatusInternalServerError)
 			slog.Error("Error getting place detail", "error", err)
 			return
+		}
+
+		// Set image url for place
+		if response.ImageURL == "" {
+			imageURL, err := svr.imgSvc.GetImageURL(encodeLocation)
+			if err != nil {
+				slog.Error("Unable to get image from pexels", "error", err)
+				os.Exit(1)
+			}
+			response.ImageURL = imageURL.ImageURL
 		}
 
 		// Store place into place Data

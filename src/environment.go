@@ -12,6 +12,7 @@ type EnvConfig struct {
 	GptKey               string `env:"OPENAI_API_KEY,required"`
 	GMapsKey             string `env:"GMAPS_API_KEY,required"`
 	PsqlConnectionString string `env:"PSQL_CONNECTION_STRING,required"`
+	PexelsKey            string `env:"PEXEL_API_KEY,required"`
 }
 
 func startupGetEnv() (*EnvConfig, error) {
