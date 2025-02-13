@@ -4,11 +4,12 @@ import { useParams, useRouter } from "next/navigation";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faFileLines,
+  faGear,
   faHeart,
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import { Button } from "../buttons";
 
 export default function HomeTemplate({ children }) {
   const params = useParams();
@@ -39,16 +40,14 @@ export default function HomeTemplate({ children }) {
       <div className="px-10 py-5">
         <div className="block-center">
           <div className="flex w-full max-w-sm justify-between">
-            <Link href={`/${params.username}/trips`}>
-              <FontAwesomeIcon icon={faFileLines} size="3x" />
-            </Link>
+            <FontAwesomeIcon icon={faGear} size="2x" />
             <div className="flex items-center justify-between">
               <Link href={`/${params.username}/bookmark`}>
-                <FontAwesomeIcon icon={faHeart} size="3x" />
+                <FontAwesomeIcon icon={faHeart} size="2x" />
               </Link>
               <span className="ml-5">
                 <button onClick={fetchLogoutRequest}>
-                  <FontAwesomeIcon icon={faRightFromBracket} size="3x" />
+                  <FontAwesomeIcon icon={faRightFromBracket} size="2x" />
                 </button>
               </span>
             </div>
