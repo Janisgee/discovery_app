@@ -7,12 +7,14 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
-import { Button } from "@/app/ui/buttons";
+import { fetchAllBookmark } from "@/app/ui/fetchAPI/fetchBookmark";
+
 import HomeTemplate from "@/app/ui/template/homeTemplate";
 import CardTemplete from "@/app/ui/template/cardTemplate";
 import Link from "next/link";
 
 export default function Home() {
+  const [bookmarkNum, setBookmarkNum] = useState(0);
   const [country1, setCountry1] = useState("");
   const [country2, setCountry2] = useState("");
   const [country3, setCountry3] = useState("");
@@ -45,22 +47,32 @@ export default function Home() {
       alert("Please enter a location");
       return;
     }
-    // setSearchCountry(searchData);
-    // fetchSearchCountry(searchData);
+
     router.push(
       `/${params.username}/location/${encodeURIComponent(searchData)}`,
     );
   };
 
-  // Generate a random country when the component mounts
+  const fetchData = async () => {
+    try {
+      const data = await fetchAllBookmark();
+      console.log(data);
+      setBookmarkNum(data.BookmarkedPlace.length);
+      // setBookmarkNum(len(data.BookmarkedPlace));
+    } catch (error) {
+      console.error("Error fetching all booking data:", error);
+    }
+  };
+
   useEffect(() => {
+    fetchData();
     generateRandomCountry();
   }, []);
 
   return (
     <div>
       <HomeTemplate>
-        <div className="block-center flex-col pb-10">
+        <div className="block-center flex-col pb-8">
           <Image
             src="/user_img/default.jpg"
             className="mb-5 h-32 rounded-full"
@@ -69,18 +81,17 @@ export default function Home() {
             height={128}
           />
           <h6 className="">{params.username}</h6>
-          <p className="text-color-dark_grey">7 bookmark places</p>
+          <p className="text-color-dark_grey">{`${bookmarkNum} bookmark places`}</p>
         </div>
-        <div className="block-center flex-col">
-          <Button
-            useFor="✒️ Plan New Trip"
-            link={`/${params.username}/trips`}
-            color="btn-violet"
-          />
-
-          <form onSubmit={handleSearchSubmit}>
-            <div className="block-center flex-row">
+        <div className="block-center">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="grid grid-cols-8 gap-x-2"
+          >
+            <span className="col-span-2 justify-self-end p-2">
               <FontAwesomeIcon icon={faMagnifyingGlass} size="2x" />
+            </span>
+            <span className="inline-center col-span-4 p-2">
               <label
                 htmlFor="default-search"
                 className="sr-only mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -91,11 +102,11 @@ export default function Home() {
                 name="search"
                 type="search"
                 id="default-search"
-                className="ml-2 mt-2 block w-full rounded-full border border-gray-300 bg-gray-50 p-2 ps-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                className="w-full rounded-full border border-gray-300 bg-gray-50 p-2 ps-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                 placeholder="Type location to search"
                 required
               />
-            </div>
+            </span>
           </form>
         </div>
         <div className="block-center my-5 flex-col ">

@@ -8,42 +8,24 @@ import { faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import AppTemplate from "@/app/ui/template/appTemplate";
 import CardTemplete from "@/app/ui/template/cardTemplate";
 import Link from "next/link";
+import { fetchAllBookmark } from "@/app/ui/fetchAPI/fetchBookmark";
 
 export default function Bookmark() {
   const [content, setContent] = useState(null);
   const params = useParams();
-  const fetchAllBookmark = async () => {
-    const request = new Request("http://localhost:8080/api/getAllBookmark", {
-      method: "GET", // HTTP method
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
 
+  const fetchData = async () => {
     try {
-      const response = await fetch(request);
-      console.log("Response status:", response.status);
-      if (response.ok) {
-        const htmlContent = await response.json(); // Use json() to handle HTML response
-        console.log("Received content:", htmlContent);
-        setContent(htmlContent);
-      } else {
-        if (response.status == 401) {
-          alert(
-            `Please login again as 10 mins session expired without taking action.`,
-          );
-          router.push(`/login`);
-        }
-        console.error("Error fetching bookmark place:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error fetching bookmark place:", error);
+      const data = await fetchAllBookmark();
+      console.log(data);
+      setContent(data);
+    } catch {
+      console.error("Error fetching all booking data:", error);
     }
   };
-  //
+
   useEffect(() => {
-    fetchAllBookmark();
+    fetchData();
   }, []);
 
   let itemList = [];
