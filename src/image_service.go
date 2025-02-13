@@ -33,7 +33,6 @@ func (svc *ImageService) GetImageURL(search string) (*ImageURl, error) {
 		return nil, fmt.Errorf("search pexels image error: error in searching %s: %v", search, err)
 	}
 
-	fmt.Println(photoResponse.Photos[0].Src.Large)
 	photoInfo := &ImageURl{
 		ImageID:  photoResponse.Photos[0].ID,
 		ImageURL: photoResponse.Photos[0].Src.Large,
