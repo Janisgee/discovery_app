@@ -3,10 +3,8 @@ import { useParams } from "next/navigation";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { Button } from "../buttons";
 
 import {
-  faFileLines,
   faHeart,
   faHouse,
   faRightFromBracket,
@@ -25,8 +23,6 @@ export default function AppTemplate({ children }) {
                   <FontAwesomeIcon icon={faHouse} size="2x" />
                 </Link>
               </span>
-
-              <FontAwesomeIcon icon={faFileLines} size="2x" />
             </div>
             <div className="flex items-center justify-center">
               <Link href={`/${params.username}/bookmark`}>
