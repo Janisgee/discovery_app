@@ -40,7 +40,9 @@ export default function HomeTemplate({ children }) {
       <div className="px-10 py-5">
         <div className="block-center">
           <div className="flex w-full max-w-sm justify-between">
-            <FontAwesomeIcon icon={faGear} size="2x" />
+            <Link href={`/${params.username}/setting`}>
+              <FontAwesomeIcon icon={faGear} size="2x" />
+            </Link>
             <div className="flex items-center justify-between">
               <Link href={`/${params.username}/bookmark`}>
                 <FontAwesomeIcon icon={faHeart} size="2x" />

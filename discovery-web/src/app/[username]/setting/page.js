@@ -1,60 +1,112 @@
 "use client";
+import { CldUploadButton } from "next-cloudinary";
 import { useParams } from "next/navigation";
-import { DatePicker } from "@nextui-org/date-picker";
-import AppTemplate from "@/app/ui/template/appTemplate";
-import { today } from "@internationalized/date";
-import { Button } from "@/app/ui/buttons";
 
-export default function Trips() {
+import AppTemplate from "@/app/ui/template/appTemplate";
+
+import Image from "next/image";
+
+export default function Setting() {
   const params = useParams();
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  console.log("Cloudinary Cloud Name:", cloudName);
   return (
     <div>
       <AppTemplate>
-        <div>
-          <h2 className="mb-16 text-center">Plan a new Trip</h2>
-
-          <form className="mx-auto mb-7 max-w-sm ">
-            <label
-              htmlFor="countries"
-              className="mb-2 block text-lg font-medium text-gray-900 dark:text-white"
-            >
-              Where to :
-            </label>
-            <select
-              id="countries"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 text-lg text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-            >
-              <option>United States</option>
-              <option>Canada</option>
-              <option>France</option>
-              <option>Germany</option>
-            </select>
-          </form>
-
-          <div className="flex flex-row rounded-lg border-2 p-4">
-            <div className="flex w-full flex-col">
-              <DatePicker
-                className=""
-                label="Date from:"
-                defaultValue={today}
-              />{" "}
-            </div>
-            <div className="flex w-full flex-col">
-              <DatePicker
-                className=""
-                // defaultValue={parseDate("2024-04-04")}
-                label="Date to:"
-              />
-            </div>
-          </div>
-          <div className="mt-24 text-center">
-            <Button
-              useFor="✒️ Start Planning"
-              link={`/${params.username}/trips/hong%20kong`}
-              color="btn-violet"
-            />
+        <div className="block-center flex-col pb-8">
+          <Image
+            src="/user_img/default.jpg"
+            className="h-32 rounded-full"
+            alt="default profile picture"
+            width={128}
+            height={128}
+          />
+          <div className="btn-violet px-3 py-1">
+            <CldUploadButton uploadPreset="<Upload Preset>">
+              Edit
+            </CldUploadButton>
           </div>
         </div>
+        <h3 className="justify-items-start text-gray-400">Profile Settings</h3>
+        <div className="mb-8 mt-5">
+          <div className="mb-2 flex items-center">
+            <label
+              className="mr-3 block font-bold text-gray-700"
+              htmlFor="username"
+            >
+              Username:
+            </label>
+            <p className="w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none">
+              {params.username}
+            </p>
+          </div>
+          <div className="mb-2 flex items-center">
+            <label
+              className="mr-3 block font-bold text-gray-700"
+              htmlFor="username"
+            >
+              Email:
+            </label>
+            <p className="w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none">
+              {params.username}*****
+            </p>
+          </div>
+
+          {/* <div className="flex items-center rounded-md bg-white pl-3 outline-2 outline-sky-500 focus-within:outline-4 focus-within:outline-indigo-600">
+            <label
+              htmlFor="username"
+              className="block font-medium text-gray-900"
+            >
+              Username:
+            </label>
+            <input
+              type="text"
+              name="username"
+              id="username"
+              className="ml-5 w-full py-1.5 pl-5 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none"
+              placeholder={params.username}
+            ></input>
+          </div> */}
+        </div>
+        <hr />
+        <h3 className="mt-8 justify-items-start text-gray-400">
+          Change Password
+        </h3>
+        <form className="mt-5">
+          {" "}
+          <div className="items-left mb-4 flex flex-col">
+            <label
+              className="mr-3 block font-bold text-gray-700"
+              htmlFor="current_password"
+            >
+              Current Password:
+            </label>
+            <input
+              name="current_password"
+              className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus-within:outline-4 focus-within:outline-indigo-600"
+              id="current_password"
+              type="text"
+              placeholder="******************"
+            />
+          </div>
+          <div className="items-left mb-4 flex flex-col">
+            <label
+              className="mr-3 block font-bold text-gray-700"
+              htmlFor="new_password"
+            >
+              New Password:
+            </label>
+            <input
+              name="new_password"
+              className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus-within:outline-4 focus-within:outline-indigo-600"
+              id="new_password"
+              type="text"
+            />
+          </div>
+          <div className="flex justify-center">
+            <button className="btn-violet">Update Password</button>
+          </div>
+        </form>
       </AppTemplate>
     </div>
   );
