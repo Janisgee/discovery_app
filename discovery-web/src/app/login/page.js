@@ -14,7 +14,7 @@ export default function Login() {
     // const input_email = formData.get("login_email");
     // const input_password = formData.get("login_password");
     const input_email = "davidjonesgan@gmail.com";
-    const input_password = "ilovemymum123";
+    const input_password = "yoyonewpassword123";
 
     if (!input_email) {
       alert("Please enter an email.");
