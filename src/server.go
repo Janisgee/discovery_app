@@ -104,6 +104,11 @@ func (svr *ApiServer) Run() error {
 		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userBookmarkByPlaceNameHandler)).ServeHTTP(w, r)
 	})
 
+	// Router for get user email from database
+	router.HandleFunc("/api/getUserProfile", func(w http.ResponseWriter, r *http.Request) {
+		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userProfileHandler)).ServeHTTP(w, r)
+	})
+
 	// router for receive login details
 	router.HandleFunc("/api/login", svr.userLoginHandler)
 
@@ -115,6 +120,11 @@ func (svr *ApiServer) Run() error {
 
 	// Router for receive new password
 	router.HandleFunc("/api/resetPassword", svr.userResetPasswordHandler)
+
+	// Router for get user email from database
+	router.HandleFunc("/api/updatePassword", func(w http.ResponseWriter, r *http.Request) {
+		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userUpdatePwHandler)).ServeHTTP(w, r)
+	})
 
 	// Use CORS middleware to handle cross-origin requests
 	handler := requestTelemetryMiddleware((cors.New(cors.Options{
