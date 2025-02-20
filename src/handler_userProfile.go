@@ -130,3 +130,7 @@ func (svr *ApiServer) userUpdatePwHandler(w http.ResponseWriter, r *http.Request
 	}
 
 }
+
+func (svr *ApiServer) userProfilePicHandler(w http.ResponseWriter, r *http.Request) {
+
+}

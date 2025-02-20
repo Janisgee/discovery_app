@@ -17,6 +17,7 @@ require golang.org/x/crypto v0.32.0
 require github.com/google/uuid v1.6.0
 
 require (
+	github.com/cloudinary/cloudinary-go/v2 v2.9.1
 	github.com/kosa3/pexels-go v0.0.6
 	github.com/wagslane/go-password-validator v0.3.0
 	golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8
@@ -29,12 +30,14 @@ require (
 	cloud.google.com/go/auth/oauth2adapt v0.2.7 // indirect
 	cloud.google.com/go/compute/metadata v0.6.0 // indirect
 	cloud.google.com/go/maps v1.17.1 // indirect
+	github.com/creasty/defaults v1.7.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/google/s2a-go v0.1.9 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.4 // indirect
 	github.com/googleapis/gax-go/v2 v2.14.1 // indirect
+	github.com/gorilla/schema v1.4.1 // indirect
 	github.com/sendgrid/rest v2.6.9+incompatible // indirect
 	github.com/sendgrid/sendgrid-go v3.16.0+incompatible // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.54.0 // indirect
