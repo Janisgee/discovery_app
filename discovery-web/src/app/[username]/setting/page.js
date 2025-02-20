@@ -4,9 +4,8 @@ import { CldImage } from "next-cloudinary";
 import { useParams } from "next/navigation";
 import AppTemplate from "@/app/ui/template/appTemplate";
 import { AvatarUploader } from "@/app/ui/avatar-uploader/avatar-uploader";
-
 import Image from "next/image";
-import { revalidatePath } from "next/cache";
+// import { revalidatePath } from "next/cache";
 
 export default function Setting() {
   const [email, setEmail] = useState("");
@@ -14,39 +13,46 @@ export default function Setting() {
   const [imageSource, setImageSource] = useState("/user_img/default.jpg");
   const params = useParams();
 
-  // const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  // const cloudUploadPresent = process.env.CLOUDINARY_UPLOAD_PRESET;
-  // console.log("Cloudinary Cloud Name:", cloudName);
-  //  src={imageData.secureUrl} alt="Uploaded"
   const signatureEndpoint = "/api/sign-cloudinary-params";
   const saveAvatar = async (publicID, url) => {
     setImageSource(url);
     setPublicID(publicID);
     console.log("Uploaded image url:", url);
     console.log("Uploaded public id:", publicID);
+    fetchUpdateUserProfileImage(publicID, url);
     // revalidatePath("/");
   };
 
   // Fetch publicID to backendserver to do storage
+  const fetchUpdateUserProfileImage = async (publicID, url) => {
+    const data = {
+      public_id: publicID,
+      secure_url: url,
+    };
+    const request = new Request(
+      "http://localhost:8080/api/updateUserProfileImage",
+      {
+        method: "POST", // HTTP method
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
+      },
+    );
 
-  // Fetch user email
-  // const handleUploadSuccess = (result) => {
-  //   // Log the result for debugging purposes
-  //   console.log("Upload result", result);
-  //   // You can access public_id and secure_url here
-  //   const { public_id, secure_url } = result.info;
-  //   // Save or use public_id and secure_url as needed
-  //   setImageData({
-  //     publicId: public_id,
-  //     secureUrl: secure_url,
-  //   });
-  //   setImageSource(secure_url);
-  // };
+    try {
+      const response = await fetch(request);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch: ${response.statusText}`);
+      }
 
-  // const handleUploadError = (error) => {
-  //   console.error("Upload failed", error);
-  //   alert("An error occurred while uploading. Please try again.");
-  // };
+      const responseData = await response.json();
+      console.log("Server Response:", responseData);
+    } catch (error) {
+      console.error("Error fetching user new profile image:", error);
+    }
+  };
 
   const fetchUserProfile = async () => {
     const request = new Request("http://localhost:8080/api/getUserProfile", {
@@ -68,7 +74,10 @@ export default function Setting() {
       console.log("Server Response:", responseData.user_email);
       setEmail(responseData.user_email);
     } catch (error) {
-      console.error("Error fetching user profile:", error);
+      console.error(
+        "Error fetching and store user profile into database:",
+        error,
+      );
     }
   };
 
@@ -156,35 +165,9 @@ export default function Setting() {
           )}
           <div className="btn-violet px-3 py-1">
             <AvatarUploader onUploadSuccess={saveAvatar} />
-            {/* <CldUploadWidget
-              
-              uploadPreset={cloudUploadPresent}
-              signatureEndpoint={signatureEndpoint}
-              onSuccess={(result)=>
-                if(typeof result.info =="object" && "secure_url" in result.info){
-
-                }
-                {handleUploadSuccess}}
-              onFailure={handleUploadError}
-              onQueuesEnd={(result, { widget }) => {
-                widget.close();
-              }}
-            >
-              {({ open }) => {
-                function handleOnClick(e) {
-                  e.preventDefault();
-                  open();
-                }
-                return (
-                  <button id="upload_widget" onClick={handleOnClick}>
-                    Edit
-                  </button>
-                );
-              }}
-            </CldUploadWidget> */}
           </div>
         </div>
-        {/* <p>PublicID: {publicID}</p> */}
+
         <h3 className="justify-items-start text-gray-400">Profile Settings</h3>
         <div className="mb-8 mt-5">
           <div className="mb-2 flex items-center">

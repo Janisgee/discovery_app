@@ -57,7 +57,10 @@ export default function Home() {
     try {
       const data = await fetchAllBookmark();
       console.log(data);
-      setBookmarkNum(data.BookmarkedPlace.length);
+      if (data.BookmarkedPlace != null) {
+        setBookmarkNum(data.BookmarkedPlace.length);
+      }
+
       // setBookmarkNum(len(data.BookmarkedPlace));
     } catch (error) {
       console.error("Error fetching all booking data:", error);

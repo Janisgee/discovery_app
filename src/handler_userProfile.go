@@ -133,4 +133,50 @@ func (svr *ApiServer) userUpdatePwHandler(w http.ResponseWriter, r *http.Request
 
 func (svr *ApiServer) userProfilePicHandler(w http.ResponseWriter, r *http.Request) {
 
+	type request struct {
+		PublicID  string `json:"public_id"`
+		SecureURL string `json:"secure_url"`
+	}
+	// Only allow Post requests
+	if r.Method != http.MethodPost {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Get user detail
+	user_id := GetCurrentUserId(r)
+
+	// Parse incoming request body (JSON) into login detail struct
+	var imageRequest request
+	err := json.NewDecoder(r.Body).Decode(&imageRequest)
+	if err != nil {
+		http.Error(w, "Failed to decode user reset password data", http.StatusBadRequest)
+		return
+	}
+
+	//Update user profile picture public ID and secure url
+	userUpdatedInfo, err := svr.userSvc.UpdateUserProfileImage(imageRequest.PublicID, imageRequest.SecureURL, user_id)
+	if err != nil {
+		http.Error(w, "Fail to update user new profile image. Please try again", http.StatusBadRequest)
+		return
+	}
+
+	// Console response struct to send back as JSON
+	response := map[string]interface{}{
+		"message":   "User new profile picture has been successfully updated.",
+		"publicID":  userUpdatedInfo.ImagePublicID,
+		"secureURL": userUpdatedInfo.ImageSecureURL,
+	}
+
+	// Set Content-Type to JSON and send a response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK) // 200 OK
+
+	// Send JSON response back to client
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		http.Error(w, "Failed to send response", http.StatusInternalServerError)
+		return
+	}
+
 }

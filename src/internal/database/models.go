@@ -25,6 +25,8 @@ type Place struct {
 type User struct {
 	ID             uuid.UUID
 	Username       string
+	ImagePublicID  string
+	ImageSecureUrl string
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	Email          string
