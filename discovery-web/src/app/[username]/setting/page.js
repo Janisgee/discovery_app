@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { CldUploadWidget } from "next-cloudinary";
+import { CldImage } from "next-cloudinary";
 import { useParams } from "next/navigation";
 import AppTemplate from "@/app/ui/template/appTemplate";
 import { AvatarUploader } from "@/app/ui/avatar-uploader/avatar-uploader";
@@ -10,7 +10,7 @@ import { revalidatePath } from "next/cache";
 
 export default function Setting() {
   const [email, setEmail] = useState("");
-  const [imageData, setImageData] = useState(null);
+  const [publicID, setPublicID] = useState("/user_img/default.jpg");
   const [imageSource, setImageSource] = useState("/user_img/default.jpg");
   const params = useParams();
 
@@ -19,11 +19,15 @@ export default function Setting() {
   // console.log("Cloudinary Cloud Name:", cloudName);
   //  src={imageData.secureUrl} alt="Uploaded"
   const signatureEndpoint = "/api/sign-cloudinary-params";
-  const saveAvatar = async (url) => {
+  const saveAvatar = async (publicID, url) => {
     setImageSource(url);
-    console.log(url);
+    setPublicID(publicID);
+    console.log("Uploaded image url:", url);
+    console.log("Uploaded public id:", publicID);
     // revalidatePath("/");
   };
+
+  // Fetch publicID to backendserver to do storage
 
   // Fetch user email
   // const handleUploadSuccess = (result) => {
@@ -131,13 +135,25 @@ export default function Setting() {
     <div>
       <AppTemplate>
         <div className="block-center flex-col pb-5">
-          <Image
-            src={imageSource}
-            className="h-32 rounded-full"
-            alt={params.username}
-            width={128}
-            height={128}
-          />
+          {publicID == "/user_img/default.jpg" ? (
+            <Image
+              src="/user_img/default.jpg"
+              className="h-32 rounded-full"
+              alt={params.username}
+              width={128}
+              height={128}
+            />
+          ) : (
+            <CldImage
+              src={publicID}
+              className="h-32 rounded-full"
+              alt={params.username}
+              width="128"
+              height="128"
+              crop="fill"
+              gravity="face"
+            />
+          )}
           <div className="btn-violet px-3 py-1">
             <AvatarUploader onUploadSuccess={saveAvatar} />
             {/* <CldUploadWidget
