@@ -13,8 +13,8 @@ export default function Login() {
     const formData = new FormData(e.currentTarget);
     // const input_email = formData.get("login_email");
     // const input_password = formData.get("login_password");
-    const input_email = "davidjonesgan@gmail.com";
-    const input_password = "yoyonewpassword123";
+    const input_email = "janisgeegee@gmail.com";
+    const input_password = "newpassword2change";
 
     if (!input_email) {
       alert("Please enter an email.");

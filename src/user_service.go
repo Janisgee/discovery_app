@@ -21,12 +21,15 @@ type UserService interface {
 	GetUserEmailFromEmailPw(pwResetCode string) (string, error)
 	UpdateUserPw(password string, id uuid.UUID) (string, error)
 	ResetUserPw(email string, password string, pw_reset_code string) (*User, error)
+	UpdateUserProfileImage(publicID string, secureURL string, userID *uuid.UUID) (*User, error)
 }
 
 // User struct to hold input data for GET & SET
 type User struct {
 	ID              uuid.UUID `json:"id"`
 	Username        string    `json:"username"`
+	ImagePublicID   string    `json:"public_id"`
+	ImageSecureURL  string    `json:"secure_url"`
 	CreatedAt       string    `json:"created_at"`
 	UpdatedAt       string    `json:"updated_at"`
 	Email           string    `json:"email"`
@@ -63,6 +66,8 @@ func (svc *PostgresUserService) CreateUser(username string, email string, passwo
 	// Create user if username is not exit in database
 	params := database.CreateUserParams{
 		Username:       username,
+		ImagePublicID:  "/user_img/default.jpg",
+		ImageSecureUrl: "/user_img/default.jpg",
 		Email:          email,
 		HashedPassword: hashedpw,
 	}
@@ -255,6 +260,32 @@ func (svc *PostgresUserService) ResetUserPw(email string, password string, pw_re
 		ID:       userInfo.ID,
 		Username: userInfo.Username,
 		Email:    userInfo.Email}
+
+	return userInformation, nil
+}
+
+func (svc *PostgresUserService) UpdateUserProfileImage(publicID string, secureURL string, userID *uuid.UUID) (*User, error) {
+	// Create an empty context
+	ctx := context.Background()
+
+	// Update user password in user database
+	params := database.UpdateUserProfilePictureParams{
+		ImagePublicID:  publicID,
+		ImageSecureUrl: secureURL,
+		ID:             *userID,
+	}
+	userInfo, err := svc.dbQueries.UpdateUserProfilePicture(ctx, params)
+	if err != nil {
+		return nil, errors.New("error in updating user new profile picture")
+	}
+
+	fmt.Printf("The user profile picture is successfully updated.\n User password updated at:%v\n", userInfo.UpdatedAt)
+
+	// Return the user info
+	userInformation := &User{
+		ID:             userInfo.ID,
+		ImagePublicID:  userInfo.ImagePublicID,
+		ImageSecureURL: userInfo.ImageSecureUrl}
 
 	return userInformation, nil
 }

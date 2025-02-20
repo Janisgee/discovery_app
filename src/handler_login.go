@@ -80,22 +80,3 @@ func (svr *ApiServer) userLoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-
-// User creation handler
-// func (svr *ApiServer) createUserHandler(w http.ResponseWriter, r *http.Request) {
-
-// 	// Only allow POST requests
-// 	if r.Method != http.MethodPost {
-// 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-// 		return
-// 	}
-
-// 	// Parse incoming request body (JSON) into User struct
-// 	var newUser User
-// 	err := json.NewDecoder(r.Body).Decode(&newUser)
-// 	if err != nil {
-// 		http.Error(w, "Failed to decode user data", http.StatusBadRequest)
-// 		return
-// 	}
-
-// }

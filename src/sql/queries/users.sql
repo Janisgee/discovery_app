@@ -1,12 +1,14 @@
 -- name: CreateUser :one
-INSERT INTO users (id, username, created_at, updated_at, email, hashed_password)
+INSERT INTO users (id, username, image_public_id, image_secure_url,created_at, updated_at, email, hashed_password)
 VALUES(
 gen_random_uuid(),
 $1,
-NOW(),
-NOW(),
 $2,
-$3
+$3,
+NOW(),
+NOW(),
+$4,
+$5
 )
 RETURNING *;
 
@@ -32,4 +34,12 @@ UPDATE users
 SET updated_at = NOW(),
 hashed_password = $1
 WHERE id = $2
+RETURNING *;
+
+-- name: UpdateUserProfilePicture :one
+UPDATE users
+SET updated_at = NOW(),
+image_public_id = $1,
+image_secure_url =$2
+WHERE id = $3
 RETURNING *;
