@@ -38,6 +38,10 @@ func main() {
 	// Use generated database package to create a new *database.Queries instance
 	dbQueries := database.New(db)
 
+	// Create cloudinary service
+
+	cloudSvc, _ := NewCloudinaryService()
+
 	// Create user service to run the queries
 	var userSvc UserService = &PostgresUserService{dbQueries}
 
@@ -66,7 +70,7 @@ func main() {
 	// Create bookmark place service to run the queries
 	var bookmarkPlaceSvc BookmarkPlaceService = &PostgresBookmarkService{dbQueries}
 
-	server := NewApiServer(env, locationSvc, userSvc, placesSvc, bookmarkPlaceSvc, imageSvc)
+	server := NewApiServer(env, locationSvc, userSvc, placesSvc, bookmarkPlaceSvc, imageSvc, cloudSvc)
 
 	// Start the API server
 	err = server.Run()

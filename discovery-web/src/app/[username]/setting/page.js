@@ -1,19 +1,49 @@
 "use client";
 import { useEffect, useState } from "react";
-import { CldUploadButton } from "next-cloudinary";
+import { CldUploadWidget } from "next-cloudinary";
 import { useParams } from "next/navigation";
-
 import AppTemplate from "@/app/ui/template/appTemplate";
+import { AvatarUploader } from "@/app/ui/avatar-uploader/avatar-uploader";
 
 import Image from "next/image";
+import { revalidatePath } from "next/cache";
 
 export default function Setting() {
   const [email, setEmail] = useState("");
+  const [imageData, setImageData] = useState(null);
+  const [imageSource, setImageSource] = useState("/user_img/default.jpg");
   const params = useParams();
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  console.log("Cloudinary Cloud Name:", cloudName);
+
+  // const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  // const cloudUploadPresent = process.env.CLOUDINARY_UPLOAD_PRESET;
+  // console.log("Cloudinary Cloud Name:", cloudName);
+  //  src={imageData.secureUrl} alt="Uploaded"
+  const signatureEndpoint = "/api/sign-cloudinary-params";
+  const saveAvatar = async (url) => {
+    setImageSource(url);
+    console.log(url);
+    // revalidatePath("/");
+  };
 
   // Fetch user email
+  // const handleUploadSuccess = (result) => {
+  //   // Log the result for debugging purposes
+  //   console.log("Upload result", result);
+  //   // You can access public_id and secure_url here
+  //   const { public_id, secure_url } = result.info;
+  //   // Save or use public_id and secure_url as needed
+  //   setImageData({
+  //     publicId: public_id,
+  //     secureUrl: secure_url,
+  //   });
+  //   setImageSource(secure_url);
+  // };
+
+  // const handleUploadError = (error) => {
+  //   console.error("Upload failed", error);
+  //   alert("An error occurred while uploading. Please try again.");
+  // };
+
   const fetchUserProfile = async () => {
     const request = new Request("http://localhost:8080/api/getUserProfile", {
       method: "GET", // HTTP method
@@ -102,18 +132,43 @@ export default function Setting() {
       <AppTemplate>
         <div className="block-center flex-col pb-5">
           <Image
-            src="/user_img/default.jpg"
+            src={imageSource}
             className="h-32 rounded-full"
-            alt="default profile picture"
+            alt={params.username}
             width={128}
             height={128}
           />
           <div className="btn-violet px-3 py-1">
-            <CldUploadButton uploadPreset="<Upload Preset>">
-              Edit
-            </CldUploadButton>
+            <AvatarUploader onUploadSuccess={saveAvatar} />
+            {/* <CldUploadWidget
+              
+              uploadPreset={cloudUploadPresent}
+              signatureEndpoint={signatureEndpoint}
+              onSuccess={(result)=>
+                if(typeof result.info =="object" && "secure_url" in result.info){
+
+                }
+                {handleUploadSuccess}}
+              onFailure={handleUploadError}
+              onQueuesEnd={(result, { widget }) => {
+                widget.close();
+              }}
+            >
+              {({ open }) => {
+                function handleOnClick(e) {
+                  e.preventDefault();
+                  open();
+                }
+                return (
+                  <button id="upload_widget" onClick={handleOnClick}>
+                    Edit
+                  </button>
+                );
+              }}
+            </CldUploadWidget> */}
           </div>
         </div>
+        {/* <p>PublicID: {publicID}</p> */}
         <h3 className="justify-items-start text-gray-400">Profile Settings</h3>
         <div className="mb-8 mt-5">
           <div className="mb-2 flex items-center">

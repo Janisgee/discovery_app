@@ -24,6 +24,7 @@
     "@nextui-org/date-picker": "^2.3.4",
     "@react-aria/i18n": "3.12.2",
     "autoprefixer": "10.4.20",
+    "cloudinary": "^2.5.1",
     "dayjs": "^1.11.13",
     "next": "15.0.3",
     "next-cloudinary": "^6.16.0",
