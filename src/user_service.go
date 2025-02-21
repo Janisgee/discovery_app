@@ -22,6 +22,7 @@ type UserService interface {
 	UpdateUserPw(password string, id uuid.UUID) (string, error)
 	ResetUserPw(email string, password string, pw_reset_code string) (*User, error)
 	UpdateUserProfileImage(publicID string, secureURL string, userID *uuid.UUID) (*User, error)
+	DisplayUserProfileImage(userID uuid.UUID) (*User, error)
 }
 
 // User struct to hold input data for GET & SET
@@ -66,8 +67,8 @@ func (svc *PostgresUserService) CreateUser(username string, email string, passwo
 	// Create user if username is not exit in database
 	params := database.CreateUserParams{
 		Username:       username,
-		ImagePublicID:  "/user_img/default.jpg",
-		ImageSecureUrl: "/user_img/default.jpg",
+		ImagePublicID:  "https://res.cloudinary.com/dopxvbeju/image/upload/v1740039540/kphottt1vhiuyahnzy8y.jpg",
+		ImageSecureUrl: "https://res.cloudinary.com/dopxvbeju/image/upload/v1740039540/kphottt1vhiuyahnzy8y.jpg",
 		Email:          email,
 		HashedPassword: hashedpw,
 	}
@@ -284,6 +285,25 @@ func (svc *PostgresUserService) UpdateUserProfileImage(publicID string, secureUR
 	// Return the user info
 	userInformation := &User{
 		ID:             userInfo.ID,
+		ImagePublicID:  userInfo.ImagePublicID,
+		ImageSecureURL: userInfo.ImageSecureUrl}
+
+	return userInformation, nil
+}
+
+func (svc *PostgresUserService) DisplayUserProfileImage(userID uuid.UUID) (*User, error) {
+	// Create an empty context
+	ctx := context.Background()
+
+	// Get user image information
+	userInfo, err := svc.dbQueries.GetUserProfileImageInfo(ctx, userID)
+	if err != nil {
+		return nil, errors.New("error in updating user new profile picture")
+	}
+
+	// Return the user info
+	userInformation := &User{
+
 		ImagePublicID:  userInfo.ImagePublicID,
 		ImageSecureURL: userInfo.ImageSecureUrl}
 

@@ -87,6 +87,22 @@ func (q *Queries) GetUserEmailByUsername(ctx context.Context, id uuid.UUID) (str
 	return email, err
 }
 
+const getUserProfileImageInfo = `-- name: GetUserProfileImageInfo :one
+SELECT  image_public_id, image_secure_url FROM users WHERE id=$1 LIMIT 1
+`
+
+type GetUserProfileImageInfoRow struct {
+	ImagePublicID  string
+	ImageSecureUrl string
+}
+
+func (q *Queries) GetUserProfileImageInfo(ctx context.Context, id uuid.UUID) (GetUserProfileImageInfoRow, error) {
+	row := q.db.QueryRowContext(ctx, getUserProfileImageInfo, id)
+	var i GetUserProfileImageInfoRow
+	err := row.Scan(&i.ImagePublicID, &i.ImageSecureUrl)
+	return i, err
+}
+
 const getUserPw = `-- name: GetUserPw :one
 SELECT hashed_password FROM users WHERE id = $1 LIMIT 1
 `

@@ -4,16 +4,19 @@ import { CldImage } from "next-cloudinary";
 import { useParams } from "next/navigation";
 import AppTemplate from "@/app/ui/template/appTemplate";
 import { AvatarUploader } from "@/app/ui/avatar-uploader/avatar-uploader";
-import Image from "next/image";
+import { fetchProfileImage } from "@/app/ui/fetchAPI/fetchProfileImage";
+
 // import { revalidatePath } from "next/cache";
 
 export default function Setting() {
   const [email, setEmail] = useState("");
-  const [publicID, setPublicID] = useState("/user_img/default.jpg");
-  const [imageSource, setImageSource] = useState("/user_img/default.jpg");
+  const [publicID, setPublicID] = useState("");
+  const [imageSource, setImageSource] = useState("");
   const params = useParams();
 
-  const signatureEndpoint = "/api/sign-cloudinary-params";
+  const defaultImage =
+    "https://res.cloudinary.com/dopxvbeju/image/upload/v1740039540/kphottt1vhiuyahnzy8y.jpg";
+
   const saveAvatar = async (publicID, url) => {
     setImageSource(url);
     setPublicID(publicID);
@@ -123,6 +126,19 @@ export default function Setting() {
     }
   };
 
+  const fetchData = async () => {
+    try {
+      const imageData = await fetchProfileImage();
+      console.log(imageData);
+      if (imageData != null) {
+        setPublicID(imageData.publicID);
+        setImageSource(imageData.secureURL);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const handleUpdatePw = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -138,19 +154,22 @@ export default function Setting() {
   };
 
   useEffect(() => {
+    fetchData();
     fetchUserProfile();
   }, []);
   return (
     <div>
       <AppTemplate>
         <div className="block-center flex-col pb-5">
-          {publicID == "/user_img/default.jpg" ? (
-            <Image
-              src="/user_img/default.jpg"
+          {!publicID ? (
+            <CldImage
+              src={defaultImage}
               className="h-32 rounded-full"
               alt={params.username}
-              width={128}
-              height={128}
+              width="128"
+              height="128"
+              crop="fill"
+              gravity="face"
             />
           ) : (
             <CldImage
@@ -211,7 +230,6 @@ export default function Setting() {
               className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus-within:outline-4 focus-within:outline-indigo-600"
               id="current_password"
               type="password"
-              placeholder="******************"
             />
           </div>
           <div className="items-left mb-4 flex flex-col">

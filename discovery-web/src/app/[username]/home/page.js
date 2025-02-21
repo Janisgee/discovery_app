@@ -2,11 +2,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
+import { CldImage } from "next-cloudinary";
 
-import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
+import { fetchProfileImage } from "@/app/ui/fetchAPI/fetchProfileImage";
 import { fetchAllBookmark } from "@/app/ui/fetchAPI/fetchBookmark";
 
 import HomeTemplate from "@/app/ui/template/homeTemplate";
@@ -18,10 +19,14 @@ export default function Home() {
   const [country1, setCountry1] = useState("");
   const [country2, setCountry2] = useState("");
   const [country3, setCountry3] = useState("");
-  // const [searchCountry, setSearchCountry] = useState("");
+  const [userPublicID, setUserPublicID] = useState("");
+  const [userSecureURL, setUserSecureURL] = useState("");
 
   const params = useParams();
   const router = useRouter();
+
+  const defaultImage =
+    "https://res.cloudinary.com/dopxvbeju/image/upload/v1740039540/kphottt1vhiuyahnzy8y.jpg";
 
   const generateRandomCountry = () => {
     const randomCountry = require("random-country");
@@ -60,10 +65,14 @@ export default function Home() {
       if (data.BookmarkedPlace != null) {
         setBookmarkNum(data.BookmarkedPlace.length);
       }
-
-      // setBookmarkNum(len(data.BookmarkedPlace));
+      const imageData = await fetchProfileImage();
+      console.log(imageData);
+      if (imageData != null) {
+        setUserPublicID(imageData.publicID);
+        setUserSecureURL(imageData.secureURL);
+      }
     } catch (error) {
-      console.error("Error fetching all booking data:", error);
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -72,18 +81,34 @@ export default function Home() {
     generateRandomCountry();
   }, []);
 
+  console.log("upid", userPublicID);
+
   return (
     <div>
       <HomeTemplate>
         <div className="block-center flex-col pb-8">
-          <Image
-            src="/user_img/default.jpg"
-            className="mb-5 h-32 rounded-full"
-            alt="default profile picture"
-            width={128}
-            height={128}
-          />
-          <h6 className="">{params.username}</h6>
+          {!userPublicID ? (
+            <CldImage
+              src={defaultImage}
+              className="h-32 rounded-full"
+              alt={params.username}
+              width="128"
+              height="128"
+              crop="fill"
+              gravity="face"
+            />
+          ) : (
+            <CldImage
+              src={userPublicID}
+              className="h-32 rounded-full"
+              alt={params.username}
+              width="128"
+              height="128"
+              crop="fill"
+              gravity="face"
+            />
+          )}
+          <h6>{params.username}</h6>
           <p className="text-color-dark_grey">{`${bookmarkNum} bookmark places`}</p>
         </div>
         <div className="block-center">
@@ -114,7 +139,7 @@ export default function Home() {
         </div>
         <div className="block-center my-5 flex-col ">
           <h3>Popular Destination</h3>
-          {/* <div className='w-full h-96 overflow-hidden inline-block rounded-lg'> */}
+
           <div className="h-96 w-full overflow-auto rounded-lg">
             <Link
               href={`/${params.username}/location/${encodeURIComponent(country1)}`}
