@@ -110,7 +110,11 @@ func (svr *ApiServer) Run() error {
 	})
 	// Router for updating user profile picture in database
 	router.HandleFunc("/api/updateUserProfileImage", func(w http.ResponseWriter, r *http.Request) {
-		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userProfilePicHandler)).ServeHTTP(w, r)
+		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userProfilePicChangeHandler)).ServeHTTP(w, r)
+	})
+	// Router for displaying user profile picture in database
+	router.HandleFunc("/api/displayUserProfileImage", func(w http.ResponseWriter, r *http.Request) {
+		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userProfilePicDisplayHandler)).ServeHTTP(w, r)
 	})
 
 	// router for receive login details

@@ -21,7 +21,7 @@ export function AvatarUploader({ onUploadSuccess }) {
       {({ open }) => {
         return (
           <button type="button" onClick={() => open()}>
-            Upload Avatar
+            Edit
           </button>
         );
       }}

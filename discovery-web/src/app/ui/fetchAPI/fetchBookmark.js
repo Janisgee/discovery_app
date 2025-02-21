@@ -9,7 +9,6 @@ export const fetchAllBookmark = async () => {
 
   try {
     const response = await fetch(request);
-    console.log("Response status:", response.status);
     if (response.ok) {
       const htmlContent = await response.json(); // Use json() to handle HTML response
       console.log("Received content:", htmlContent);

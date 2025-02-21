@@ -131,7 +131,7 @@ func (svr *ApiServer) userUpdatePwHandler(w http.ResponseWriter, r *http.Request
 
 }
 
-func (svr *ApiServer) userProfilePicHandler(w http.ResponseWriter, r *http.Request) {
+func (svr *ApiServer) userProfilePicChangeHandler(w http.ResponseWriter, r *http.Request) {
 
 	type request struct {
 		PublicID  string `json:"public_id"`
@@ -166,6 +166,44 @@ func (svr *ApiServer) userProfilePicHandler(w http.ResponseWriter, r *http.Reque
 		"message":   "User new profile picture has been successfully updated.",
 		"publicID":  userUpdatedInfo.ImagePublicID,
 		"secureURL": userUpdatedInfo.ImageSecureURL,
+	}
+
+	// Set Content-Type to JSON and send a response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK) // 200 OK
+
+	// Send JSON response back to client
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		http.Error(w, "Failed to send response", http.StatusInternalServerError)
+		return
+	}
+
+}
+
+func (svr *ApiServer) userProfilePicDisplayHandler(w http.ResponseWriter, r *http.Request) {
+
+	// Only allow Get requests
+	if r.Method != http.MethodGet {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Get user detail
+	user_id := GetCurrentUserId(r)
+
+	//Update user profile picture public ID and secure url
+	userPictureData, err := svr.userSvc.DisplayUserProfileImage(*user_id)
+	if err != nil {
+		http.Error(w, "Fail to update user new profile image. Please try again", http.StatusBadRequest)
+		return
+	}
+
+	// Console response struct to send back as JSON
+	response := map[string]interface{}{
+		"message":   "User new profile image data has been retrieved",
+		"publicID":  userPictureData.ImagePublicID,
+		"secureURL": userPictureData.ImageSecureURL,
 	}
 
 	// Set Content-Type to JSON and send a response

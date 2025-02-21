@@ -18,6 +18,9 @@ SELECT * FROM users WHERE email = $1 LIMIT 1;
 -- name: GetUserEmailByUsername :one
 SELECT email FROM users WHERE id = $1 LIMIT 1;
 
+-- name: GetUserProfileImageInfo :one
+SELECT  image_public_id, image_secure_url FROM users WHERE id=$1 LIMIT 1;
+
 
 -- name: GetUserPw :one
 SELECT hashed_password FROM users WHERE id = $1 LIMIT 1;
