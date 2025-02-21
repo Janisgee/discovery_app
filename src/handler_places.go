@@ -13,7 +13,6 @@ func (svr *ApiServer) autocompleteCitiesSearch(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	//http://localhost:8080/api/place/autocomplete?search=fremantle&locale=Jp-Ja
 	cityQuery := r.URL.Query().Get("search")
 	locale := r.URL.Query().Get("locale")
 	if locale == "" {
