@@ -5,23 +5,21 @@ import { useParams } from "next/navigation";
 import AppTemplate from "@/app/ui/template/appTemplate";
 import { AvatarUploader } from "@/app/ui/avatar-uploader/avatar-uploader";
 import { fetchProfileImage } from "@/app/ui/fetchAPI/fetchProfileImage";
-
-// import { revalidatePath } from "next/cache";
+import { useRouter } from "next/navigation";
 
 export default function Setting() {
   const [email, setEmail] = useState("");
   const [publicID, setPublicID] = useState("");
-  const [imageSource, setImageSource] = useState("");
+
   const params = useParams();
+
+  const router = useRouter();
 
   const defaultImage =
     "https://res.cloudinary.com/dopxvbeju/image/upload/v1740039540/kphottt1vhiuyahnzy8y.jpg";
 
   const saveAvatar = async (publicID, url) => {
-    setImageSource(url);
     setPublicID(publicID);
-    console.log("Uploaded image url:", url);
-    console.log("Uploaded public id:", publicID);
     fetchUpdateUserProfileImage(publicID, url);
     // revalidatePath("/");
   };
@@ -47,6 +45,12 @@ export default function Setting() {
     try {
       const response = await fetch(request);
       if (!response.ok) {
+        if (response.status == 401) {
+          alert(
+            `Please login again as 10 mins session expired without taking action.`,
+          );
+          router.push(`/login`);
+        }
         throw new Error(`Failed to fetch: ${response.statusText}`);
       }
 
@@ -68,14 +72,22 @@ export default function Setting() {
 
     try {
       const response = await fetch(request);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch: ${response.statusText}`);
-      }
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log("Server Response:", responseData);
+        console.log("Server Response:", responseData.user_email);
+        setEmail(responseData.user_email);
+      } else {
+        if (response.status == 401) {
+          alert(
+            `Please login again as 10 mins session expired without taking action.`,
+          );
+          router.push(`/login`);
+        }
 
-      const responseData = await response.json();
-      console.log("Server Response:", responseData);
-      console.log("Server Response:", responseData.user_email);
-      setEmail(responseData.user_email);
+        console.error("Error fetching search country:", response.statusText);
+        throw new Error(response.statusText);
+      }
     } catch (error) {
       console.error(
         "Error fetching and store user profile into database:",
@@ -126,9 +138,9 @@ export default function Setting() {
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = async (router) => {
     try {
-      const imageData = await fetchProfileImage();
+      const imageData = await fetchProfileImage(router);
       console.log(imageData);
       if (imageData != null) {
         setPublicID(imageData.publicID);
@@ -154,8 +166,9 @@ export default function Setting() {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData(router);
     fetchUserProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div>

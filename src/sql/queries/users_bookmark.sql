@@ -15,7 +15,7 @@ INNER JOIN places ON users_bookmark.place_id = places.id
 WHERE user_id = $1;
 
 -- name: GetUserBookmarkCityInfo :many
-SELECT users_bookmark.place_id, users_bookmark.place_name,users_bookmark.catagory, users_bookmark.place_text, places.country, places.city  FROM users_bookmark
+SELECT users_bookmark.place_id, users_bookmark.place_name,users_bookmark.catagory, users_bookmark.place_text, places.country, places.city, places.place_detail  FROM users_bookmark
 INNER JOIN places ON users_bookmark.place_id = places.id 
 WHERE user_id = $1 AND places.city=$2;
 

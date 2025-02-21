@@ -9,6 +9,7 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 import { fetchProfileImage } from "@/app/ui/fetchAPI/fetchProfileImage";
 import { fetchAllBookmark } from "@/app/ui/fetchAPI/fetchBookmark";
+import { fetchPlaceImage } from "@/app/ui/fetchAPI/fetchPlaceImage";
 
 import HomeTemplate from "@/app/ui/template/homeTemplate";
 import CardTemplete from "@/app/ui/template/cardTemplate";
@@ -16,32 +17,36 @@ import Link from "next/link";
 
 export default function Home() {
   const [bookmarkNum, setBookmarkNum] = useState(0);
-  const [country1, setCountry1] = useState("");
-  const [country2, setCountry2] = useState("");
-  const [country3, setCountry3] = useState("");
   const [userPublicID, setUserPublicID] = useState("");
-  const [userSecureURL, setUserSecureURL] = useState("");
+  const [itemList, setItemList] = useState([]);
 
   const params = useParams();
   const router = useRouter();
-
+  const countryGroupNumber = 3;
   const defaultImage =
     "https://res.cloudinary.com/dopxvbeju/image/upload/v1740039540/kphottt1vhiuyahnzy8y.jpg";
 
-  const generateRandomCountry = () => {
-    const randomCountry = require("random-country");
-    const country1 = randomCountry({ full: true });
-    if (country1 != "") {
-      setCountry1(country1);
+  const fetchCountryImage = async () => {
+    let itemList = [];
+    for (let i = 0; i < countryGroupNumber; i++) {
+      const randomCountry = require("random-country");
+      const country = randomCountry({ full: true });
+      try {
+        const imageURL = await fetchPlaceImage(country);
+        itemList.push(
+          <Link
+            href={`/${params.username}/location/${encodeURIComponent(country)}`}
+            key={i}
+          >
+            <CardTemplete imageSource={imageURL} text={country} />
+          </Link>,
+        );
+      } catch (error) {
+        console.error("Error fetching image for country:", error);
+      }
     }
-    const country2 = randomCountry({ full: true });
-    if (country2 != "") {
-      setCountry2(country2);
-    }
-    const country3 = randomCountry({ full: true });
-    if (country3 != "") {
-      setCountry3(country3);
-    }
+    setItemList(itemList);
+    console.log(itemList);
   };
 
   const handleSearchSubmit = (e) => {
@@ -52,24 +57,22 @@ export default function Home() {
       alert("Please enter a location");
       return;
     }
-
     router.push(
       `/${params.username}/location/${encodeURIComponent(searchData)}`,
     );
   };
 
-  const fetchData = async () => {
+  const fetchData = async (router) => {
     try {
-      const data = await fetchAllBookmark();
+      const data = await fetchAllBookmark(router);
       console.log(data);
       if (data.BookmarkedPlace != null) {
         setBookmarkNum(data.BookmarkedPlace.length);
       }
-      const imageData = await fetchProfileImage();
+      const imageData = await fetchProfileImage(router);
       console.log(imageData);
       if (imageData != null) {
         setUserPublicID(imageData.publicID);
-        setUserSecureURL(imageData.secureURL);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -77,8 +80,10 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchData();
-    generateRandomCountry();
+    fetchData(router);
+    fetchCountryImage();
+    console.log(itemList);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   console.log("upid", userPublicID);
@@ -140,31 +145,8 @@ export default function Home() {
         <div className="block-center my-5 flex-col ">
           <h3>Popular Destination</h3>
 
-          <div className="h-96 w-full overflow-auto rounded-lg">
-            <Link
-              href={`/${params.username}/location/${encodeURIComponent(country1)}`}
-            >
-              <CardTemplete
-                imageSource="/place_img/paris-france.jpg"
-                text={country1}
-              />
-            </Link>
-            <Link
-              href={`/${params.username}/location/${encodeURIComponent(country2)}`}
-            >
-              <CardTemplete
-                imageSource="/place_img/paris-france.jpg"
-                text={country2}
-              />
-            </Link>
-            <Link
-              href={`/${params.username}/location/${encodeURIComponent(country3)}`}
-            >
-              <CardTemplete
-                imageSource="/place_img/paris-france.jpg"
-                text={country3}
-              />
-            </Link>
+          <div className="size-full overflow-auto rounded-lg">
+            <ul>{itemList != [] && itemList}</ul>
           </div>
         </div>
       </HomeTemplate>

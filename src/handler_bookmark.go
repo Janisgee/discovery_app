@@ -1,10 +1,12 @@
 package main
 
 import (
+	"discoveryapp/internal/database"
 	"encoding/json"
 	"fmt"
 	"log/slog"
 	"net/http"
+	"os"
 )
 
 func (svr *ApiServer) userUnBookmarkHandler(w http.ResponseWriter, r *http.Request) {
@@ -73,6 +75,12 @@ func (svr *ApiServer) userGetAllBookmarkHandler(w http.ResponseWriter, r *http.R
 	if err != nil {
 		http.Error(w, "Fail to get all place ID from user bookmark database", http.StatusMethodNotAllowed)
 		return
+	}
+	// If no rows found, return an empty slice
+	if len(placeIDList) == 0 {
+		// Optionally log that no bookmarks were found
+		slog.Info("No bookmarked places found for user", "user_id", user_id)
+		placeIDList = []database.GetAllUserBookmarkPlaceIDRow{}
 	}
 
 	// Console response struct to send back as JSON
@@ -268,6 +276,15 @@ func (svr *ApiServer) userBookmarkHandler(w http.ResponseWriter, r *http.Request
 				http.Error(w, fmt.Sprintf("Error processing search: %s", err), http.StatusInternalServerError)
 				slog.Error("Error in GetPlaceDetails", "error", err)
 				return
+			}
+			// Set image url for place
+			if gptResponse.ImageURL == "" {
+				imageURL, err := svr.imgSvc.GetImageURL(newBookmark.PlaceName)
+				if err != nil {
+					slog.Error("Unable to get image from pexels", "error", err)
+					os.Exit(1)
+				}
+				gptResponse.ImageURL = imageURL.ImageURL
 			}
 
 			err = svr.bookmarkPlaceService.CreatePlaceData(newBookmark.PlaceID, newBookmark.PlaceName, gptResponse.Country, gptResponse.City, newBookmark.Catagory, gptResponse)

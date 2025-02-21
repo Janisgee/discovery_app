@@ -1,15 +1,34 @@
 import Image from "next/image";
+import { useState, useEffect } from "react";
+import { fetchPlaceImage } from "@/app/ui/fetchAPI/fetchPlaceImage";
 
 export default function CardTemplete({ imageSource, text }) {
+  const [countryImage, setCountryImage] = useState("");
+  const fetchData = async () => {
+    try {
+      const imageURL = await fetchPlaceImage(text);
+      setCountryImage(imageURL);
+    } catch (error) {
+      console.error("Error fetching image for country:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <div className="relative mx-auto max-w-xl">
-      <Image
-        src={imageSource}
-        className="mt-5 h-32 w-full rounded-lg object-cover"
-        alt="Image of place"
-        width={330}
-        height={125}
-      />
+      {countryImage && (
+        <Image
+          src={countryImage}
+          className="mt-5 h-32 w-full rounded-lg object-cover"
+          alt="Image of place"
+          width={330}
+          height={125}
+        />
+      )}
+
       <div className="absolute inset-0 rounded-lg bg-gray-700 opacity-40"></div>
       <div className="absolute inset-0 flex items-center justify-center">
         <h2 className="text-center text-white">{text}</h2>

@@ -30,7 +30,6 @@ export default function BookmarkTemplate({
   console.log(username);
   console.log(city);
   console.log(placeList);
-  console.log(username);
 
   let itemList = [];
   if (placeList.length > 0) {
@@ -46,7 +45,7 @@ export default function BookmarkTemplate({
           key={index}
         >
           <ItemTemplete
-            imageSource="/user_img/default.jpg"
+            imageSource={item.PlaceDetail.image_url}
             title={item.PlaceName}
             text={item.PlaceText}
             placeID={item.PlaceID}
