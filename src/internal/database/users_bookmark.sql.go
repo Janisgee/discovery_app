@@ -7,6 +7,7 @@ package database
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/google/uuid"
 )
@@ -149,7 +150,7 @@ func (q *Queries) GetUserBookmark(ctx context.Context, arg GetUserBookmarkParams
 }
 
 const getUserBookmarkCityInfo = `-- name: GetUserBookmarkCityInfo :many
-SELECT users_bookmark.place_id, users_bookmark.place_name,users_bookmark.catagory, users_bookmark.place_text, places.country, places.city  FROM users_bookmark
+SELECT users_bookmark.place_id, users_bookmark.place_name,users_bookmark.catagory, users_bookmark.place_text, places.country, places.city, places.place_detail  FROM users_bookmark
 INNER JOIN places ON users_bookmark.place_id = places.id 
 WHERE user_id = $1 AND places.city=$2
 `
@@ -160,12 +161,13 @@ type GetUserBookmarkCityInfoParams struct {
 }
 
 type GetUserBookmarkCityInfoRow struct {
-	PlaceID   string
-	PlaceName string
-	Catagory  string
-	PlaceText string
-	Country   string
-	City      string
+	PlaceID     string
+	PlaceName   string
+	Catagory    string
+	PlaceText   string
+	Country     string
+	City        string
+	PlaceDetail json.RawMessage
 }
 
 func (q *Queries) GetUserBookmarkCityInfo(ctx context.Context, arg GetUserBookmarkCityInfoParams) ([]GetUserBookmarkCityInfoRow, error) {
@@ -184,6 +186,7 @@ func (q *Queries) GetUserBookmarkCityInfo(ctx context.Context, arg GetUserBookma
 			&i.PlaceText,
 			&i.Country,
 			&i.City,
+			&i.PlaceDetail,
 		); err != nil {
 			return nil, err
 		}

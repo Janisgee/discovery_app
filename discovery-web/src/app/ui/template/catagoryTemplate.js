@@ -45,6 +45,7 @@ export default function CatagoryTemplate({ catagory }) {
         }
 
         console.error("Error fetching search country:", response.statusText);
+        throw error;
       }
     } catch (error) {
       console.error("Error fetching search country:", error);

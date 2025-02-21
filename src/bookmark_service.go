@@ -89,6 +89,7 @@ func (svc *PostgresBookmarkService) GetAllBookmarkedPlace(user_id uuid.UUID) ([]
 	}
 
 	return allPlaceIDList, nil
+
 }
 
 func (svc *PostgresBookmarkService) CreatePlaceData(place_id string, place_name string, country string, city string, catagory string, place_details *PlaceDetails) error {

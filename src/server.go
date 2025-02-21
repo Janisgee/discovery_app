@@ -116,6 +116,10 @@ func (svr *ApiServer) Run() error {
 	router.HandleFunc("/api/displayUserProfileImage", func(w http.ResponseWriter, r *http.Request) {
 		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.userProfilePicDisplayHandler)).ServeHTTP(w, r)
 	})
+	// Router for getting place image from pixel
+	router.HandleFunc("/api/getDisplayPlaceImage", func(w http.ResponseWriter, r *http.Request) {
+		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.getPlaceImageURL)).ServeHTTP(w, r)
+	})
 
 	// router for receive login details
 	router.HandleFunc("/api/login", svr.userLoginHandler)

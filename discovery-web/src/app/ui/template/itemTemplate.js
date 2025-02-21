@@ -63,6 +63,7 @@ export default function ItemTemplete({
           router.push(`/login`);
         }
         console.error("Error fetching bookmark request:", response.statusText);
+        throw error;
       }
     } catch (error) {
       console.error("Error fetching bookmark request:", error);
