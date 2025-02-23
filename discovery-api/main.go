@@ -6,7 +6,9 @@ import (
 	"discoveryweb/internal/database"
 	"discoveryweb/service"
 	"discoveryweb/service/bookmark"
+	"discoveryweb/service/email"
 	"fmt"
+	gomail "gopkg.in/mail.v2"
 	"log"
 	"log/slog"
 	"os"
@@ -69,7 +71,10 @@ func main() {
 	// Create bookmark place service to run the queries
 	var bookmarkPlaceSvc = bookmark.NewBookmarkPlaceService(dbQueries)
 
-	server := api.NewApiServer(env.WebPort, locationSvc, userSvc, placesSvc, bookmarkPlaceSvc, imageSvc)
+	var mailDialer = gomail.NewDialer("smtp.gmail.com", 587, "yanisching@gmail.com", "yjpyfqdkwkczydef")
+	var emailSvc = email.NewEmailService("yanisching@gmail.com", mailDialer)
+
+	server := api.NewApiServer(env.WebPort, locationSvc, userSvc, placesSvc, bookmarkPlaceSvc, imageSvc, emailSvc)
 
 	// Start the API server
 	err = server.Run()

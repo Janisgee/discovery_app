@@ -1,7 +1,6 @@
 package api
 
 import (
-	"discoveryweb/service"
 	"encoding/json"
 	"fmt"
 	"log/slog"
@@ -76,7 +75,7 @@ func (svr *ApiServer) userForgetPasswordHandler(w http.ResponseWriter, r *http.R
 	retrievePwLink := "http://mysite.com/forgetPwChange?" + "evpw=" + string(emailVerPWhash) + "/"
 
 	// Send reset account email to user
-	err = service.SendPasswordResetEmail(userInfo.Username, userInfo.Email, retrievePwLink)
+	err = svr.emailSvc.SendPasswordResetEmail(userInfo.Username, userInfo.Email, retrievePwLink)
 	if err != nil {
 		slog.Warn("Fail to send reset account email to user", "error", err)
 		http.Error(w, "Fail to send reset account email to user", http.StatusUnauthorized)
