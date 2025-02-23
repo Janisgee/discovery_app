@@ -3,7 +3,7 @@ package bookmark
 import (
 	"context"
 	"discoveryweb/internal/database"
-	"discoveryweb/service"
+	"discoveryweb/service/location"
 	"encoding/json"
 	"errors"
 	"github.com/google/uuid"
@@ -57,7 +57,7 @@ func (svc *postgresBookmarkService) GetAllBookmarkedPlace(user_id uuid.UUID) ([]
 
 }
 
-func (svc *postgresBookmarkService) CreatePlaceData(place_id string, place_name string, country string, city string, catagory string, place_details *service.PlaceDetails) error {
+func (svc *postgresBookmarkService) CreatePlaceData(place_id string, place_name string, country string, city string, catagory string, place_details *location.PlaceDetails) error {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -100,7 +100,7 @@ func (svc *postgresBookmarkService) GetPlaceDatabaseDetails(place_id string) (*P
 	}
 
 	// Unmarshal the JSONB column into the struct
-	var placeDetail service.PlaceDetails
+	var placeDetail location.PlaceDetails
 	err = json.Unmarshal(placeInfo.PlaceDetail, &placeDetail)
 	if err != nil {
 		slog.Error("Error unmarshal JSONB place detail", "error", err)

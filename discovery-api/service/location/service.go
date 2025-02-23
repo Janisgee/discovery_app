@@ -1,54 +1,28 @@
-package service
+package location
 
 import (
 	"context"
 	"discoveryweb/service/places"
 	"encoding/json"
 	"fmt"
+	"github.com/sashabaranov/go-openai"
 	"log/slog"
 	"strings"
-
-	"github.com/sashabaranov/go-openai"
 )
 
-type LocationService interface {
-	GetDetails(location string, category string) ([]LocationDetails, error)
-	GetPlaceDetails(location string) (*PlaceDetails, error)
-}
-
-type LocationDetails struct {
-	Image       string `json:"image"`
-	Name        string `json:"name"`
-	PlaceID     string `json:"place_id"`
-	Description string `json:"description"`
-	HasBookmark bool   `json:"hasbookmark"`
-}
-
-type PlaceDetails struct {
-	City          string `json:"city"`
-	Country       string `json:"country"`
-	ImageURL      string `json:"image_url"`
-	Description   string `json:"description"`
-	Location      string `json:"location"`
-	Opening_hours string `json:"opening_hours"`
-	History       string `json:"history"`
-	Key_features  string `json:"key_features"`
-	Conclusion    string `json:"conclusion"`
-}
-
-type GptLocationService struct {
+type gptLocationService struct {
 	gptClient     *openai.Client
 	placesService places.PlacesService
 }
 
 func NewGptService(client *openai.Client, placesService places.PlacesService) LocationService {
-	return &GptLocationService{
+	return &gptLocationService{
 		gptClient:     client,
 		placesService: placesService,
 	}
 }
 
-func (svc *GptLocationService) GetDetails(location string, category string) ([]LocationDetails, error) {
+func (svc *gptLocationService) GetDetails(location string, category string) ([]LocationDetails, error) {
 	prompt := fmt.Sprintf("Get 3 %s in %s, using a field 'places' containing  'name' (the attraction name) and 'description' (a 10-word description).", category, location)
 
 	completion, err := svc.gptClient.CreateChatCompletion(
@@ -103,7 +77,7 @@ func (svc *GptLocationService) GetDetails(location string, category string) ([]L
 	return response.Places, nil
 }
 
-func (svc *GptLocationService) GetPlaceDetails(location string) (*PlaceDetails, error) {
+func (svc *gptLocationService) GetPlaceDetails(location string) (*PlaceDetails, error) {
 	prompt := fmt.Sprintf("Get details of %s, using a field 'place_details' containing 'city'(which city %s belong to),'country'(which country %s belong to),'description'(around 20 words),'location' (address), 'opening_hours' (everyday operation hour), 'history' (around 50 words), 'key_features' (around 100 words) and 'conclusion'(around 40 words conclusion for the place).", location, location, location)
 
 	completion, err := svc.gptClient.CreateChatCompletion(

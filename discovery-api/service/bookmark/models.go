@@ -1,17 +1,17 @@
 package bookmark
 
 import (
-	"discoveryweb/service"
+	"discoveryweb/service/location"
 	"github.com/google/uuid"
 )
 
 type Place struct {
-	ID          string               `json:"id"`
-	PlaceName   string               `json:"place_name"`
-	Country     string               `json:"country"`
-	City        string               `json:"city"`
-	Category    string               `json:"category"`
-	PlaceDetail service.PlaceDetails `json:"place_detail"`
+	ID          string                `json:"id"`
+	PlaceName   string                `json:"place_name"`
+	Country     string                `json:"country"`
+	City        string                `json:"city"`
+	Category    string                `json:"category"`
+	PlaceDetail location.PlaceDetails `json:"place_detail"`
 }
 
 type UserBookmarkPlace struct {

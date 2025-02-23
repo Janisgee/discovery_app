@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"discoveryweb/api"
 	"discoveryweb/internal/database"
-	"discoveryweb/service"
 	"discoveryweb/service/bookmark"
 	"discoveryweb/service/email"
 	"discoveryweb/service/image"
+	"discoveryweb/service/location"
 	"discoveryweb/service/places"
 	"discoveryweb/service/user"
 	"fmt"
@@ -69,7 +69,7 @@ func main() {
 
 	// ChatGPT search
 	gptClient := openai.NewClient(env.GptKey)
-	var locationSvc = service.NewGptService(gptClient, placesSvc)
+	var locationSvc = location.NewGptService(gptClient, placesSvc)
 
 	// Create bookmark place service to run the queries
 	var bookmarkPlaceSvc = bookmark.NewBookmarkPlaceService(dbQueries)
