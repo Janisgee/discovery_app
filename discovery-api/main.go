@@ -7,6 +7,7 @@ import (
 	"discoveryweb/service"
 	"discoveryweb/service/bookmark"
 	"discoveryweb/service/email"
+	"discoveryweb/service/image"
 	"discoveryweb/service/places"
 	"discoveryweb/service/user"
 	"fmt"
@@ -51,7 +52,7 @@ func main() {
 	slog.Info("Successfully connected to the database!", "Connection String", dbQueries)
 
 	// Connect to pexels image client
-	imageSvc := service.NewPexelsService(env.PexelsKey)
+	imageSvc := image.NewPexelsService(env.PexelsKey)
 	result, err := imageSvc.GetImageURL("Tokyo")
 	if err != nil {
 		slog.Error("Unable to get image from pexels", "error", err)
