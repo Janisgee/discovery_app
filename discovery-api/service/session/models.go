@@ -4,4 +4,4 @@ import (
 	"errors"
 )
 
-var NoSessionError = errors.New("no session found")
+var ErrNoSession = errors.New("no session found")
