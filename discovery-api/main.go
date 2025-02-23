@@ -4,8 +4,14 @@ import (
 	"database/sql"
 	"discoveryweb/api"
 	"discoveryweb/internal/database"
-	"discoveryweb/service"
+	"discoveryweb/service/bookmark"
+	"discoveryweb/service/email"
+	"discoveryweb/service/image"
+	"discoveryweb/service/location"
+	"discoveryweb/service/places"
+	"discoveryweb/service/user"
 	"fmt"
+	gomail "gopkg.in/mail.v2"
 	"log"
 	"log/slog"
 	"os"
@@ -41,12 +47,12 @@ func main() {
 	dbQueries := database.New(db)
 
 	// Create user service to run the queries
-	var userSvc = service.NewUserService(dbQueries)
+	var userSvc = user.NewUserService(dbQueries)
 
 	slog.Info("Successfully connected to the database!", "Connection String", dbQueries)
 
 	// Connect to pexels image client
-	imageSvc := service.NewPexelsService(env.PexelsKey)
+	imageSvc := image.NewPexelsService(env.PexelsKey)
 	result, err := imageSvc.GetImageURL("Tokyo")
 	if err != nil {
 		slog.Error("Unable to get image from pexels", "error", err)
@@ -55,7 +61,7 @@ func main() {
 	fmt.Println(result)
 
 	// Google place service
-	placesSvc, err := service.NewGooglePlacesService(env.GMapsKey)
+	placesSvc, err := places.NewGooglePlacesService(env.GMapsKey)
 	if err != nil {
 		slog.Error("Unable to connect google maps service", "error", err)
 		os.Exit(1)
@@ -63,12 +69,15 @@ func main() {
 
 	// ChatGPT search
 	gptClient := openai.NewClient(env.GptKey)
-	var locationSvc = service.NewGptService(gptClient, placesSvc)
+	var locationSvc = location.NewGptService(gptClient, placesSvc)
 
 	// Create bookmark place service to run the queries
-	var bookmarkPlaceSvc = service.NewBookmarkPlaceService(dbQueries)
+	var bookmarkPlaceSvc = bookmark.NewBookmarkPlaceService(dbQueries)
 
-	server := api.NewApiServer(env.WebPort, locationSvc, userSvc, placesSvc, bookmarkPlaceSvc, imageSvc)
+	var mailDialer = gomail.NewDialer("smtp.gmail.com", 587, "yanisching@gmail.com", "yjpyfqdkwkczydef")
+	var emailSvc = email.NewEmailService("yanisching@gmail.com", mailDialer)
+
+	server := api.NewApiServer(env.WebPort, locationSvc, userSvc, placesSvc, bookmarkPlaceSvc, imageSvc, emailSvc)
 
 	// Start the API server
 	err = server.Run()

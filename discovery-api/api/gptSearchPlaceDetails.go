@@ -1,7 +1,7 @@
 package api
 
 import (
-	"discoveryweb/service"
+	"discoveryweb/service/location"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -83,7 +83,7 @@ func (svr *ApiServer) gptSearchPlaceDetails(w http.ResponseWriter, r *http.Reque
 		////////////////////////Get bookmark check//////////////////
 		// responseWithBookmarkInfo struct
 		type responseWithBookmarkInfo struct {
-			PlaceInfo   *service.PlaceDetails
+			PlaceInfo   *location.PlaceDetails
 			HasBookmark bool
 		}
 		// Get user detail
@@ -122,7 +122,7 @@ func (svr *ApiServer) gptSearchPlaceDetails(w http.ResponseWriter, r *http.Reque
 	////////////////////////Get bookmark check//////////////////
 	// responseWithBookmarkInfo struct
 	type responseWithBookmarkInfo struct {
-		PlaceInfo   service.PlaceDetails
+		PlaceInfo   location.PlaceDetails
 		HasBookmark bool
 	}
 	// Get user detail

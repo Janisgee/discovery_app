@@ -1,31 +1,26 @@
-package service
+package image
 
 import (
 	"context"
 	"fmt"
-	"log/slog"
-
 	"github.com/kosa3/pexels-go"
+	"log/slog"
 )
 
-type ImageURl struct {
-	ImageID  int    `json:"id"`
-	ImageURL string `json:"url"`
-}
-
-type ImageService struct {
+type pexelImageService struct {
 	imageClient *pexels.Client
 }
 
 // Create Pexel client
-func NewPexelsService(key string) *ImageService {
+func NewPexelsService(key string) ImageService {
 	client := pexels.NewClient(key)
 
-	return &ImageService{
+	return &pexelImageService{
 		imageClient: client,
 	}
 }
-func (svc *ImageService) GetImageURL(search string) (*ImageURl, error) {
+
+func (svc *pexelImageService) GetImageURL(search string) (*ImageURl, error) {
 	ctx := context.Background()
 	photoResponse, err := svc.imageClient.PhotoService.Search(ctx, &pexels.PhotoParams{Query: search, Page: 1, PerPage: 1, Size: "Medium"})
 	if err != nil {
