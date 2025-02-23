@@ -1,28 +1,16 @@
-package service
+package places
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log/slog"
-	"net/http"
-
 	"google.golang.org/api/option"
 	"google.golang.org/api/places/v1"
+	"log/slog"
+	"net/http"
 )
 
-type CityResult struct {
-	Id     string `json:"id"`
-	Name   string `json:"name"`
-	Region string `json:"region"`
-}
-
-type PlacesService interface {
-	AutocompleteCities(search string, lang string) ([]CityResult, error)
-	GetPlaceID(location string) (string, error)
-}
-
-type GooglePlacesService struct {
+type googlePlacesService struct {
 	ggPlacesClient *places.Service
 	key            string
 }
@@ -33,13 +21,13 @@ func NewGooglePlacesService(key string) (PlacesService, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &GooglePlacesService{
+	return &googlePlacesService{
 		ggPlacesClient: service,
 		key:            key,
 	}, nil
 }
 
-func (svc *GooglePlacesService) AutocompleteCities(search string, lang string) ([]CityResult, error) {
+func (svc *googlePlacesService) AutocompleteCities(search string, lang string) ([]CityResult, error) {
 	result, err := svc.ggPlacesClient.Places.Autocomplete(&places.GoogleMapsPlacesV1AutocompletePlacesRequest{
 		IncludedPrimaryTypes: []string{"administrative_area_level_1", "administrative_area_level_2", "country"},
 		LanguageCode:         lang,
@@ -73,7 +61,7 @@ func (svc *GooglePlacesService) AutocompleteCities(search string, lang string) (
 	return cities, nil
 }
 
-func (svc *GooglePlacesService) GetPlaceID(location string) (string, error) {
+func (svc *googlePlacesService) GetPlaceID(location string) (string, error) {
 	// Get key
 	// Construct the URL for the Google Places API FindPlaceFromText request
 	baseURL := "https://maps.googleapis.com/maps/api/place/findplacefromtext/json"
@@ -89,7 +77,7 @@ func (svc *GooglePlacesService) GetPlaceID(location string) (string, error) {
 	defer resp.Body.Close()
 
 	// Decode the JSON response
-	var response PlaceFindResponse
+	var response placeFindResponse
 	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
 		return "", fmt.Errorf("failed to decode response: %v", err)
 	}
@@ -102,11 +90,4 @@ func (svc *GooglePlacesService) GetPlaceID(location string) (string, error) {
 	// Return the Place ID from the first candidate result
 	return response.Candidates[0].PlaceID, nil
 
-}
-
-type PlaceFindResponse struct {
-	Candidates []struct {
-		PlaceID string `json:"place_id"`
-	} `json:"candidates"`
-	Status string `json:"status"`
 }

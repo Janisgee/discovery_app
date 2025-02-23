@@ -7,6 +7,7 @@ import (
 	"discoveryweb/service"
 	"discoveryweb/service/bookmark"
 	"discoveryweb/service/email"
+	"discoveryweb/service/places"
 	"discoveryweb/service/user"
 	"fmt"
 	gomail "gopkg.in/mail.v2"
@@ -59,7 +60,7 @@ func main() {
 	fmt.Println(result)
 
 	// Google place service
-	placesSvc, err := service.NewGooglePlacesService(env.GMapsKey)
+	placesSvc, err := places.NewGooglePlacesService(env.GMapsKey)
 	if err != nil {
 		slog.Error("Unable to connect google maps service", "error", err)
 		os.Exit(1)

@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"discoveryweb/service/places"
 	"encoding/json"
 	"fmt"
 	"log/slog"
@@ -37,10 +38,10 @@ type PlaceDetails struct {
 
 type GptLocationService struct {
 	gptClient     *openai.Client
-	placesService PlacesService
+	placesService places.PlacesService
 }
 
-func NewGptService(client *openai.Client, placesService PlacesService) LocationService {
+func NewGptService(client *openai.Client, placesService places.PlacesService) LocationService {
 	return &GptLocationService{
 		gptClient:     client,
 		placesService: placesService,

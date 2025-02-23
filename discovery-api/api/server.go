@@ -5,6 +5,7 @@ import (
 	"discoveryweb/service"
 	"discoveryweb/service/bookmark"
 	"discoveryweb/service/email"
+	"discoveryweb/service/places"
 	"discoveryweb/service/user"
 	"fmt"
 	"log/slog"
@@ -35,13 +36,13 @@ type ApiServer struct {
 	locationSvc          service.LocationService
 	userSvc              user.UserService
 	memoryUserSessions   map[string]UserSession
-	placesService        service.PlacesService
+	placesService        places.PlacesService
 	bookmarkPlaceService bookmark.BookmarkPlaceService
 	imgSvc               *service.ImageService
 	emailSvc             email.EmailService
 }
 
-func NewApiServer(listenPort uint16, locationSvc service.LocationService, userSvc user.UserService, placesService service.PlacesService, bookmarkPlaceService bookmark.BookmarkPlaceService, imgSvc *service.ImageService, emailSvc email.EmailService) *ApiServer {
+func NewApiServer(listenPort uint16, locationSvc service.LocationService, userSvc user.UserService, placesService places.PlacesService, bookmarkPlaceService bookmark.BookmarkPlaceService, imgSvc *service.ImageService, emailSvc email.EmailService) *ApiServer {
 	return &ApiServer{
 		listenPort,
 		locationSvc,
