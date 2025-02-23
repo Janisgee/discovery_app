@@ -212,8 +212,7 @@ func (svr *ApiServer) currentUserSessionMiddleware(next http.Handler) http.Handl
 
 		validUserId, err := svr.sessionSvc.CheckAndExtendSession(*sessionId)
 		if err != nil {
-			// If no user session exists for this session ID, continue to the next handler
-			next.ServeHTTP(w, r)
+			http.Error(w, "Session expired or invalid", http.StatusUnauthorized)
 			return
 		}
 
