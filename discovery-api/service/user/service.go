@@ -1,4 +1,4 @@
-package service
+package user
 
 import (
 	"context"
@@ -6,56 +6,22 @@ import (
 	"discoveryweb/util"
 	"errors"
 	"fmt"
-	"log/slog"
-
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
+	"log/slog"
 )
 
-type UserService interface {
-	CreateUser(username string, email string, password string) (*User, error)
-	VerifyUserLogin(email string, password string) (*uuid.UUID, error)
-	GetUserInfo(email string) (*User, error)
-	GetUserProfile(id uuid.UUID) (string, error)
-	GetUserPwByID(id *uuid.UUID) (string, error)
-	CreateUserEmailPw(email string, hashedEmailPw string, user_id uuid.UUID) error
-	GetUserEmailFromEmailPw(pwResetCode string) (string, error)
-	UpdateUserPw(password string, id uuid.UUID) (string, error)
-	ResetUserPw(email string, password string, pw_reset_code string) (*User, error)
-	UpdateUserProfileImage(publicID string, secureURL string, userID *uuid.UUID) (*User, error)
-	DisplayUserProfileImage(userID uuid.UUID) (*User, error)
-}
-
-// User struct to hold input data for GET & SET
-type User struct {
-	ID              uuid.UUID `json:"id"`
-	Username        string    `json:"username"`
-	ImagePublicID   string    `json:"public_id"`
-	ImageSecureURL  string    `json:"secure_url"`
-	CreatedAt       string    `json:"created_at"`
-	UpdatedAt       string    `json:"updated_at"`
-	Email           string    `json:"email"`
-	Hashed_password string    `json:"password"`
-}
-
-// UserEmailPw struct
-type UserEmailPw struct {
-	Email       string    `json:"email"`
-	PwResetCode string    `json:"pw_reset_code"`
-	UserID      uuid.UUID `json:"user_id"`
-}
-
-type PostgresUserService struct {
+type postgresUserService struct {
 	dbQueries *database.Queries
 }
 
 func NewUserService(dbQueries *database.Queries) UserService {
-	return &PostgresUserService{
+	return &postgresUserService{
 		dbQueries,
 	}
 }
 
-func (svc *PostgresUserService) CreateUser(username string, email string, password string) (*User, error) {
+func (svc *postgresUserService) CreateUser(username string, email string, password string) (*User, error) {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -96,7 +62,7 @@ func (svc *PostgresUserService) CreateUser(username string, email string, passwo
 }
 
 // Get user info by email
-func (svc *PostgresUserService) GetUserInfo(email string) (*User, error) {
+func (svc *postgresUserService) GetUserInfo(email string) (*User, error) {
 	// Get username from input email
 	// Create an empty context
 	ctx := context.Background()
@@ -120,7 +86,7 @@ func (svc *PostgresUserService) GetUserInfo(email string) (*User, error) {
 }
 
 // Get user email by id
-func (svc *PostgresUserService) GetUserProfile(id uuid.UUID) (string, error) {
+func (svc *postgresUserService) GetUserProfile(id uuid.UUID) (string, error) {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -134,7 +100,7 @@ func (svc *PostgresUserService) GetUserProfile(id uuid.UUID) (string, error) {
 	return userEmail, nil
 }
 
-func (svc *PostgresUserService) CreateUserEmailPw(email string, hashedEmailPw string, user_id uuid.UUID) error {
+func (svc *postgresUserService) CreateUserEmailPw(email string, hashedEmailPw string, user_id uuid.UUID) error {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -157,7 +123,7 @@ func (svc *PostgresUserService) CreateUserEmailPw(email string, hashedEmailPw st
 }
 
 // ///////////////////////////////////////////////////////
-func (svc *PostgresUserService) GetUserPwByID(id *uuid.UUID) (string, error) {
+func (svc *postgresUserService) GetUserPwByID(id *uuid.UUID) (string, error) {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -171,7 +137,7 @@ func (svc *PostgresUserService) GetUserPwByID(id *uuid.UUID) (string, error) {
 }
 
 // //////////////////////////////////////////////////////
-func (svc *PostgresUserService) GetUserEmailFromEmailPw(pwResetCode string) (string, error) {
+func (svc *postgresUserService) GetUserEmailFromEmailPw(pwResetCode string) (string, error) {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -188,7 +154,7 @@ func (svc *PostgresUserService) GetUserEmailFromEmailPw(pwResetCode string) (str
 
 /////////////////////////////////////////////////////////////////////
 
-func (svc *PostgresUserService) VerifyUserLogin(email string, password string) (*uuid.UUID, error) {
+func (svc *postgresUserService) VerifyUserLogin(email string, password string) (*uuid.UUID, error) {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -207,7 +173,7 @@ func (svc *PostgresUserService) VerifyUserLogin(email string, password string) (
 	return &user.ID, nil
 }
 
-func (svc *PostgresUserService) UpdateUserPw(password string, id uuid.UUID) (string, error) {
+func (svc *postgresUserService) UpdateUserPw(password string, id uuid.UUID) (string, error) {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -234,7 +200,7 @@ func (svc *PostgresUserService) UpdateUserPw(password string, id uuid.UUID) (str
 }
 
 // //////////////////////////////////////////////////
-func (svc *PostgresUserService) ResetUserPw(email string, password string, pw_reset_code string) (*User, error) {
+func (svc *postgresUserService) ResetUserPw(email string, password string, pw_reset_code string) (*User, error) {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -272,7 +238,7 @@ func (svc *PostgresUserService) ResetUserPw(email string, password string, pw_re
 	return userInformation, nil
 }
 
-func (svc *PostgresUserService) UpdateUserProfileImage(publicID string, secureURL string, userID *uuid.UUID) (*User, error) {
+func (svc *postgresUserService) UpdateUserProfileImage(publicID string, secureURL string, userID *uuid.UUID) (*User, error) {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -298,7 +264,7 @@ func (svc *PostgresUserService) UpdateUserProfileImage(publicID string, secureUR
 	return userInformation, nil
 }
 
-func (svc *PostgresUserService) DisplayUserProfileImage(userID uuid.UUID) (*User, error) {
+func (svc *postgresUserService) DisplayUserProfileImage(userID uuid.UUID) (*User, error) {
 	// Create an empty context
 	ctx := context.Background()
 

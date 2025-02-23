@@ -7,6 +7,7 @@ import (
 	"discoveryweb/service"
 	"discoveryweb/service/bookmark"
 	"discoveryweb/service/email"
+	"discoveryweb/service/user"
 	"fmt"
 	gomail "gopkg.in/mail.v2"
 	"log"
@@ -44,7 +45,7 @@ func main() {
 	dbQueries := database.New(db)
 
 	// Create user service to run the queries
-	var userSvc = service.NewUserService(dbQueries)
+	var userSvc = user.NewUserService(dbQueries)
 
 	slog.Info("Successfully connected to the database!", "Connection String", dbQueries)
 
