@@ -2,6 +2,6 @@
 
 DIR="$(dirname "${BASH_SOURCE[0]}")"
 
-cd $DIR/../src
+cd $DIR/../discovery-api
 go get
-go build -o ../dist/discovery_app.exe
+go build -o ./dist/discovery_api.exe
