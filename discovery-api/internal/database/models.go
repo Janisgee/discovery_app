@@ -22,6 +22,13 @@ type Place struct {
 	UpdatedAt   time.Time
 }
 
+type Session struct {
+	ID        uuid.UUID
+	UserID    uuid.UUID
+	CreatedAt time.Time
+	ExpiresAt time.Time
+}
+
 type User struct {
 	ID             uuid.UUID
 	Username       string
