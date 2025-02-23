@@ -39,7 +39,7 @@ func (svc *postgresSessionService) CheckAndExtendSession(id uuid.UUID) (uuid.UUI
 	session, err := svc.db.ExtendSession(ctx, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return uuid.Nil, NoSessionError
+			return uuid.Nil, ErrNoSession
 		} else {
 			slog.Error("Error when checking/extending session", "err", err)
 			return uuid.Nil, err
