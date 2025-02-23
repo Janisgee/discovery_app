@@ -40,16 +40,21 @@ func main() {
 		slog.Error("Unable to connect to database", "error", err)
 		os.Exit(1)
 	}
+	slog.Info("Successfully connected to the database!")
 
 	defer db.Close()
+
+	err = migrateDb(db)
+	if err != nil {
+		slog.Error("Unable to complete goose migrations", "err", err)
+		os.Exit(1)
+	}
 
 	// Use generated database package to create a new *database.Queries instance
 	dbQueries := database.New(db)
 
 	// Create user service to run the queries
 	var userSvc = user.NewUserService(dbQueries)
-
-	slog.Info("Successfully connected to the database!", "Connection String", dbQueries)
 
 	// Connect to pexels image client
 	imageSvc := image.NewPexelsService(env.PexelsKey)
