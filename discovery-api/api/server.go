@@ -28,11 +28,6 @@ type contextKey string
 
 const currentUserSessionKey contextKey = "CurrentUserSession"
 
-type UserSession struct {
-	userId     *uuid.UUID
-	expiryTime time.Time
-}
-
 type ApiServer struct {
 	listenPort           uint16
 	locationSvc          location.LocationService
