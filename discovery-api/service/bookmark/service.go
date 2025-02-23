@@ -1,67 +1,26 @@
-package service
+package bookmark
 
 import (
 	"context"
 	"discoveryweb/internal/database"
+	"discoveryweb/service"
 	"encoding/json"
 	"errors"
-	"log/slog"
-
 	"github.com/google/uuid"
+	"log/slog"
 )
 
-type BookmarkPlaceService interface {
-	CreatePlaceData(place_id string, place_name string, country string, city string, catagory string, place_detail *PlaceDetails) error
-	GetPlaceDatabaseDetails(place_id string) (*Place, error)
-	CreateUserBookmark(user_id uuid.UUID, username string, place_id string, place_name string, catagory string, place_text string) (*UserBookmarkPlace, error)
-	DeleteUserBookmark(user_id uuid.UUID, place_id string) (*UserBookmarkPlace, error)
-	CheckPlaceHasBookmarkedByUser(place_id string, user_id uuid.UUID) (bool, error)
-	GetAllBookmarkedPlace(user_id uuid.UUID) ([]database.GetAllUserBookmarkPlaceIDRow, error)
-	GetAllBookmarkedCity(user_id uuid.UUID, city string) ([]database.GetUserBookmarkCityInfoRow, error)
-	GetPlaceIDFromDB(placeName string) (string, error)
-}
-
-// Place struct to hold input
-type Place struct {
-	ID          string       `json:"id"`
-	PlaceName   string       `json:"place_name"`
-	Country     string       `json:"country"`
-	City        string       `json:"city"`
-	Category    string       `json:"category"`
-	PlaceDetail PlaceDetails `json:"place_detail"`
-}
-
-// userBookmark struct
-type UserBookmarkPlace struct {
-	ID        uuid.UUID `json:"id"`
-	UserID    uuid.UUID `json:"user_id"`
-	Username  string    `json:"username"`
-	PlaceID   string    `json:"place_id"`
-	PlaceName string    `json:"place_name"`
-	Catagory  string    `json:"catagory"`
-	PlaceText string    `json:"place_text"`
-}
-
-// type BookmarkANDplaceData struct {
-// 	PlaceID   string `json:"place_id"`
-// 	PlaceName string `json:"place_name"`
-// 	Catagory  string `json:"catagory"`
-// 	PlaceText string `json:"place_text"`
-// 	Country   string `json:"country"`
-// 	City      string `json:"city"`
-// }
-
-type PostgresBookmarkService struct {
+type postgresBookmarkService struct {
 	dbQueries *database.Queries
 }
 
 func NewBookmarkPlaceService(dbQueries *database.Queries) BookmarkPlaceService {
-	return &PostgresBookmarkService{
+	return &postgresBookmarkService{
 		dbQueries,
 	}
 }
 
-func (svc *PostgresBookmarkService) GetAllBookmarkedCity(user_id uuid.UUID, city string) ([]database.GetUserBookmarkCityInfoRow, error) {
+func (svc *postgresBookmarkService) GetAllBookmarkedCity(user_id uuid.UUID, city string) ([]database.GetUserBookmarkCityInfoRow, error) {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -82,7 +41,7 @@ func (svc *PostgresBookmarkService) GetAllBookmarkedCity(user_id uuid.UUID, city
 
 }
 
-func (svc *PostgresBookmarkService) GetAllBookmarkedPlace(user_id uuid.UUID) ([]database.GetAllUserBookmarkPlaceIDRow, error) {
+func (svc *postgresBookmarkService) GetAllBookmarkedPlace(user_id uuid.UUID) ([]database.GetAllUserBookmarkPlaceIDRow, error) {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -98,7 +57,7 @@ func (svc *PostgresBookmarkService) GetAllBookmarkedPlace(user_id uuid.UUID) ([]
 
 }
 
-func (svc *PostgresBookmarkService) CreatePlaceData(place_id string, place_name string, country string, city string, catagory string, place_details *PlaceDetails) error {
+func (svc *postgresBookmarkService) CreatePlaceData(place_id string, place_name string, country string, city string, catagory string, place_details *service.PlaceDetails) error {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -127,8 +86,7 @@ func (svc *PostgresBookmarkService) CreatePlaceData(place_id string, place_name 
 	return nil
 }
 
-// ////////////////////////////////////////////////////////////////////
-func (svc *PostgresBookmarkService) GetPlaceDatabaseDetails(place_id string) (*Place, error) {
+func (svc *postgresBookmarkService) GetPlaceDatabaseDetails(place_id string) (*Place, error) {
 
 	// Create an empty context
 	ctx := context.Background()
@@ -142,7 +100,7 @@ func (svc *PostgresBookmarkService) GetPlaceDatabaseDetails(place_id string) (*P
 	}
 
 	// Unmarshal the JSONB column into the struct
-	var placeDetail PlaceDetails
+	var placeDetail service.PlaceDetails
 	err = json.Unmarshal(placeInfo.PlaceDetail, &placeDetail)
 	if err != nil {
 		slog.Error("Error unmarshal JSONB place detail", "error", err)
@@ -162,7 +120,7 @@ func (svc *PostgresBookmarkService) GetPlaceDatabaseDetails(place_id string) (*P
 	return placeInformation, nil
 }
 
-func (svc *PostgresBookmarkService) GetPlaceIDFromDB(placeName string) (string, error) {
+func (svc *postgresBookmarkService) GetPlaceIDFromDB(placeName string) (string, error) {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -174,7 +132,7 @@ func (svc *PostgresBookmarkService) GetPlaceIDFromDB(placeName string) (string, 
 	return place_id, nil
 }
 
-func (svc *PostgresBookmarkService) CreateUserBookmark(user_id uuid.UUID, username string, place_id string, place_name string, catagory string, place_text string) (*UserBookmarkPlace, error) {
+func (svc *postgresBookmarkService) CreateUserBookmark(user_id uuid.UUID, username string, place_id string, place_name string, catagory string, place_text string) (*UserBookmarkPlace, error) {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -203,7 +161,7 @@ func (svc *PostgresBookmarkService) CreateUserBookmark(user_id uuid.UUID, userna
 	return bookmarkPlace, nil
 }
 
-func (svc *PostgresBookmarkService) CheckPlaceHasBookmarkedByUser(place_id string, user_id uuid.UUID) (bool, error) {
+func (svc *postgresBookmarkService) CheckPlaceHasBookmarkedByUser(place_id string, user_id uuid.UUID) (bool, error) {
 	// Create an empty context
 	ctx := context.Background()
 
@@ -222,7 +180,7 @@ func (svc *PostgresBookmarkService) CheckPlaceHasBookmarkedByUser(place_id strin
 	return true, nil
 }
 
-func (svc *PostgresBookmarkService) DeleteUserBookmark(user_id uuid.UUID, place_id string) (*UserBookmarkPlace, error) {
+func (svc *postgresBookmarkService) DeleteUserBookmark(user_id uuid.UUID, place_id string) (*UserBookmarkPlace, error) {
 
 	// Create an empty context
 	ctx := context.Background()

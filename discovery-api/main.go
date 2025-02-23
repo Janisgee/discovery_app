@@ -5,6 +5,7 @@ import (
 	"discoveryweb/api"
 	"discoveryweb/internal/database"
 	"discoveryweb/service"
+	"discoveryweb/service/bookmark"
 	"fmt"
 	"log"
 	"log/slog"
@@ -66,7 +67,7 @@ func main() {
 	var locationSvc = service.NewGptService(gptClient, placesSvc)
 
 	// Create bookmark place service to run the queries
-	var bookmarkPlaceSvc = service.NewBookmarkPlaceService(dbQueries)
+	var bookmarkPlaceSvc = bookmark.NewBookmarkPlaceService(dbQueries)
 
 	server := api.NewApiServer(env.WebPort, locationSvc, userSvc, placesSvc, bookmarkPlaceSvc, imageSvc)
 

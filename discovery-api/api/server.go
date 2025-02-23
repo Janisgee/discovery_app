@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"discoveryweb/service"
+	"discoveryweb/service/bookmark"
 	"fmt"
 	"log/slog"
 	"math/rand/v2"
@@ -33,11 +34,11 @@ type ApiServer struct {
 	userSvc              service.UserService
 	memoryUserSessions   map[string]UserSession
 	placesService        service.PlacesService
-	bookmarkPlaceService service.BookmarkPlaceService
+	bookmarkPlaceService bookmark.BookmarkPlaceService
 	imgSvc               *service.ImageService
 }
 
-func NewApiServer(listenPort uint16, locationSvc service.LocationService, userSvc service.UserService, placesService service.PlacesService, bookmarkPlaceService service.BookmarkPlaceService, imgSvc *service.ImageService) *ApiServer {
+func NewApiServer(listenPort uint16, locationSvc service.LocationService, userSvc service.UserService, placesService service.PlacesService, bookmarkPlaceService bookmark.BookmarkPlaceService, imgSvc *service.ImageService) *ApiServer {
 	return &ApiServer{
 		listenPort, locationSvc, userSvc, map[string]UserSession{}, placesService, bookmarkPlaceService, imgSvc,
 	}
