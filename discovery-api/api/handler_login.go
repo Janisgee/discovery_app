@@ -4,9 +4,6 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
-	"time"
-
-	"github.com/google/uuid"
 )
 
 func (svr *ApiServer) userLoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -42,17 +39,14 @@ func (svr *ApiServer) userLoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create a session token
-	token := uuid.NewString()
-	expiryTime := time.Now().Add(600 * time.Second) // expires in 10 min
-
-	// Store the session in server memory
-	svr.memoryUserSessions[token] = UserSession{
-		userId:     validUserId,
-		expiryTime: expiryTime,
+	sessionId, err := svr.sessionSvc.CreateSession(*validUserId)
+	if err != nil {
+		slog.Error("Unable to create new session after login", "err", err)
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
+		return
 	}
 
-	setSectionCookie(w, token, expiryTime)
+	setSectionCookie(w, sessionId.String())
 
 	// Get username from user input email
 	userInfo, err := svr.userSvc.GetUserInfo(newLogin.Email)

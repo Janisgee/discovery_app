@@ -17,7 +17,6 @@ export default function HomeTemplate({ children }) {
 
   const fetchLogoutRequest = async () => {
     const request = new Request("http://localhost:8080/api/logout", {
-      method: "POST", // HTTP method
       credentials: "include",
     });
 
