@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"github.com/google/uuid"
 	"net/http"
 	"time"
 )
@@ -19,12 +20,12 @@ func sendErrorResponse(w http.ResponseWriter, statusCode int, message string) {
 	}
 }
 
-func setSectionCookie(w http.ResponseWriter, token string, expiryTime time.Time) {
+func setSectionCookie(w http.ResponseWriter, token string) {
 	// Set the session id cookie in response, not visible to Javascript (HttpOnly)
 	http.SetCookie(w, &http.Cookie{
 		Name:     "DA_SESSION_ID",
 		Value:    token,
-		Expires:  expiryTime,
+		Expires:  time.Now().Add(1800 * time.Second),
 		HttpOnly: true,
 		SameSite: http.SameSiteNoneMode,
 		Secure:   true,
@@ -44,4 +45,19 @@ func clearSectionCookie(w http.ResponseWriter) {
 		SameSite: http.SameSiteNoneMode,
 		Secure:   true,
 	})
+}
+
+func sessionIdFromCookie(r *http.Request) *uuid.UUID {
+	// Fetch the session ID from the request cookie
+	sessionId, err := r.Cookie("DA_SESSION_ID")
+	if err != nil {
+		return nil
+	}
+
+	sessionUuid, err := uuid.Parse(sessionId.Value)
+	if err != nil {
+		return nil
+	}
+
+	return &sessionUuid
 }

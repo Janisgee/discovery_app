@@ -9,6 +9,7 @@ import (
 	"discoveryweb/service/image"
 	"discoveryweb/service/location"
 	"discoveryweb/service/places"
+	"discoveryweb/service/session"
 	"discoveryweb/service/user"
 	"fmt"
 	gomail "gopkg.in/mail.v2"
@@ -82,7 +83,9 @@ func main() {
 	var mailDialer = gomail.NewDialer("smtp.gmail.com", 587, "yanisching@gmail.com", "yjpyfqdkwkczydef")
 	var emailSvc = email.NewEmailService("yanisching@gmail.com", mailDialer)
 
-	server := api.NewApiServer(env.WebPort, locationSvc, userSvc, placesSvc, bookmarkPlaceSvc, imageSvc, emailSvc)
+	var sessionSvc = session.NewSessionService(dbQueries)
+
+	server := api.NewApiServer(env.WebPort, locationSvc, userSvc, placesSvc, bookmarkPlaceSvc, imageSvc, emailSvc, sessionSvc)
 
 	// Start the API server
 	err = server.Run()

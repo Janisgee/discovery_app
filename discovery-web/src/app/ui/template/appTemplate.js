@@ -12,6 +12,11 @@ import {
 
 export default function AppTemplate({ children }) {
   const params = useParams();
+
+  const logout = () => {
+    fetch("http://localhost:8080/api/logout", { credentials: "include" });
+  };
+
   return (
     <div className="background-yellow font-inter">
       <div className="p-5">
@@ -29,7 +34,7 @@ export default function AppTemplate({ children }) {
                 <FontAwesomeIcon icon={faHeart} size="2x" />
               </Link>
               <span className="ml-5">
-                <Link href="/">
+                <Link href="/" onClick={logout}>
                   <FontAwesomeIcon icon={faRightFromBracket} size="2x" />
                 </Link>
               </span>

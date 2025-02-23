@@ -7,6 +7,7 @@ import (
 	"discoveryweb/service/image"
 	"discoveryweb/service/location"
 	"discoveryweb/service/places"
+	"discoveryweb/service/session"
 	"discoveryweb/service/user"
 	"fmt"
 	"log/slog"
@@ -36,23 +37,23 @@ type ApiServer struct {
 	listenPort           uint16
 	locationSvc          location.LocationService
 	userSvc              user.UserService
-	memoryUserSessions   map[string]UserSession
 	placesService        places.PlacesService
 	bookmarkPlaceService bookmark.BookmarkPlaceService
 	imgSvc               image.ImageService
 	emailSvc             email.EmailService
+	sessionSvc           session.SessionService
 }
 
-func NewApiServer(listenPort uint16, locationSvc location.LocationService, userSvc user.UserService, placesService places.PlacesService, bookmarkPlaceService bookmark.BookmarkPlaceService, imgSvc image.ImageService, emailSvc email.EmailService) *ApiServer {
+func NewApiServer(listenPort uint16, locationSvc location.LocationService, userSvc user.UserService, placesService places.PlacesService, bookmarkPlaceService bookmark.BookmarkPlaceService, imgSvc image.ImageService, emailSvc email.EmailService, sessionSvc session.SessionService) *ApiServer {
 	return &ApiServer{
 		listenPort,
 		locationSvc,
 		userSvc,
-		map[string]UserSession{},
 		placesService,
 		bookmarkPlaceService,
 		imgSvc,
 		emailSvc,
+		sessionSvc,
 	}
 }
 
@@ -202,43 +203,26 @@ func requestTelemetryMiddleware(next http.Handler) http.Handler {
 func (svr *ApiServer) currentUserSessionMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		// Log all cookies in the request for debugging purposes
-		for _, cookie := range r.Cookies() {
-			slog.Info("Request Cookie", "name", cookie.Name, "value", cookie.Value)
-		}
-		// Fetch the session ID from the request cookie
-		sessionId, err := r.Cookie("DA_SESSION_ID")
-		if err != nil {
-			slog.Warn("Failed to get request cookie of field: 'DA_SESSION_ID'")
+		sessionId := sessionIdFromCookie(r)
+
+		if sessionId == nil {
 			http.Error(w, "Missing session ID", http.StatusUnauthorized)
 			return
 		}
-		if sessionId == nil {
-			// If there's no session ID, continue to the next handler
-			next.ServeHTTP(w, r)
-			return
-		}
 
-		currentUserSession, exists := svr.memoryUserSessions[sessionId.Value]
-		if !exists {
+		validUserId, err := svr.sessionSvc.CheckAndExtendSession(*sessionId)
+		if err != nil {
 			// If no user session exists for this session ID, continue to the next handler
 			next.ServeHTTP(w, r)
 			return
 		}
 
-		// if the session has not expired (Add userId from the UserSession)
-		if currentUserSession.expiryTime.After(time.Now()) {
+		// Increase cookie expiry time
+		setSectionCookie(w, sessionId.String())
 
-			// Stores the userId in the request context, making it accessible to downstream handlers.
-			newCtx := context.WithValue(r.Context(), currentUserSessionKey, *currentUserSession.userId)
-			r = r.WithContext(newCtx)
-
-			//Update the expiry time in memory to extend the session
-			newExpiryTime := time.Now().Add(600 * time.Second)
-			currentUserSession.expiryTime = newExpiryTime
-			svr.memoryUserSessions[sessionId.Value] = currentUserSession
-
-		}
+		// Stores the userId in the request context, making it accessible to downstream handlers.
+		newCtx := context.WithValue(r.Context(), currentUserSessionKey, validUserId)
+		r = r.WithContext(newCtx)
 
 		next.ServeHTTP(w, r)
 	})
