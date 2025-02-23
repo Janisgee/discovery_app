@@ -5,46 +5,50 @@ on:
     branches: [main]
 
 jobs:
-  tests:
-    name: Tests
+  lint:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@v5
         with:
           go-version: '1.23.1'
 
-      - name: Run tests
-        run: cd src && go test -cover ./...
+      - name: Format check
+        run: cd discovery-api && test -z $(go fmt ./...)
 
-  style:
-    name: Style
+
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@v5
         with:
           go-version: '1.23.1'
 
-      - name: Check formatting
-        run: cd src && test -z $(go fmt ./...)
+      - name: Build
+        run: ./scripts/build.sh
 
-      - name: Install staticcheck (linting checks)
+
+  analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.1'
+
+      - name: Install staticcheck (static analysis)
         run: go install honnef.co/go/tools/cmd/staticcheck@latest
 
-      - name: Check staticcheck for linting
-        run: cd src && staticcheck ./...
+      - name: Run static analysis
+        run: cd discovery-api && staticcheck ./...
 
       - name: Install gosec (security checks)
         run: go install github.com/securego/gosec/v2/cmd/gosec@latest
 
-      - name: Security checks
-        run: cd src && gosec -exclude-dir=internal ./...
+      - name: Run security analysis
+        run: cd discovery-api && gosec -exclude-dir=internal ./...

@@ -2,4 +2,4 @@
 
 DIR="$(dirname "${BASH_SOURCE[0]}")"
 
-docker run --rm -v $DIR/../src:/src -w //src sqlc/sqlc generate
+docker run --rm -v $DIR/../discovery-api:/discovery-api -w //discovery-api sqlc/sqlc generate
