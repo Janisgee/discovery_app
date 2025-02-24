@@ -21,7 +21,7 @@ export default function LocationPlace() {
             href={`/${params.username}/location/${params.location}/attraction`}
           >
             <CardTemplete
-              imageSource="/catagory_img/attraction.jpg"
+              imageSource="https://res.cloudinary.com/dopxvbeju/image/upload/v1740377395/attraction_kpgvjr.jpg"
               text="Attraction"
             />
           </Link>
@@ -29,7 +29,7 @@ export default function LocationPlace() {
             href={`/${params.username}/location/${params.location}/restaurant`}
           >
             <CardTemplete
-              imageSource="/catagory_img/restaurant.jpg"
+              imageSource="https://res.cloudinary.com/dopxvbeju/image/upload/v1740377385/restaurant_rl4pkm.jpg"
               text="Restaurant"
             />
           </Link>
@@ -37,7 +37,7 @@ export default function LocationPlace() {
             href={`/${params.username}/location/${params.location}/shopping`}
           >
             <CardTemplete
-              imageSource="/catagory_img/shopping.jpg"
+              imageSource="https://res.cloudinary.com/dopxvbeju/image/upload/v1740377384/shopping_ii3p7t.jpg"
               text="Shopping"
             />
           </Link>
@@ -45,18 +45,21 @@ export default function LocationPlace() {
             href={`/${params.username}/location/${params.location}/activity`}
           >
             <CardTemplete
-              imageSource="/catagory_img/activity.jpg"
+              imageSource="https://res.cloudinary.com/dopxvbeju/image/upload/v1740377384/activity_bnahh9.jpg"
               text="Activity"
             />
           </Link>
           <Link href={`/${params.username}/location/${params.location}/hotel`}>
-            <CardTemplete imageSource="/catagory_img/hotel.jpg" text="Hotel" />
+            <CardTemplete
+              imageSource="https://res.cloudinary.com/dopxvbeju/image/upload/v1740377856/hotel_lfx8zv.jpg"
+              text="Hotel"
+            />
           </Link>
           <Link
             href={`/${params.username}/location/${params.location}/petrol_station`}
           >
             <CardTemplete
-              imageSource="/catagory_img/petrol_station.jpg"
+              imageSource="https://res.cloudinary.com/dopxvbeju/image/upload/v1740377382/petrol_station_ecxs86.jpg"
               text="Petrol Station"
             />
           </Link>
