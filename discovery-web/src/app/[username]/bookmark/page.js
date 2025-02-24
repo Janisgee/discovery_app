@@ -63,10 +63,7 @@ export default function Bookmark() {
     sortedCountry.forEach((item, index) => {
       itemList.push(
         <Link href={`/${params.username}/bookmark/${item.Country}`} key={index}>
-          <CardTemplete
-            imageSource="/catagory_img/attraction.jpg"
-            text={item.Country}
-          />
+          <CardTemplete imageSource="" text={item.Country} />
         </Link>,
       );
     });

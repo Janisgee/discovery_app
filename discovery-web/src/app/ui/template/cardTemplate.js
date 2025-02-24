@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 import { fetchPlaceImage } from "@/app/ui/fetchAPI/fetchPlaceImage";
 
 export default function CardTemplete({ imageSource, text }) {
-  const [countryImage, setCountryImage] = useState("");
+  const [displayImage, setDisplayImage] = useState(imageSource);
   const fetchData = async () => {
     try {
       const imageURL = await fetchPlaceImage(text);
-      setCountryImage(imageURL);
+      if (imageSource == "") {
+        setDisplayImage(imageURL);
+      }
     } catch (error) {
       console.error("Error fetching image for country:", error);
     }
@@ -19,9 +21,9 @@ export default function CardTemplete({ imageSource, text }) {
   }, []);
   return (
     <div className="relative mx-auto max-w-xl">
-      {countryImage && (
+      {displayImage && (
         <Image
-          src={countryImage}
+          src={displayImage}
           className="mt-5 h-32 w-full rounded-lg object-cover"
           alt="Image of place"
           width={330}

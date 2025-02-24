@@ -71,10 +71,7 @@ export default function BookmarkCountry() {
           href={`/${params.username}/bookmark/${item.Country}/${item.City}`}
           key={index}
         >
-          <CardTemplete
-            imageSource="/catagory_img/attraction.jpg"
-            text={item.City}
-          />
+          <CardTemplete imageSource="" text={item.City} />
         </Link>,
       );
     });
