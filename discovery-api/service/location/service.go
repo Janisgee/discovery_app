@@ -2,23 +2,30 @@ package location
 
 import (
 	"context"
+	"database/sql"
+	"discoveryweb/internal/database"
 	"discoveryweb/service/places"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"github.com/sashabaranov/go-openai"
 	"log/slog"
 	"strings"
+
+	"github.com/google/uuid"
+	"github.com/sashabaranov/go-openai"
 )
 
 type gptLocationService struct {
 	gptClient     *openai.Client
 	placesService places.PlacesService
+	dbQueries     *database.Queries
 }
 
-func NewGptService(client *openai.Client, placesService places.PlacesService) LocationService {
+func NewGptService(client *openai.Client, placesService places.PlacesService, dbQueries *database.Queries) LocationService {
 	return &gptLocationService{
 		gptClient:     client,
 		placesService: placesService,
+		dbQueries:     dbQueries,
 	}
 }
 
@@ -78,7 +85,7 @@ func (svc *gptLocationService) GetDetails(location string, category string) ([]L
 }
 
 func (svc *gptLocationService) GetPlaceDetails(location string) (*PlaceDetails, error) {
-	prompt := fmt.Sprintf("Get details of %s, using a field 'place_details' containing 'city'(which city %s belong to),'country'(which country %s belong to),'description'(around 20 words),'location' (address), 'opening_hours' (everyday operation hour), 'history' (around 50 words), 'key_features' (around 100 words) and 'conclusion'(around 40 words conclusion for the place).", location, location, location)
+	prompt := fmt.Sprintf("Get details of %s, using a field 'place_details' containing 'city'(which city %s belong to, if no detail of city, which region instead),'country'(which country %s belong to),'description'(around 20 words),'location' (address), 'opening_hours' (everyday operation hour), 'history' (around 50 words), 'key_features' (around 100 words) and 'conclusion'(around 40 words conclusion for the place).", location, location, location)
 
 	completion, err := svc.gptClient.CreateChatCompletion(
 		context.Background(),
@@ -113,4 +120,108 @@ func (svc *gptLocationService) GetPlaceDetails(location string) (*PlaceDetails, 
 	}
 
 	return &response.Place_details, nil
+}
+
+func (svc *gptLocationService) CheckCountryCityInData(country string, city string) (string, error) {
+
+	// Create an empty context
+	ctx := context.Background()
+
+	// Check if queries country is in database
+	_, err := svc.dbQueries.GetCountry(ctx, country)
+	if err != nil {
+		slog.Warn("Fail to get country from database", "error", err)
+		return "No country image", errors.New("fail to get country from database")
+	}
+
+	// Check if queries city is in database
+	params := database.GetCityParams{
+		City:    city,
+		Country: country,
+	}
+	_, err = svc.dbQueries.GetCity(ctx, params)
+	if err != nil {
+		slog.Warn("Fail to get city from database", "error", err)
+		return "No city image", errors.New("fail to get city from database")
+	}
+
+	return "With country and city image", nil
+}
+
+func (svc *gptLocationService) GetCountryImageData(country string) (*CountryImage, error) {
+
+	// Create an empty context
+	ctx := context.Background()
+
+	// Check if queries country is in database
+	countryImageData, err := svc.dbQueries.GetCountry(ctx, country)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			// No rows found, return specific error for "not found"
+			slog.Warn("No rows found from country image database", "error", err)
+			return nil, errors.New("no rows found from country image database")
+		}
+		slog.Warn("Fail to get country from database", "error", err)
+		return nil, errors.New("fail to get country from database")
+	}
+
+	// Return user bookmark place
+	data := &CountryImage{
+		CountryID:    countryImageData.ID,
+		Country:      countryImageData.Country,
+		CountryImage: countryImageData.CountryImage,
+	}
+
+	return data, nil
+}
+
+func (svc *gptLocationService) CreateCityImageData(countryID uuid.UUID, country string, city string, cityImage string) (*CityImage, error) {
+	// Create an empty context
+	ctx := context.Background()
+	// Check if queries city is in database
+	params := database.CreateCityImageParams{
+		CountryID: countryID,
+		Country:   country,
+		City:      city,
+		CityImage: cityImage,
+	}
+	newCityImageData, err := svc.dbQueries.CreateCityImage(ctx, params)
+	if err != nil {
+		slog.Warn("Fail to store image into cityImage", "error", err)
+		return nil, errors.New("fail to store image into cityImage")
+	}
+
+	// Return user bookmark place
+	data := &CityImage{
+		City:      newCityImageData.City,
+		CityImage: newCityImageData.CityImage,
+	}
+
+	return data, nil
+
+}
+
+func (svc *gptLocationService) CreateCountryImageData(country string, countryImage string) (*CountryImage, error) {
+	// Create an empty context
+	ctx := context.Background()
+	// Check if queries country is in database
+	params := database.CreateCountryImageParams{
+		Country:      country,
+		CountryImage: countryImage,
+	}
+	newCountryImageData, err := svc.dbQueries.CreateCountryImage(ctx, params)
+	if err != nil {
+		slog.Warn("Fail to store image into countryImage database", "error", err)
+		return nil, errors.New("fail to store image into countryImage database")
+	}
+
+	// Return user bookmark place
+	data := &CountryImage{
+		CountryID:    newCountryImageData.ID,
+		Country:      newCountryImageData.Country,
+		CountryImage: newCountryImageData.CountryImage,
+	}
+
+	return data, nil
+
 }

@@ -1,5 +1,7 @@
 package location
 
+import "github.com/google/uuid"
+
 type LocationDetails struct {
 	Image       string `json:"image"`
 	Name        string `json:"name"`
@@ -18,4 +20,17 @@ type PlaceDetails struct {
 	History       string `json:"history"`
 	Key_features  string `json:"key_features"`
 	Conclusion    string `json:"conclusion"`
+}
+
+type CountryImage struct {
+	CountryID    uuid.UUID `json:"country_id"`
+	Country      string    `json:"country"`
+	CountryImage string    `json:"country_image"`
+}
+
+type CityImage struct {
+	CountryID uuid.UUID `json:"country_id"`
+	Country   string    `json:"country"`
+	City      string    `json:"city"`
+	CityImage string    `json:"city_image"`
 }

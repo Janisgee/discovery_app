@@ -11,6 +11,22 @@ import (
 	"github.com/google/uuid"
 )
 
+type CitiesImage struct {
+	ID        uuid.UUID
+	CountryID uuid.UUID
+	Country   string
+	City      string
+	CityImage string
+	CreatedAt time.Time
+}
+
+type CountriesImage struct {
+	ID           uuid.UUID
+	Country      string
+	CountryImage string
+	CreatedAt    time.Time
+}
+
 type Place struct {
 	ID          string
 	PlaceName   string

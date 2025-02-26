@@ -11,11 +11,11 @@ import (
 	"discoveryweb/service/places"
 	"discoveryweb/service/session"
 	"discoveryweb/service/user"
-	"fmt"
-	gomail "gopkg.in/mail.v2"
 	"log"
 	"log/slog"
 	"os"
+
+	gomail "gopkg.in/mail.v2"
 
 	_ "github.com/lib/pq"
 	"github.com/sashabaranov/go-openai"
@@ -59,12 +59,6 @@ func main() {
 
 	// Connect to pexels image client
 	imageSvc := image.NewPexelsService(env.PexelsKey)
-	result, err := imageSvc.GetImageURL("Tokyo")
-	if err != nil {
-		slog.Error("Unable to get image from pexels", "error", err)
-		os.Exit(1)
-	}
-	fmt.Println(result)
 
 	// Google place service
 	placesSvc, err := places.NewGooglePlacesService(env.GMapsKey)
@@ -75,7 +69,7 @@ func main() {
 
 	// ChatGPT search
 	gptClient := openai.NewClient(env.GptKey)
-	var locationSvc = location.NewGptService(gptClient, placesSvc)
+	var locationSvc = location.NewGptService(gptClient, placesSvc, dbQueries)
 
 	// Create bookmark place service to run the queries
 	var bookmarkPlaceSvc = bookmark.NewBookmarkPlaceService(dbQueries)

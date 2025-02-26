@@ -35,7 +35,7 @@ func (svr *ApiServer) gptSearchCountry(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Received country name: %s, catagory:%s\n", input.Country, input.Catagory)
 
 	// Handle the page and get attractions for the provided country
-
+	// 3 locations in locationDetails struct
 	response, err := svr.locationSvc.GetDetails(input.Country, input.Catagory)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error processing search: %s", err), http.StatusInternalServerError)
@@ -47,16 +47,25 @@ func (svr *ApiServer) gptSearchCountry(w http.ResponseWriter, r *http.Request) {
 
 	for i := range response {
 		if response[i].Image == "" {
-			// Get Image from Pexels
-			result, err := svr.imgSvc.GetImageURL(response[i].Name)
+			// Check if place has been stored in database
+			placeDB, err := svr.bookmarkPlaceService.GetPlaceDatabaseDetails(response[i].PlaceID)
 			if err != nil {
-				slog.Error("Unable to get image from pexels", "error", err)
-				os.Exit(1)
-			}
-			fmt.Println("I am result!!!:", result)
+				// No place data found in database
+				// Get Image from Pexels
+				result, err := svr.imgSvc.GetImageURL(response[i].Name)
+				if err != nil {
+					slog.Error("Unable to get image from pexels", "error", err)
+					os.Exit(1)
+				}
+				fmt.Println("I am result!!!:", result)
 
-			// Insert Image URL
-			response[i].Image = result.ImageURL
+				// Insert Image URL
+				response[i].Image = result.ImageURL
+			} else {
+				// Get image from database instead getting image from pexel
+				response[i].Image = placeDB.PlaceDetail.ImageURL
+			}
+
 		}
 		// Check if place has been bookmarked by user (Return true or false)
 		result, _ := svr.bookmarkPlaceService.CheckPlaceHasBookmarkedByUser(response[i].PlaceID, *user_id)
