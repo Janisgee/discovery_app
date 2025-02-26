@@ -7,7 +7,6 @@ import (
 	"log"
 	"log/slog"
 	"net/http"
-	"os"
 	"strings"
 )
 
@@ -65,9 +64,69 @@ func (svr *ApiServer) gptSearchPlaceDetails(w http.ResponseWriter, r *http.Reque
 			imageURL, err := svr.imgSvc.GetImageURL(encodeLocation)
 			if err != nil {
 				slog.Error("Unable to get image from pexels", "error", err)
-				os.Exit(1)
+				response.ImageURL = "https://res.cloudinary.com/dopxvbeju/image/upload/v1740389895/attraction_adorgk.jpg"
+				return
 			}
 			response.ImageURL = imageURL.ImageURL
+		}
+
+		// Set country and city image
+		// Check if country and city in database
+		msg, _ := svr.locationSvc.CheckCountryCityInData(response.Country, response.City)
+		if msg == "No city image" {
+			// Get city image and store it
+			cityImageURL, err := svr.imgSvc.GetImageURL(response.City)
+			if err != nil {
+				slog.Error("Unable to get image from pexels", "error", err)
+				response.ImageURL = "https://res.cloudinary.com/dopxvbeju/image/upload/v1740389895/attraction_adorgk.jpg"
+			}
+			// Store cityImage in databasse
+			//----- Get country data
+			countryData, err := svr.locationSvc.GetCountryImageData(response.Country)
+			if err != nil {
+				slog.Error("Unable to get country data from database", "error", err)
+				http.Error(w, fmt.Sprintf("Unable to get country data from database: %s", err), http.StatusInternalServerError)
+				return
+			}
+			//----- Store cityImage in databasse
+			_, err = svr.locationSvc.CreateCityImageData(countryData.CountryID, countryData.Country, response.City, cityImageURL.ImageURL)
+			if err != nil {
+				slog.Error("Unable to create city image data into database", "error", err)
+				http.Error(w, fmt.Sprintf("Unable to create city image data into database: %s", err), http.StatusInternalServerError)
+				return
+			}
+
+		} else if msg == "No country image" {
+			// Get city and country image
+			// ----- Get country image and store it
+			countryImageURL, err := svr.imgSvc.GetImageURL(response.Country)
+			if err != nil {
+				slog.Error("Unable to get image from pexels", "error", err)
+				response.ImageURL = "https://res.cloudinary.com/dopxvbeju/image/upload/v1740389895/attraction_adorgk.jpg"
+			}
+
+			// ----- Store country image into database
+			countryData, err := svr.locationSvc.CreateCountryImageData(response.Country, countryImageURL.ImageURL)
+			if err != nil {
+				slog.Error("Unable to get country data from database", "error", err)
+				http.Error(w, fmt.Sprintf("Unable to get country data from database: %s", err), http.StatusInternalServerError)
+				return
+			}
+
+			// ----- Get city image and store it
+			cityImageURL, err := svr.imgSvc.GetImageURL(response.City)
+			if err != nil {
+				slog.Error("Unable to get image from pexels", "error", err)
+				response.ImageURL = "https://res.cloudinary.com/dopxvbeju/image/upload/v1740389895/attraction_adorgk.jpg"
+			}
+			// ----- Store city image into database
+			_, err = svr.locationSvc.CreateCityImageData(countryData.CountryID, countryData.Country, response.City, cityImageURL.ImageURL)
+			if err != nil {
+				slog.Error("Unable to get country data from database", "error", err)
+				http.Error(w, fmt.Sprintf("Unable to get country data from database: %s", err), http.StatusInternalServerError)
+				return
+			}
+
 		}
 
 		// Store place into place Data

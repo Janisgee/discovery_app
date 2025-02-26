@@ -66,14 +66,25 @@ export default function BookmarkCountry() {
     const sortedCity = uniqueCity.sort((a, b) => a.City.localeCompare(b.City));
 
     sortedCity.forEach((item, index) => {
-      itemList.push(
-        <Link
-          href={`/${params.username}/bookmark/${item.Country}/${item.City}`}
-          key={index}
-        >
-          <CardTemplete imageSource="" text={item.City} />
-        </Link>,
-      );
+      if (item.City) {
+        itemList.push(
+          <Link
+            href={`/${params.username}/bookmark/${item.Country}/${item.City}`}
+            key={index}
+          >
+            <CardTemplete imageSource="" text={item.City} />
+          </Link>,
+        );
+      } else {
+        itemList.push(
+          <Link
+            href={`/${params.username}/bookmark/${item.Country}/${item.Country}`}
+            key={index}
+          >
+            <CardTemplete imageSource="" text={item.City} />
+          </Link>,
+        );
+      }
     });
   }
 

@@ -24,6 +24,11 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
   const decodeURIPlace = decodeURIComponent(placeName);
   const toUpperCasePlace = decodeURIPlace.toUpperCase();
 
+  const backwardClick = (e) => {
+    e.preventDefault();
+    history.back();
+  };
+
   const handlePlaceBookmark = (e) => {
     e.preventDefault();
     if (hasBookmark) {
@@ -123,9 +128,12 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
     <div>
       <AppTemplate>
         <div className="flex items-center justify-between gap-3 pt-5">
-          <Link href={`/${username}/location/${location}/${catagory}`}>
+          <button onClick={backwardClick}>
             <FontAwesomeIcon icon={faCircleArrowLeft} size="2x" />
-          </Link>
+          </button>
+          {/* <Link href={`/${username}/location/${location}/${catagory}`}>
+            <FontAwesomeIcon icon={faCircleArrowLeft} size="2x" />
+          </Link> */}
           <h1 className="text-center text-xl">{toUpperCasePlace}</h1>
 
           <button onClick={handlePlaceBookmark}>
