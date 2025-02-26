@@ -12,6 +12,7 @@ import Link from "next/link";
 export default function BookmarkCountry() {
   const [content, setContent] = useState(null);
   const params = useParams();
+  const decodeCountryName = decodeURIComponent(params.country);
   const fetchAllBookmark = async () => {
     const request = new Request("http://localhost:8080/api/getAllBookmark", {
       method: "GET", // HTTP method
@@ -50,7 +51,9 @@ export default function BookmarkCountry() {
   if (content != null && content.BookmarkedPlace.length > 1) {
     // Filter the city be unique exclude duplicate
     const filterByCountry = Object.values(
-      content.BookmarkedPlace.filter((item) => item.Country == params.country),
+      content.BookmarkedPlace.filter(
+        (item) => item.Country == decodeCountryName,
+      ),
     );
     // Filter the city be unique exclude duplicate
     const uniqueCity = Object.values(
@@ -72,7 +75,12 @@ export default function BookmarkCountry() {
             href={`/${params.username}/bookmark/${item.Country}/${item.City}`}
             key={index}
           >
-            <CardTemplete imageSource="" text={item.City} />
+            <CardTemplete
+              imageSource=""
+              text={item.City}
+              searchFor="city"
+              country={decodeCountryName}
+            />
           </Link>,
         );
       } else {
@@ -81,7 +89,12 @@ export default function BookmarkCountry() {
             href={`/${params.username}/bookmark/${item.Country}/${item.Country}`}
             key={index}
           >
-            <CardTemplete imageSource="" text={item.City} />
+            <CardTemplete
+              imageSource=""
+              text={item.City}
+              searchFor="city"
+              country={decodeCountryName}
+            />
           </Link>,
         );
       }

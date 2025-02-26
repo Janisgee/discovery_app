@@ -27,6 +27,7 @@ export default function Bookmark() {
       if (bookmarks.BookmarkedPlace.length > 1) {
         setNoBookmark(false);
         setContent(bookmarks);
+        console.log(bookmarks);
         console.log("Fetched bookmarks:", bookmarks);
       } else {
         setNoBookmark(true);
@@ -63,7 +64,11 @@ export default function Bookmark() {
     sortedCountry.forEach((item, index) => {
       itemList.push(
         <Link href={`/${params.username}/bookmark/${item.Country}`} key={index}>
-          <CardTemplete imageSource="" text={item.Country} />
+          <CardTemplete
+            imageSource=""
+            text={item.Country}
+            searchFor="country"
+          />
         </Link>,
       );
     });
