@@ -32,7 +32,7 @@ export default function Home() {
       const randomCountry = require("random-country");
       const country = randomCountry({ full: true });
       try {
-        const imageURL = await fetchPlaceImage(country);
+        const imageURL = await fetchPlaceImage(country, "country");
         itemList.push(
           <Link
             href={`/${params.username}/location/${encodeURIComponent(country)}`}

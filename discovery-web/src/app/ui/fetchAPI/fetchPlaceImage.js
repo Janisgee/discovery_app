@@ -1,5 +1,5 @@
-export const fetchPlaceImage = async (place) => {
-  const data = { place_name: place };
+export const fetchPlaceImage = async (place, searchFor, country) => {
+  const data = { place_name: place, search_for: searchFor, country: country };
   const request = new Request(
     "http://localhost:8080/api/getDisplayPlaceImage",
     {

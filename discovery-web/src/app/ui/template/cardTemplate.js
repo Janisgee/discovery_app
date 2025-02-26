@@ -2,21 +2,26 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { fetchPlaceImage } from "@/app/ui/fetchAPI/fetchPlaceImage";
 
-export default function CardTemplete({ imageSource, text }) {
+export default function CardTemplete({
+  imageSource,
+  text,
+  searchFor,
+  country,
+}) {
   const [displayImage, setDisplayImage] = useState(imageSource);
   const fetchData = async () => {
     try {
-      const imageURL = await fetchPlaceImage(text);
-      if (imageSource == "") {
-        setDisplayImage(imageURL);
-      }
+      const imageURL = await fetchPlaceImage(text, searchFor, country);
+      setDisplayImage(imageURL);
     } catch (error) {
       console.error("Error fetching image for country:", error);
     }
   };
 
   useEffect(() => {
-    fetchData();
+    if (imageSource == "") {
+      fetchData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (

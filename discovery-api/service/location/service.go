@@ -85,7 +85,7 @@ func (svc *gptLocationService) GetDetails(location string, category string) ([]L
 }
 
 func (svc *gptLocationService) GetPlaceDetails(location string) (*PlaceDetails, error) {
-	prompt := fmt.Sprintf("Get details of %s, using a field 'place_details' containing 'city'(which city %s belong to, if no detail of city, which region instead),'country'(which country %s belong to),'description'(around 20 words),'location' (address), 'opening_hours' (everyday operation hour), 'history' (around 50 words), 'key_features' (around 100 words) and 'conclusion'(around 40 words conclusion for the place).", location, location, location)
+	prompt := fmt.Sprintf("Get details of %s, using a field 'place_details' containing 'city'(which city %s belong to, if no detail of city, which region instead, no N/A available),'country'(which country %s belong to),'description'(around 20 words),'location' (address), 'opening_hours' (everyday operation hour), 'history' (around 50 words), 'key_features' (around 100 words) and 'conclusion'(around 40 words conclusion for the place).", location, location, location)
 
 	completion, err := svc.gptClient.CreateChatCompletion(
 		context.Background(),
@@ -170,6 +170,39 @@ func (svc *gptLocationService) GetCountryImageData(country string) (*CountryImag
 		CountryID:    countryImageData.ID,
 		Country:      countryImageData.Country,
 		CountryImage: countryImageData.CountryImage,
+	}
+
+	return data, nil
+}
+
+func (svc *gptLocationService) GetCityImageData(city string, country string) (*CityImage, error) {
+
+	// Create an empty context
+	ctx := context.Background()
+
+	// Check if queries country is in database
+
+	params := database.GetCityParams{
+		City:    city,
+		Country: country,
+	}
+	cityImageData, err := svc.dbQueries.GetCity(ctx, params)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			// No rows found, return specific error for "not found"
+			slog.Warn("No rows found from city image database", "error", err)
+			return nil, errors.New("no rows found from city image database")
+		}
+		slog.Warn("Fail to get city from database", "error", err)
+		return nil, errors.New("fail to get city from database")
+	}
+
+	// Return user bookmark place
+	data := &CityImage{
+		CountryID: cityImageData.CountryID,
+		Country:   cityImageData.Country,
+		City:      cityImageData.City,
+		CityImage: cityImageData.CityImage,
 	}
 
 	return data, nil
