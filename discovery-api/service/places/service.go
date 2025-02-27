@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"google.golang.org/api/option"
-	"google.golang.org/api/places/v1"
 	"log/slog"
 	"net/http"
+
+	"google.golang.org/api/option"
+	"google.golang.org/api/places/v1"
 )
 
 type googlePlacesService struct {

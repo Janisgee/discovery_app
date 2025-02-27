@@ -10,6 +10,7 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { fetchProfileImage } from "@/app/ui/fetchAPI/fetchProfileImage";
 import { fetchAllBookmark } from "@/app/ui/fetchAPI/fetchBookmark";
 import { fetchPlaceImage } from "@/app/ui/fetchAPI/fetchPlaceImage";
+import { fetchInputControl } from "@/app/ui/fetchAPI/fetchInputControl";
 
 import HomeTemplate from "@/app/ui/template/homeTemplate";
 import CardTemplete from "@/app/ui/template/cardTemplate";
@@ -19,6 +20,9 @@ export default function Home() {
   const [bookmarkNum, setBookmarkNum] = useState(0);
   const [userPublicID, setUserPublicID] = useState("");
   const [itemList, setItemList] = useState([]);
+  const [searchWord, setSearchWord] = useState("");
+  const [optionResult, setOptionResult] = useState([]);
+  const [resultArray, setResultArray] = useState([]);
 
   const params = useParams();
   const router = useRouter();
@@ -51,15 +55,38 @@ export default function Home() {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const searchData = formData.get("search");
-    if (!searchData) {
-      alert("Please enter a location");
-      return;
+    if (resultArray.length > 0) {
+      // const formData = new FormData(e.currentTarget);
+      // const searchData =/ formData.get("search");
+      if (!resultArray) {
+        alert("Please enter a location");
+        return;
+      }
+      router.push(
+        `/${params.username}/location/${encodeURIComponent(resultArray[0].name)}`,
+      );
     }
-    router.push(
-      `/${params.username}/location/${encodeURIComponent(searchData)}`,
-    );
+  };
+
+  const handleInputChange = async (e) => {
+    e.preventDefault();
+    setSearchWord(e.target.value);
+    try {
+      let optionList = [];
+      const result = await fetchInputControl(e.target.value);
+      console.log(result);
+      if (result) {
+        for (let i = 0; i < result.length; i++) {
+          optionList.push(
+            <option value={result[i].name}>{result[i].name}</option>,
+          );
+        }
+        setOptionResult(optionList);
+        setResultArray(result);
+      }
+    } catch (error) {
+      console.error("Error fetching word data:", error);
+    }
   };
 
   const fetchData = async (router) => {
@@ -135,10 +162,14 @@ export default function Home() {
                 name="search"
                 type="search"
                 id="default-search"
+                list="searchList"
                 className="w-full rounded-full border border-gray-300 bg-gray-50 p-2 ps-5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                 placeholder="Type location to search"
+                value={searchWord}
                 required
+                onChange={handleInputChange}
               />
+              <datalist id="searchList">{optionResult}</datalist>
             </span>
           </form>
         </div>
@@ -146,7 +177,7 @@ export default function Home() {
           <h3>Popular Destination</h3>
 
           <div className="size-full overflow-auto rounded-lg">
-            <ul>{itemList != [] && itemList}</ul>
+            <ul>{itemList.length > 0 && itemList}</ul>
           </div>
         </div>
       </HomeTemplate>
