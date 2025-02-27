@@ -74,7 +74,10 @@ func (svr *ApiServer) Run() error {
 	router := http.NewServeMux()
 
 	// router for cities search autocomplete
-	router.HandleFunc("/api/place/autocomplete", svr.autocompleteCitiesSearch)
+	// router.HandleFunc("/api/place/autocomplete", svr.autocompleteCitiesSearch)
+	router.HandleFunc("/api/place/autocomplete", func(w http.ResponseWriter, r *http.Request) {
+		svr.currentUserSessionMiddleware(http.HandlerFunc(svr.autocompleteCitiesSearch)).ServeHTTP(w, r)
+	})
 
 	// router for search country place
 	router.HandleFunc("/searchCountry", func(w http.ResponseWriter, r *http.Request) {
