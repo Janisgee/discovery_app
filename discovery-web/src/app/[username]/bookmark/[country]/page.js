@@ -29,14 +29,6 @@ export default function BookmarkCountry() {
         const htmlContent = await response.json(); // Use json() to handle HTML response
         console.log("Received content:", htmlContent);
         setContent(htmlContent);
-      } else {
-        if (response.status == 401) {
-          alert(
-            `Please login again as 10 mins session expired without taking action.`,
-          );
-          router.push(`/login`);
-        }
-        console.error("Error fetching bookmark place:", response.statusText);
       }
     } catch (error) {
       console.error("Error fetching bookmark place:", error);

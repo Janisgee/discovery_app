@@ -2,9 +2,10 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/google/uuid"
 	"net/http"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 func sendErrorResponse(w http.ResponseWriter, statusCode int, message string) {
@@ -31,6 +32,17 @@ func setSectionCookie(w http.ResponseWriter, token string) {
 		Secure:   true,
 		Path:     "/",
 	})
+
+	// Set the Login true or false in response. visible to Javascript
+	http.SetCookie(w, &http.Cookie{
+		Name:     "IS_LOGIN",
+		Value:    "0",
+		Expires:  time.Now().Add(1800 * time.Second),
+		HttpOnly: false,
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
+		Path:     "/",
+	})
 }
 
 // Clear the session cookie
@@ -41,6 +53,17 @@ func clearSectionCookie(w http.ResponseWriter) {
 		Value:    "",
 		Expires:  time.Unix(0, 0), // Expired immediately
 		HttpOnly: true,
+		Path:     "/",
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
+	})
+
+	// Set the is logout in response, visible to Javascript (HttpOnly)
+	http.SetCookie(w, &http.Cookie{
+		Name:     "IS_LOGIN",
+		Value:    "1",
+		Expires:  time.Unix(0, 0), // Expired immediately
+		HttpOnly: false,
 		Path:     "/",
 		SameSite: http.SameSiteNoneMode,
 		Secure:   true,

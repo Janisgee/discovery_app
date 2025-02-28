@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useParams } from "next/navigation";
+import { TimeoutModule } from "@/app/ui/timeoutModule";
 import ItemTemplete from "@/app/ui/template/itemTemplate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -31,6 +33,7 @@ export default function BookmarkTemplate({
   console.log(city);
   console.log(placeList);
 
+  const params = useParams();
   let itemList = [];
   if (placeList.length > 0) {
     // Filter the city with different catagory with click
@@ -63,6 +66,7 @@ export default function BookmarkTemplate({
   };
   return (
     <div className="background-yellow font-inter">
+      <TimeoutModule username={params.username} />
       <div className="p-5">
         <div>
           <div className="mb-5 flex items-center justify-between">
@@ -72,9 +76,6 @@ export default function BookmarkTemplate({
                   <FontAwesomeIcon icon={faHouse} size="3x" />
                 </Link>
               </span>
-              <Link href={`/${username}/trips`}>
-                <FontAwesomeIcon icon={faFileLines} size="3x" />
-              </Link>
             </span>
             <span className="flex items-center">
               <Link href={`/${username}/bookmark`}>

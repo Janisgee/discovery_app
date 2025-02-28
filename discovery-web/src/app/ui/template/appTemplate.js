@@ -1,9 +1,11 @@
 "use client";
 import { useParams } from "next/navigation";
 
+import { TimeoutModule } from "@/app/ui/timeoutModule";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 
+import LogoutButton from "../logoutButton";
 import {
   faHeart,
   faHouse,
@@ -12,10 +14,6 @@ import {
 
 export default function AppTemplate({ children }) {
   const params = useParams();
-
-  const logout = () => {
-    fetch("http://localhost:8080/api/logout", { credentials: "include" });
-  };
 
   return (
     <div className="background-yellow font-inter">
@@ -34,15 +32,14 @@ export default function AppTemplate({ children }) {
                 <FontAwesomeIcon icon={faHeart} size="2x" />
               </Link>
               <span className="ml-5">
-                <Link href="/" onClick={logout}>
-                  <FontAwesomeIcon icon={faRightFromBracket} size="2x" />
-                </Link>
+                <LogoutButton />
               </span>
             </div>
           </div>
         </div>
       </div>
       <div className="rounded-t-3xl bg-white ">
+        <TimeoutModule username={params.username} />
         <div className="px-10 pb-10">{children}</div>
       </div>
     </div>

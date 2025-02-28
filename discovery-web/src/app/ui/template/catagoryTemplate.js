@@ -37,13 +37,6 @@ export default function CatagoryTemplate({ catagory }) {
         console.log(htmlContent);
         setContent(htmlContent);
       } else {
-        if (response.status == 401) {
-          alert(
-            `Please login again as 10 mins session expired without taking action.`,
-          );
-          router.push(`/login`);
-        }
-
         console.error("Error fetching search country:", response.statusText);
         throw error;
       }

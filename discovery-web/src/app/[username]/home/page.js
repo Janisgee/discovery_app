@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import { CldImage } from "next-cloudinary";
@@ -7,6 +8,7 @@ import { CldImage } from "next-cloudinary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
+import { TimeoutModule } from "@/app/ui/timeoutModule";
 import { fetchProfileImage } from "@/app/ui/fetchAPI/fetchProfileImage";
 import { fetchAllBookmark } from "@/app/ui/fetchAPI/fetchBookmark";
 import { fetchPlaceImage } from "@/app/ui/fetchAPI/fetchPlaceImage";
@@ -112,12 +114,15 @@ export default function Home() {
     console.log(itemList);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   console.log("upid", userPublicID);
+  console.log("PARAMS.USERNAME", params.username);
 
   return (
     <div>
       <HomeTemplate>
+        {/* {params.username != undefined && (
+          <TimeoutModule username={params.username} />
+        )} */}
         <div className="block-center flex-col pb-8">
           {!userPublicID ? (
             <CldImage
