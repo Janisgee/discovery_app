@@ -43,12 +43,6 @@ export default function BookmarkLocation() {
           setContent(htmlContent);
         }
       } else {
-        if (response.status == 401) {
-          alert(
-            `Please login again as 10 mins session expired without taking action.`,
-          );
-          router.push(`/login`);
-        }
         console.error(
           `Error fetching bookmark by city ${bookmarkLocation}:`,
           response.statusText,

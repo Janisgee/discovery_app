@@ -56,12 +56,6 @@ export default function ItemTemplete({
         const htmlContent = await response.json(); // Use json() to handle HTML response
         console.log(htmlContent);
       } else {
-        if (response.status == 401) {
-          alert(
-            `Please login again as 10 mins session expired without taking action.`,
-          );
-          router.push(`/login`);
-        }
         console.error("Error fetching bookmark request:", response.statusText);
         throw error;
       }

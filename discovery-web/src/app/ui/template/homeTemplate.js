@@ -1,7 +1,8 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
-
+import { useParams } from "next/navigation";
+import { TimeoutModule } from "@/app/ui/timeoutModule";
+import LogoutButton from "../logoutButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGear,
@@ -9,33 +10,13 @@ import {
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
-import { Button } from "../buttons";
 
 export default function HomeTemplate({ children }) {
   const params = useParams();
-  const router = useRouter();
 
-  const fetchLogoutRequest = async () => {
-    const request = new Request("http://localhost:8080/api/logout", {
-      credentials: "include",
-    });
-
-    try {
-      const response = await fetch(request);
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Logout failed: ${errorText}`);
-      }
-      console.log("Logged out successfully");
-      router.push("/");
-    } catch (error) {
-      console.error("Error logging out:", error);
-      // Show a user-friendly message (optional)
-      alert("An error occurred while logging out. Please try again.");
-    }
-  };
   return (
     <div className="background-yellow font-inter">
+      <TimeoutModule username={params.username} />
       <div className="px-10 py-5">
         <div className="block-center">
           <div className="flex w-full max-w-sm justify-between">
@@ -47,9 +28,7 @@ export default function HomeTemplate({ children }) {
                 <FontAwesomeIcon icon={faHeart} size="2x" />
               </Link>
               <span className="ml-5">
-                <button onClick={fetchLogoutRequest}>
-                  <FontAwesomeIcon icon={faRightFromBracket} size="2x" />
-                </button>
+                <LogoutButton />
               </span>
             </div>
           </div>

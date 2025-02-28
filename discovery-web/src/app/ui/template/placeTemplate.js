@@ -65,12 +65,6 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
         const htmlContent = await response.json(); // Use json() to handle HTML response
         console.log(htmlContent);
       } else {
-        if (response.status == 401) {
-          alert(
-            `Please login again as 10 mins session expired without taking action.`,
-          );
-          router.push(`/login`);
-        }
         console.error("Error fetching bookmark request:", response.statusText);
         throw error;
       }
@@ -106,12 +100,6 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
           setHasBookmark(false);
         }
       } else {
-        if (response.status == 401) {
-          alert(
-            `Please login again as 10 mins session expired without taking action.`,
-          );
-          router.push(`/login`);
-        }
         console.error("Error fetching search place:", response.statusText);
       }
     } catch (error) {

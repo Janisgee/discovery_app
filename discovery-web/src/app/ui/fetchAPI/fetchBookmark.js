@@ -14,12 +14,6 @@ export const fetchAllBookmark = async (router) => {
       console.log("Received content:", htmlContent);
       return htmlContent;
     } else {
-      if (response.status == 401) {
-        alert(
-          `Please login again as 10 mins session expired without taking action.`,
-        );
-        router.push(`/login`);
-      }
       console.error("Error fetching bookmark place:", response.statusText);
       throw new Error(response.statusText);
     }
