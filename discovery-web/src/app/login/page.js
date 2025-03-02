@@ -2,7 +2,6 @@
 import { Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/app/ui/buttons";
-import { Spinner } from "../ui/spinner";
 import Link from "next/link";
 
 export default function Login() {

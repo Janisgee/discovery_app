@@ -1,9 +1,9 @@
-import { Spinner } from "@/app/ui/spinner";
+import { LoadingSpinner } from "@/app/ui/loading-spinner";
 
 export default function loading() {
   return (
     <div className="loading">
-      <Spinner />
+      <LoadingSpinner />
     </div>
   );
 }
