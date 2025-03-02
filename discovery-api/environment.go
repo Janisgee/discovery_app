@@ -14,6 +14,7 @@ type EnvConfig struct {
 	GMapsKey             string `env:"GMAPS_API_KEY,required"`
 	PsqlConnectionString string `env:"PSQL_CONNECTION_STRING,required"`
 	PexelsKey            string `env:"PEXEL_API_KEY,required"`
+	ClientBaseUrl        string `env:"CLIENT_BASE_URL,required"`
 }
 
 func startupGetEnv() (*EnvConfig, error) {

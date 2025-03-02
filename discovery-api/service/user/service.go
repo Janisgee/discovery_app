@@ -14,13 +14,14 @@ import (
 )
 
 type postgresUserService struct {
-	dbQueries *database.Queries
-	emailSvc  email.EmailService
+	dbQueries     *database.Queries
+	emailSvc      email.EmailService
+	clientBaseUrl string
 }
 
-func NewUserService(dbQueries *database.Queries, emailSvc email.EmailService) UserService {
+func NewUserService(dbQueries *database.Queries, emailSvc email.EmailService, clientBaseUrl string) UserService {
 	return &postgresUserService{
-		dbQueries, emailSvc,
+		dbQueries, emailSvc, clientBaseUrl,
 	}
 }
 
@@ -228,8 +229,7 @@ func (svc *postgresUserService) BeginUserPasswordReset(email string) error {
 		return err
 	}
 
-	// TODO: ENV var for site base url.
-	resetLink := "http://mysite.com/forgetPwChange?" + "evpw=" + reset.ResetKey.String()
+	resetLink := fmt.Sprintf("%s/forgot-password/set?evpw=%s", svc.clientBaseUrl, reset.ResetKey.String())
 
 	err = svc.emailSvc.SendPasswordResetEmail(user.Username, email, resetLink)
 	if err != nil {

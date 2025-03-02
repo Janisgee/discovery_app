@@ -58,7 +58,7 @@ func main() {
 	dbQueries := database.New(db)
 
 	// Create user service to run the queries
-	var userSvc = user.NewUserService(dbQueries, emailSvc)
+	var userSvc = user.NewUserService(dbQueries, emailSvc, env.ClientBaseUrl)
 
 	// Connect to pexels image client
 	imageSvc := image.NewPexelsService(env.PexelsKey)
