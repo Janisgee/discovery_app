@@ -67,11 +67,9 @@ type UsersBookmark struct {
 	CreatedAt time.Time
 }
 
-type Usersemailpw struct {
-	ID          uuid.UUID
-	Email       string
-	CreatedAt   time.Time
-	ExpiredAt   time.Time
-	PwResetCode string
-	UserID      uuid.UUID
+type UsersPasswordReset struct {
+	UserID    uuid.UUID
+	CreatedAt time.Time
+	ExpiredAt time.Time
+	ResetKey  uuid.UUID
 }

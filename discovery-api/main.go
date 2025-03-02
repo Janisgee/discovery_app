@@ -51,11 +51,14 @@ func main() {
 		os.Exit(1)
 	}
 
+	var mailDialer = gomail.NewDialer("smtp.gmail.com", 587, "yanisching@gmail.com", "yjpyfqdkwkczydef")
+	var emailSvc = email.NewEmailService("yanisching@gmail.com", mailDialer)
+
 	// Use generated database package to create a new *database.Queries instance
 	dbQueries := database.New(db)
 
 	// Create user service to run the queries
-	var userSvc = user.NewUserService(dbQueries)
+	var userSvc = user.NewUserService(dbQueries, emailSvc)
 
 	// Connect to pexels image client
 	imageSvc := image.NewPexelsService(env.PexelsKey)
@@ -73,9 +76,6 @@ func main() {
 
 	// Create bookmark place service to run the queries
 	var bookmarkPlaceSvc = bookmark.NewBookmarkPlaceService(dbQueries)
-
-	var mailDialer = gomail.NewDialer("smtp.gmail.com", 587, "yanisching@gmail.com", "yjpyfqdkwkczydef")
-	var emailSvc = email.NewEmailService("yanisching@gmail.com", mailDialer)
 
 	var sessionSvc = session.NewSessionService(dbQueries)
 
