@@ -1,72 +1,22 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
 import { Button } from "@/app/ui/buttons";
+import { useSetNewPassword } from "@/app/forgot-password/password-reset-service";
+import { LoadingSpinner } from "@/app/ui/loading-spinner";
 
-export default function ForgetPassword() {
-  const router = useRouter();
-
-  const searchParams = useSearchParams();
-  const pwResetCode = searchParams.get("evpw");
+export default function SetNewPassword() {
+  const [doSetNewPassword, isPending, error] = useSetNewPassword();
 
   const handleInputEmail = async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const input_newPw = formData.get("new_password");
-    const input_confirmPw = formData.get("confirm_password");
-    if (!input_newPw || !input_confirmPw) {
-      alert("Please enter fill in a new password.");
-      return;
-    }
-    if (input_newPw != input_confirmPw) {
-      alert("Please enter same password into the confirm password field.");
-      return;
-    }
-    fetchResetNewPw(input_newPw, input_confirmPw, pwResetCode);
+    const newPw = formData.get("new_password");
+    const confirmPw = formData.get("confirm_password");
+
+    doSetNewPassword(newPw, confirmPw);
   };
 
-  const fetchResetNewPw = async (newPw, confirmPw, pwResetCode) => {
-    const data = {
-      newPw: newPw,
-      confirmPw: confirmPw,
-      pwResetCode: pwResetCode,
-    };
-    const request = new Request("http://localhost:8080/api/resetPassword", {
-      method: "POST", // HTTP method
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    try {
-      const response = await fetch(request);
-      console.log(response.status);
-      if (!response.ok) {
-        // Handle error response, check for Unauthorized status
-        if (response.status == 401) {
-          router.push("/unauthorized-link");
-          return;
-        } else {
-          // For other errors, handle as text (non-JSON responses)
-          const errorText = await response.text();
-          throw new Error(`Failed to fetch: ${errorText}`);
-        }
-      }
-
-      const responseData = await response.json();
-      console.log("Server Response:", responseData);
-
-      router.push(`/resetPwSuccess`);
-    } catch (error) {
-      console.error("Error fetching reset password page:->", error);
-
-      // If an error occurs, redirect to the fail page
-      router.push(`/resetPwFail`);
-    }
-  };
   return (
     <div className="block-center p-20">
       <div className="w-full max-w-sm">
@@ -80,6 +30,7 @@ export default function ForgetPassword() {
         <form
           className="mb-4 rounded bg-white px-8 pb-8 pt-6 shadow-md"
           onSubmit={handleInputEmail}
+          noValidate
         >
           <div className="mb-6">
             <label
@@ -108,13 +59,11 @@ export default function ForgetPassword() {
               type="password"
               placeholder="******************"
             />
-            <p className="text-xs italic text-red-500">
-              Please type your new password.
-            </p>
+            <p className="min-h-[16px] text-xs italic text-red-500">{error}</p>
           </div>
           <div className="flex items-center justify-between">
             <button className="btn-violet w-full font-space_mono">
-              Reset Password
+              {isPending ? <LoadingSpinner /> : "Reset Password"}
             </button>
           </div>
         </form>

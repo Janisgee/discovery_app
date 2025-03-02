@@ -1,6 +1,6 @@
 import { Button } from "@/app/ui/buttons";
 
-export default function UnauthorizedLink() {
+export default function ForgotPasswordExpired() {
   return (
     <div className="block-center p-20">
       <div className="w-full max-w-sm">
@@ -19,7 +19,7 @@ export default function UnauthorizedLink() {
         <div className="mb-10 text-center">
           <Button
             useFor="Request a new reset email"
-            link="/forgetPassword"
+            link="/forgot-password"
             color="btn-violet"
           />
         </div>

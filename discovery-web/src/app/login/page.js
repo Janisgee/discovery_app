@@ -107,7 +107,7 @@ export default function Login() {
           <div className="flex items-center justify-between">
             <button className="btn-violet font-space_mono">Login</button>
             <Link
-              href="/forgetPassword"
+              href="/forgot-password"
               className="inline-block align-baseline text-sm font-bold text-blue-500 hover:text-blue-800"
             >
               Forgot Password?
