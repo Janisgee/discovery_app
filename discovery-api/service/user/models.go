@@ -1,6 +1,9 @@
 package user
 
-import "github.com/google/uuid"
+import (
+	"errors"
+	"github.com/google/uuid"
+)
 
 type User struct {
 	ID              uuid.UUID `json:"id"`
@@ -19,3 +22,6 @@ type UserEmailPw struct {
 	PwResetCode string    `json:"pw_reset_code"`
 	UserID      uuid.UUID `json:"user_id"`
 }
+
+var ErrNoUser = errors.New("user does not exist")
+var ErrPasswordResetInvalid = errors.New("password reset code invalid or expired")

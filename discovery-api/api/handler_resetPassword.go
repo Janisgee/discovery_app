@@ -1,10 +1,11 @@
 package api
 
 import (
+	"discoveryweb/service/user"
 	"discoveryweb/util"
 	"encoding/json"
-	"fmt"
-	"log/slog"
+	"errors"
+	"github.com/google/uuid"
 	"net/http"
 	"strings"
 )
@@ -24,7 +25,6 @@ func (svr *ApiServer) userResetPasswordHandler(w http.ResponseWriter, r *http.Re
 	var resetInfo resetPw
 	err := json.NewDecoder(r.Body).Decode(&resetInfo)
 	if err != nil {
-
 		http.Error(w, "Failed to decode user reset password data", http.StatusBadRequest)
 		return
 	}
@@ -32,52 +32,35 @@ func (svr *ApiServer) userResetPasswordHandler(w http.ResponseWriter, r *http.Re
 	// Check password strength
 	err = util.CheckPasswordStrength(resetInfo.NewPw)
 	if err != nil {
-		errMessage := fmt.Sprintf("%v", err)
-		sendErrorResponse(w, http.StatusBadRequest, errMessage)
+		http.Error(w, "password is not secure enough", http.StatusBadRequest)
+		return
 	}
 
-	// Trim space for new password
-	trimedPassword := strings.TrimSpace(resetInfo.NewPw)
+	if resetInfo.NewPw != resetInfo.ConfirmPw {
+		http.Error(w, "password and confirm do not match", http.StatusBadRequest)
+		return
+	}
 
-	// Validate connection link if it has record in database
-	// Get user email from pw reset code if pw code is still valid.
-	pwCode := strings.TrimSuffix(resetInfo.PwResetCode, "/")
+	if resetInfo.NewPw != strings.TrimSpace(resetInfo.NewPw) {
+		http.Error(w, "password cannot start or end with spaces", http.StatusBadRequest)
+		return
+	}
 
-	userEmail, err := svr.userSvc.GetUserEmailFromEmailPw(pwCode)
+	resetKey, err := uuid.Parse(resetInfo.PwResetCode)
 	if err != nil {
-		svr.UnhandledError(err)
-		if err.Error() == "sql: no rows in result set" {
-			http.Error(w, "Unauthorized reset link", http.StatusUnauthorized)
-			return
+		http.Error(w, "invalid or expired reset code", http.StatusUnauthorized)
+		return
+	}
+
+	err = svr.userSvc.CompleteUserPasswordReset(resetKey, resetInfo.NewPw)
+	if err != nil {
+		if errors.Is(err, user.ErrPasswordResetInvalid) {
+			http.Error(w, "invalid or expired reset code", http.StatusUnauthorized)
+		} else {
+			http.Error(w, "unexpected error has occurred", http.StatusInternalServerError)
 		}
-		http.Error(w, "Failed to get user email from pw reset code", http.StatusInternalServerError)
 		return
 	}
 
-	// Get user info from user email
-	userInfo, err := svr.userSvc.ResetUserPw(userEmail, trimedPassword, pwCode)
-	if err != nil {
-		slog.Warn("Fail to get user info from reset user password", "error", err)
-		http.Error(w, "Fail to get user info from reset user password", http.StatusUnauthorized)
-		return
-	}
-
-	// Create a response struct to send back as JSON
-	response := map[string]interface{}{
-		"message":  "Updated user new password successfully.",
-		"username": userInfo.Username,
-		"email":    userInfo.Email,
-	}
-
-	// Set Content-Type to JSON and send a response
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK) // 200 OK
-
-	// Send JSON response back to client
-	err = json.NewEncoder(w).Encode(response)
-	if err != nil {
-		// Handle error when encoding response
-		http.Error(w, "Failed to send response", http.StatusInternalServerError)
-		return
-	}
 }
