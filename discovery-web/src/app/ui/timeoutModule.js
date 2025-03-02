@@ -30,8 +30,11 @@ export function TimeoutModule({ username }) {
     // Check if the username is in the current path
     if (window.location.pathname.includes(`${username}`)) {
       // Set a timeout to show the session warning
-       
-      warningTimeoutID.current = setTimeout(callTimeoutFunc, 5000); // 5 seconds for demo purposes
+
+      warningTimeoutID.current = setTimeout(
+        callTimeoutFunc,
+        process.env.NEXT_PUBLIC_AUTOLOGOUT_TIME,
+      ); // 5 seconds for demo purposes
 
       // Add event listeners for user activity
       events.forEach((event) => {
@@ -101,7 +104,10 @@ export function TimeoutModule({ username }) {
 
     // Reset the warning timeout if the user interacts with the page
     clearTimeout(warningTimeoutID.current);
-    warningTimeoutID.current = setTimeout(callTimeoutFunc, 5000); // reset the timeout
+    warningTimeoutID.current = setTimeout(
+      callTimeoutFunc,
+      process.env.NEXT_PUBLIC_AUTOLOGOUT_TIME,
+    ); // reset the timeout
   }
 
   return <>{contentItem}</>;
