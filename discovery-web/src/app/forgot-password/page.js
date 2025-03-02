@@ -1,49 +1,22 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { Button } from "@/app/ui/buttons";
 import Link from "next/link";
+import { Button } from "@/app/ui/buttons";
+import { usePasswordReset } from "@/app/forgot-password/password-reset-service";
+import { LoadingSpinner } from "@/app/ui/loading-spinner";
 
-export default function ForgetPassword() {
-  const router = useRouter();
-  const handleInputEmail = async (e) => {
+export default function ForgotPassword() {
+  const [doReset, isPending, error] = usePasswordReset();
+
+  const handleInputEmail = (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
     const input_email = formData.get("email");
-    if (!input_email) {
-      alert("Please enter an email.");
-      return;
-    }
-    fetchForgetPassword(input_email);
+
+    doReset(input_email);
   };
 
-  const fetchForgetPassword = async (inputEmail) => {
-    const data = { email: inputEmail };
-    const request = new Request("http://localhost:8080/api/forgetPassword", {
-      method: "POST", // HTTP method
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    try {
-      const response = await fetch(request);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch: ${response.statusText}`);
-      }
-
-      const responseData = await response.json();
-      console.log("Server Response:", responseData);
-      console.log("Server Response:", responseData.hashedEmailPassword);
-
-      router.push(`/forgetPassword/email-sent`);
-    } catch (error) {
-      console.error("Error fetching forget password page:", error);
-      // alert("Error fetching user home page. Please try again later.");
-    }
-  };
   return (
     <div className="block-center p-20">
       <div className="w-full max-w-sm">
@@ -58,6 +31,7 @@ export default function ForgetPassword() {
         <form
           className="mb-4 rounded bg-white px-8 pb-8 pt-6 shadow-md"
           onSubmit={handleInputEmail}
+          noValidate
         >
           <div className="mb-6">
             <label
@@ -72,13 +46,11 @@ export default function ForgetPassword() {
               id="email"
               type="email"
             />
-            <p className="text-xs italic text-red-500">
-              Please type your email.
-            </p>
+            <p className="min-h-[16px] text-xs italic text-red-500">{error}</p>
           </div>
           <div className="flex items-center justify-between">
             <button className="btn-violet w-full font-space_mono">
-              Send Reset Instructions
+              {isPending ? <LoadingSpinner /> : "Send Reset Instructions"}
             </button>
           </div>
         </form>

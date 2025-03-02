@@ -17,7 +17,7 @@ export default function EmailSent() {
           was entered correctly.
         </h3>
         <h3 className="mb-10 w-full text-gray-500">
-          Email revocery emails are valid for 45 minutes.
+          Recovery emails are valid for 45 minutes.
         </h3>
 
         <p className="text-center text-xs text-gray-500">

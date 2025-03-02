@@ -114,15 +114,9 @@ export default function Setting() {
       const response = await fetch(request);
       console.log(response.status);
       if (!response.ok) {
-        // Not Successfully update password
-        if (response.status == 401) {
-          router.push("/unauthorized-link");
-          return;
-        } else {
-          // For other errors, handle as text (non-JSON responses)
-          const errorText = await response.text();
-          throw new Error(`Failed to fetch: ${errorText}`);
-        }
+        // For other errors, handle as text (non-JSON responses)
+        const errorText = await response.text();
+        throw new Error(`Failed to fetch: ${errorText}`);
       }
 
       const responseData = await response.json();
