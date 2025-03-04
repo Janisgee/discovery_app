@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 
-import ItemTemplete from "@/app/ui/template/itemTemplate";
+import ItemTemplete from "@/app/_ui/template/itemTemplate";
 import { useParams, useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
-import { LoadingSpinner } from "@/app/ui/loading-spinner";
+import { LoadingSpinner } from "@/app/_ui/loading-spinner";
 import Link from "next/link";
 
 export default function CatagoryTemplate({ catagory }) {

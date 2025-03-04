@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { TimeoutModule } from "@/app/ui/timeoutModule";
-import ItemTemplete from "@/app/ui/template/itemTemplate";
+import { TimeoutModule } from "@/app/_ui/timeoutModule";
+import ItemTemplete from "@/app/_ui/template/itemTemplate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 

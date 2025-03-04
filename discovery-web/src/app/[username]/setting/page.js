@@ -2,9 +2,9 @@
 import { useEffect, useState } from "react";
 import { CldImage } from "next-cloudinary";
 import { useParams } from "next/navigation";
-import AppTemplate from "@/app/ui/template/appTemplate";
-import { AvatarUploader } from "@/app/ui/avatar-uploader/avatar-uploader";
-import { fetchProfileImage } from "@/app/ui/fetchAPI/fetchProfileImage";
+import AppTemplate from "@/app/_ui/template/appTemplate";
+import { AvatarUploader } from "@/app/_ui/avatar-uploader/avatar-uploader";
+import { fetchProfileImage } from "@/app/_ui/fetchAPI/fetchProfileImage";
 import { useRouter } from "next/navigation";
 
 export default function Setting() {

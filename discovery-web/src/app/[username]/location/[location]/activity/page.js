@@ -1,5 +1,5 @@
-import AppTemplate from "@/app/ui/template/appTemplate";
-import CatagoryTemplate from "@/app/ui/template/catagoryTemplate";
+import AppTemplate from "@/app/_ui/template/appTemplate";
+import CatagoryTemplate from "@/app/_ui/template/catagoryTemplate";
 
 export default function Activity() {
   return (

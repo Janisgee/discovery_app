@@ -6,10 +6,10 @@ import { useRouter, useParams } from "next/navigation";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import AppTemplate from "@/app/ui/template/appTemplate";
-import CardTemplete from "@/app/ui/template/cardTemplate";
+import AppTemplate from "@/app/_ui/template/appTemplate";
+import CardTemplete from "@/app/_ui/template/cardTemplate";
 import Link from "next/link";
-import { fetchAllBookmark } from "@/app/ui/fetchAPI/fetchBookmark";
+import { fetchAllBookmark } from "@/app/_ui/fetchAPI/fetchBookmark";
 
 export default function Bookmark() {
   const [content, setContent] = useState(null);

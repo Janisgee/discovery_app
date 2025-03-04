@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import AppTemplate from "@/app/ui/template/appTemplate";
+import AppTemplate from "@/app/_ui/template/appTemplate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
 
-import { LoadingSpinner } from "@/app/ui/loading-spinner";
+import { LoadingSpinner } from "@/app/_ui/loading-spinner";
 import Image from "next/image";
 import Link from "next/link";
 

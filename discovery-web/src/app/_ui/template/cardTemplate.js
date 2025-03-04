@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { fetchPlaceImage } from "@/app/ui/fetchAPI/fetchPlaceImage";
+import { fetchPlaceImage } from "@/app/_ui/fetchAPI/fetchPlaceImage";
 
 export default function CardTemplete({
   imageSource,

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/app/ui/buttons";
+import { Button } from "@/app/_ui/buttons";
 
 export default function EmailSent() {
   return (

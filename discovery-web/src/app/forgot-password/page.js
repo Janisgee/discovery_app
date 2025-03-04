@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/app/ui/buttons";
-import { usePasswordReset } from "@/app/forgot-password/password-reset-service";
-import { LoadingSpinner } from "@/app/ui/loading-spinner";
+import { Button } from "@/app/_ui/buttons";
+import { usePasswordReset } from "@/app/forgot-password/_hooks/password-reset-service";
+import { LoadingSpinner } from "@/app/_ui/loading-spinner";
 
 export default function ForgotPassword() {
   const [doReset, isPending, error] = usePasswordReset();

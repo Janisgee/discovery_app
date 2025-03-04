@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 // import { useRouter } from "next/compat/router";
 import { useParams } from "next/navigation";
-import BookmarkTemplate from "@/app/ui/template/bookmarkTemplate";
+import BookmarkTemplate from "@/app/_ui/template/bookmarkTemplate";
 
 // import Link from "next/link";
 
