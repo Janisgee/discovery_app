@@ -6,11 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 
 import LogoutButton from "../logoutButton";
-import {
-  faHeart,
-  faHouse,
-  faRightFromBracket,
-} from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faHouse } from "@fortawesome/free-solid-svg-icons";
 
 export default function AppTemplate({ children }) {
   const params = useParams();

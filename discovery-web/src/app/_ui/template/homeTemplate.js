@@ -4,11 +4,7 @@ import { useParams } from "next/navigation";
 import { TimeoutModule } from "@/app/_ui/timeoutModule";
 import LogoutButton from "../logoutButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faGear,
-  faHeart,
-  faRightFromBracket,
-} from "@fortawesome/free-solid-svg-icons";
+import { faGear, faHeart } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 
 export default function HomeTemplate({ children }) {

@@ -8,7 +8,6 @@ import { CldImage } from "next-cloudinary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
-import { TimeoutModule } from "@/app/_ui/timeoutModule";
 import { fetchProfileImage } from "@/app/_ui/fetchAPI/fetchProfileImage";
 import { fetchAllBookmark } from "@/app/_ui/fetchAPI/fetchBookmark";
 import { fetchPlaceImage } from "@/app/_ui/fetchAPI/fetchPlaceImage";

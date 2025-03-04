@@ -1,11 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-// import { useRouter } from "next/compat/router";
 import { useParams } from "next/navigation";
 import BookmarkTemplate from "@/app/_ui/template/bookmarkTemplate";
-
-// import Link from "next/link";
 
 export default function BookmarkLocation() {
   const [display, setDisplay] = useState(false);

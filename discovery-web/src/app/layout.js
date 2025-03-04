@@ -1,5 +1,4 @@
-import { Metadata } from "next";
-import "@/app/ui/globals.css";
+import "@/app/_ui/globals.css";
 
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
