@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import ItemTemplete from "@/app/_ui/template/itemTemplate";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
 

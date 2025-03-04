@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
 import AppTemplate from "@/app/_ui/template/appTemplate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,7 +10,6 @@ import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
 
 import { LoadingSpinner } from "@/app/_ui/loading-spinner";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function PlaceTemplate({ username, location, place, catagory }) {
   const [isPending, setIsPending] = useState(false);
