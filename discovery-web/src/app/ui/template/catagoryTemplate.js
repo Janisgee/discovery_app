@@ -6,12 +6,14 @@ import ItemTemplete from "@/app/ui/template/itemTemplate";
 import { useParams, useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
+
+import { LoadingSpinner } from "@/app/ui/loading-spinner";
 import Link from "next/link";
 
 export default function CatagoryTemplate({ catagory }) {
+  const [isPending, setIsPending] = useState(false);
   const [content, setContent] = useState([]);
   const params = useParams();
-  const router = useRouter();
 
   const location = decodeURIComponent(params.location).toUpperCase();
   const twoWordCatagory = catagory.replaceAll("_", " ");
@@ -19,6 +21,7 @@ export default function CatagoryTemplate({ catagory }) {
   const fetchSearchCountry = async () => {
     const data = { country: location, catagory: twoWordCatagory };
     console.log("country:", location, "catagory:", twoWordCatagory);
+    setIsPending(true);
 
     const request = new Request("http://localhost:8080/searchCountry", {
       method: "POST", // HTTP method
@@ -42,6 +45,8 @@ export default function CatagoryTemplate({ catagory }) {
       }
     } catch (error) {
       console.error("Error fetching search country:", error);
+    } finally {
+      setIsPending(false);
     }
   };
 
@@ -80,7 +85,13 @@ export default function CatagoryTemplate({ catagory }) {
           </p>
         </div>
       </div>
-      <ul>{itemList}</ul>
+      {isPending ? (
+        <div className="mt-72 flex items-center justify-center">
+          <LoadingSpinner size={48} color="text-violet-600" />
+        </div>
+      ) : (
+        <ul>{itemList}</ul>
+      )}
     </div>
   );
 }

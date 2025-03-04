@@ -8,10 +8,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
+
+import { LoadingSpinner } from "@/app/ui/loading-spinner";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function PlaceTemplate({ username, location, place, catagory }) {
+  const [isPending, setIsPending] = useState(false);
   const [content, setContent] = useState([]);
   const [hasBookmark, setHasBookmark] = useState(false);
 
@@ -20,7 +23,6 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
   const placeName = placeArray[0];
   const placeID = placeArray[1];
 
-  const router = useRouter();
   const decodeURIPlace = decodeURIComponent(placeName);
   const toUpperCasePlace = decodeURIPlace.toUpperCase();
 
@@ -31,6 +33,7 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
 
   const handlePlaceBookmark = (e) => {
     e.preventDefault();
+
     if (hasBookmark) {
       alert(`Unbookmark place: ${decodeURIPlace}!`);
       fetchBookmarkActionInPlaceDetail("http://localhost:8080/api/unBookmark");
@@ -104,10 +107,13 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
       }
     } catch (error) {
       console.error("Error fetching search place:", error);
+    } finally {
+      setIsPending(true);
     }
   };
   //
   useEffect(() => {
+    setIsPending(true);
     fetchSearchPlaceDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -119,11 +125,7 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
           <button onClick={backwardClick}>
             <FontAwesomeIcon icon={faCircleArrowLeft} size="2x" />
           </button>
-          {/* <Link href={`/${username}/location/${location}/${catagory}`}>
-            <FontAwesomeIcon icon={faCircleArrowLeft} size="2x" />
-          </Link> */}
           <h1 className="text-center text-xl">{toUpperCasePlace}</h1>
-
           <button onClick={handlePlaceBookmark}>
             <FontAwesomeIcon
               icon={hasBookmark ? faHeartSolid : faHeartRegular}
@@ -131,7 +133,11 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
             />
           </button>
         </div>
-        {content.length != 0 && (
+        {isPending && content.length == 0 ? (
+          <div className="mt-72 flex items-center justify-center">
+            <LoadingSpinner size={48} color="text-violet-600" />
+          </div>
+        ) : (
           <div>
             <Image
               src={content.image_url}
