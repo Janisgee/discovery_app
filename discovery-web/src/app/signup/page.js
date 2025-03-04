@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/app/ui/buttons";
+import { Button } from "@/app/_ui/buttons";
 
 export default function Signup() {
   const [passwordSuggest, setpasswordSuggest] = useState("");

@@ -8,15 +8,15 @@ import { CldImage } from "next-cloudinary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
-import { TimeoutModule } from "@/app/ui/timeoutModule";
-import { fetchProfileImage } from "@/app/ui/fetchAPI/fetchProfileImage";
-import { fetchAllBookmark } from "@/app/ui/fetchAPI/fetchBookmark";
-import { fetchPlaceImage } from "@/app/ui/fetchAPI/fetchPlaceImage";
-import { fetchInputControl } from "@/app/ui/fetchAPI/fetchInputControl";
+import { TimeoutModule } from "@/app/_ui/timeoutModule";
+import { fetchProfileImage } from "@/app/_ui/fetchAPI/fetchProfileImage";
+import { fetchAllBookmark } from "@/app/_ui/fetchAPI/fetchBookmark";
+import { fetchPlaceImage } from "@/app/_ui/fetchAPI/fetchPlaceImage";
+import { fetchInputControl } from "@/app/_ui/fetchAPI/fetchInputControl";
 
-import { LoadingSpinner } from "@/app/ui/loading-spinner";
-import HomeTemplate from "@/app/ui/template/homeTemplate";
-import CardTemplete from "@/app/ui/template/cardTemplate";
+import { LoadingSpinner } from "@/app/_ui/loading-spinner";
+import HomeTemplate from "@/app/_ui/template/homeTemplate";
+import CardTemplete from "@/app/_ui/template/cardTemplate";
 import Link from "next/link";
 
 export default function Home() {

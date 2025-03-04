@@ -4,7 +4,7 @@ import "@/app/ui/globals.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 
-import { kaiseiTokumin, space_mono, inter } from "@/app/ui/fonts/fonts.js";
+import { kaiseiTokumin, space_mono, inter } from "@/app/_ui/fonts/fonts.js";
 
 config.autoAddCss = false;
 

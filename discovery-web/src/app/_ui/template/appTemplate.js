@@ -1,7 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
 
-import { TimeoutModule } from "@/app/ui/timeoutModule";
+import { TimeoutModule } from "@/app/_ui/timeoutModule";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 

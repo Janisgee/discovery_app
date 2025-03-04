@@ -1,9 +1,9 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import AppTemplate from "@/app/ui/template/appTemplate";
+import AppTemplate from "@/app/_ui/template/appTemplate";
 
-import CardTemplete from "@/app/ui/template/cardTemplate";
+import CardTemplete from "@/app/_ui/template/cardTemplate";
 
 import Link from "next/link";
 
