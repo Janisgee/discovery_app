@@ -14,11 +14,13 @@ import { fetchAllBookmark } from "@/app/ui/fetchAPI/fetchBookmark";
 import { fetchPlaceImage } from "@/app/ui/fetchAPI/fetchPlaceImage";
 import { fetchInputControl } from "@/app/ui/fetchAPI/fetchInputControl";
 
+import { LoadingSpinner } from "@/app/ui/loading-spinner";
 import HomeTemplate from "@/app/ui/template/homeTemplate";
 import CardTemplete from "@/app/ui/template/cardTemplate";
 import Link from "next/link";
 
 export default function Home() {
+  const [isPending, setIsPending] = useState(false);
   const [bookmarkNum, setBookmarkNum] = useState(0);
   const [userPublicID, setUserPublicID] = useState("");
   const [itemList, setItemList] = useState([]);
@@ -34,6 +36,7 @@ export default function Home() {
 
   const fetchCountryImage = async () => {
     let itemList = [];
+    setIsPending(true);
     for (let i = 0; i < countryGroupNumber; i++) {
       const randomCountry = require("random-country");
       const country = randomCountry({ full: true });
@@ -52,6 +55,7 @@ export default function Home() {
       }
     }
     setItemList(itemList);
+    setIsPending(false);
     console.log(itemList);
   };
 
@@ -180,10 +184,15 @@ export default function Home() {
         </div>
         <div className="block-center my-5 flex-col ">
           <h3>Popular Destination</h3>
-
-          <div className="size-full overflow-auto rounded-lg">
-            <ul>{itemList.length > 0 && itemList}</ul>
-          </div>
+          {isPending ? (
+            <div className="mt-40 flex items-center justify-center">
+              <LoadingSpinner size={48} color="text-violet-600" />
+            </div>
+          ) : (
+            <div className="size-full overflow-auto rounded-lg">
+              <ul>{itemList.length > 0 && itemList}</ul>
+            </div>
+          )}
         </div>
       </HomeTemplate>
     </div>
