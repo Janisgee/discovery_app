@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+
 	"github.com/caarlos0/env/v11"
 	"github.com/joho/godotenv"
 )
@@ -15,6 +16,8 @@ type EnvConfig struct {
 	PsqlConnectionString string `env:"PSQL_CONNECTION_STRING,required"`
 	PexelsKey            string `env:"PEXEL_API_KEY,required"`
 	ClientBaseUrl        string `env:"CLIENT_BASE_URL,required"`
+	GgmailerKey          string `env:"GGMAILER_KEY"`
+	GgmailerEmail        string `env:"GGMAILER_EMAIL"`
 }
 
 func startupGetEnv() (*EnvConfig, error) {
