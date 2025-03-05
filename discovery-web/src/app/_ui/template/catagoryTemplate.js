@@ -20,7 +20,6 @@ export default function CatagoryTemplate({ catagory }) {
 
   const fetchSearchCountry = async () => {
     const data = { country: location, catagory: twoWordCatagory };
-    console.log("country:", location, "catagory:", twoWordCatagory);
     setIsPending(true);
 
     const request = new Request("http://localhost:8080/searchCountry", {
@@ -37,7 +36,6 @@ export default function CatagoryTemplate({ catagory }) {
 
       if (response.ok) {
         const htmlContent = await response.json(); // Use json() to handle HTML response
-        console.log(htmlContent);
         setContent(htmlContent);
       } else {
         console.error("Error fetching search country:", response.statusText);

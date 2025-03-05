@@ -1,4 +1,4 @@
-export const fetchProfileImage = async (router) => {
+export const fetchProfileImage = async () => {
   const request = new Request(
     "http://localhost:8080/api/displayUserProfileImage",
     {

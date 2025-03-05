@@ -14,7 +14,7 @@ export const fetchInputControl = async (searchWord) => {
     const response = await fetch(request);
     if (response.ok) {
       const htmlContent = await response.json(); // Use json() to handle HTML response
-      console.log("Received content:", htmlContent);
+
       return htmlContent;
     } else {
       console.error("Error fetching bookmark place:", response.statusText);

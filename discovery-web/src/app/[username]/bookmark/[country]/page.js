@@ -24,10 +24,10 @@ export default function BookmarkCountry() {
 
     try {
       const response = await fetch(request);
-      console.log("Response status:", response.status);
+
       if (response.ok) {
         const htmlContent = await response.json(); // Use json() to handle HTML response
-        console.log("Received content:", htmlContent);
+
         setContent(htmlContent);
       }
     } catch (error) {
@@ -56,7 +56,7 @@ export default function BookmarkCountry() {
         return acc;
       }, {}),
     );
-    console.log(uniqueCity);
+
     // Sort city assending order
     const sortedCity = uniqueCity.sort((a, b) => a.City.localeCompare(b.City));
 

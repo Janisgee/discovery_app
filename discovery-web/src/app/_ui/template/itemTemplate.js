@@ -54,7 +54,6 @@ export default function ItemTemplete({
       const response = await fetch(request);
       if (response.ok) {
         const htmlContent = await response.json(); // Use json() to handle HTML response
-        console.log(htmlContent);
       } else {
         console.error("Error fetching bookmark request:", response.statusText);
         throw error;

@@ -18,7 +18,6 @@ export default function LogoutButton() {
         const errorText = await response.text();
         throw new Error(`Logout failed: ${errorText}`);
       }
-      console.log("Logged out successfully");
 
       localStorage.setItem("logout", Date.now().toString());
       router.push("/");
@@ -28,8 +27,6 @@ export default function LogoutButton() {
   };
 
   const onStorageChange = (e) => {
-    console.log(e);
-    console.log(e.key);
     if (e.key == "logout") {
       router.push("/");
     }

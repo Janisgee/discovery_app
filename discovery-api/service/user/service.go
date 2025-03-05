@@ -33,7 +33,7 @@ func (svc *postgresUserService) CreateUser(username string, email string, passwo
 	// Check if queries username is in database
 	_, err := svc.dbQueries.GetUser(ctx, email)
 	if err == nil {
-		return nil, errors.New("already have the same email saved in database")
+		return nil, ErrEmailInUse
 	}
 
 	// Hashed password

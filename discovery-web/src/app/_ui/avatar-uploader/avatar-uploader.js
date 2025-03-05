@@ -10,7 +10,6 @@ export function AvatarUploader({ onUploadSuccess }) {
       signatureEndpoint="/api/sign-cloudinary-params"
       onSuccess={(result) => {
         if (typeof result.info === "object" && "secure_url" in result.info) {
-          console.log(result.info);
           onUploadSuccess(result.info.public_id, result.info.secure_url);
         }
       }}

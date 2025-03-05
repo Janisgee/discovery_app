@@ -21,21 +21,15 @@ export default function Bookmark() {
     const bookmarks = await fetchAllBookmark(router);
 
     if (bookmarks) {
-      console.log(bookmarks);
-
       // Handle the bookmarks data here (e.g., display it)
       if (bookmarks.BookmarkedPlace.length > 1) {
         setNoBookmark(false);
         setContent(bookmarks);
-        console.log(bookmarks);
-        console.log("Fetched bookmarks:", bookmarks);
       } else {
         setNoBookmark(true);
-        console.log("No bookmarks available.");
       }
     } else {
-      console.log("Error occurred.");
-      // Handle error case here (e.g., show error UI)
+      console.error("Error occurred while fetching all bookmark.");
     }
   };
 
@@ -56,7 +50,7 @@ export default function Bookmark() {
         return acc;
       }, {}),
     );
-    console.log(uniqueCountries);
+
     // Sort country assending order
     const sortedCountry = uniqueCountries.sort((a, b) =>
       a.Country.localeCompare(b.Country),
