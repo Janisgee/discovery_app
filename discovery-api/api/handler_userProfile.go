@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -30,7 +29,6 @@ func (svr *ApiServer) userProfileHandler(w http.ResponseWriter, r *http.Request)
 	// Split the email at the '@' symbol
 	splitEmail := strings.Split(email, "@")
 	if len(splitEmail) < 2 {
-		fmt.Println("Invalid email")
 		http.Error(w, "Invalid email address.", http.StatusBadRequest)
 		return
 	}

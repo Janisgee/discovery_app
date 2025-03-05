@@ -34,7 +34,7 @@ func (svr *ApiServer) gptSearchPlaceDetails(w http.ResponseWriter, r *http.Reque
 	}
 
 	// Process the input data
-	fmt.Printf("Received place name (line34): %s \n", input.Place)
+	slog.Info("Received place name : %s \n", "place", input.Place)
 
 	// Search place place id from Google map
 	place_id, err := svr.placesService.GetPlaceID(input.Place)
@@ -137,8 +137,6 @@ func (svr *ApiServer) gptSearchPlaceDetails(w http.ResponseWriter, r *http.Reque
 			return
 		}
 
-		fmt.Println("Go through CHATGPT to see place detail")
-
 		////////////////////////Get bookmark check//////////////////
 		// responseWithBookmarkInfo struct
 		type responseWithBookmarkInfo struct {
@@ -171,12 +169,10 @@ func (svr *ApiServer) gptSearchPlaceDetails(w http.ResponseWriter, r *http.Reque
 			log.Printf("Failed to write JSON response: %s\n", err)
 			http.Error(w, "Failed to write JSON response", http.StatusInternalServerError)
 		}
-		fmt.Println("Store data into database through CHATGPT")
 		return
 	}
 
 	// [YES]
-	fmt.Println("Go through database to see place detail")
 
 	////////////////////////Get bookmark check//////////////////
 	// responseWithBookmarkInfo struct

@@ -32,7 +32,7 @@ func (svr *ApiServer) gptSearchCountry(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Process the input data
-	fmt.Printf("Received country name: %s, catagory:%s\n", input.Country, input.Catagory)
+	slog.Info("Received country name: %s, catagory:%s\n", input.Country, input.Catagory)
 
 	// Handle the page and get attractions for the provided country
 	// 3 locations in locationDetails struct
@@ -57,7 +57,6 @@ func (svr *ApiServer) gptSearchCountry(w http.ResponseWriter, r *http.Request) {
 					slog.Error("Unable to get image from pexels", "error", err)
 					os.Exit(1)
 				}
-				fmt.Println("I am result!!!:", result)
 
 				// Insert Image URL
 				response[i].Image = result.ImageURL

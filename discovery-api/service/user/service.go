@@ -8,9 +8,10 @@ import (
 	"discoveryweb/util"
 	"errors"
 	"fmt"
+	"log/slog"
+
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
-	"log/slog"
 )
 
 type postgresUserService struct {
@@ -162,7 +163,7 @@ func (svc *postgresUserService) UpdateUserPw(password string, id uuid.UUID) (str
 	if err != nil {
 		return "Fail to update user password.", errors.New("already have the same email saved in database")
 	}
-	fmt.Printf("The user password is successfully updated.\n User password updated at:%v\n", userInfo.UpdatedAt)
+	slog.Info("The user password is successfully updated.\n User password updated at:%v\n", "user Info updated", userInfo.UpdatedAt)
 
 	return "Successfully updated user password.", nil
 }

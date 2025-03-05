@@ -196,32 +196,4 @@ func (svr *ApiServer) getPlaceImageURL(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// ////////////////////////////////////////////////////////////
-
-	// newImageData, err := svr.imgSvc.GetImageURL(placeInfo.Place)
-	// if err != nil {
-	// 	slog.Warn("Failed to decode place img url", "error", err)
-	// 	http.Error(w, "Failed to decode place img url", http.StatusBadRequest)
-	// 	return
-	// }
-
-	// fmt.Println(newImageData)
-	// // Create a response struct to send back as JSON
-	// response := map[string]interface{}{
-	// 	"place_name": placeInfo.Place,
-	// 	"image_url":  newImageData.ImageURL,
-	// }
-
-	// // Set Content-Type to JSON and send a response
-	// w.Header().Set("Content-Type", "application/json")
-	// w.WriteHeader(http.StatusOK) // 200 OK
-
-	// // Send JSON response back to client
-	// err = json.NewEncoder(w).Encode(response)
-	// if err != nil {
-	// 	// Handle error when encoding response
-	// 	http.Error(w, "Failed to send response", http.StatusInternalServerError)
-	// 	return
-	// }
-
 }
