@@ -1,9 +1,13 @@
 "use client";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/app/_ui/buttons";
 import Link from "next/link";
 
 export default function Login() {
+  const [alertEmail, setalertEmail] = useState(false);
+  const [alertPassword, setalertPassword] = useState(false);
+  const [alertLoginError, setalertLoginError] = useState(false);
   const router = useRouter();
   const handleLoginData = (e) => {
     e.preventDefault();
@@ -14,22 +18,29 @@ export default function Login() {
     const input_email = "janisgeegee@gmail.com";
     const input_password = "newpassword2change";
 
-    if (!input_email) {
-      alert("Please enter an email.");
-
-      return;
-    }
-    if (!input_password) {
-      alert("Please enter a password.");
-
+    if (!input_email || !input_password) {
+      if (!input_email) setalertEmail(true);
+      if (!input_password) setalertPassword(true);
+      setalertLoginError(false);
       return;
     }
     fetchLoginData(input_email, input_password);
   };
 
+  const handleInputOnChange = (e) => {
+    e.preventDefault();
+    console.log(e.currentTarget.id);
+    if (e.currentTarget.id == "email" && e.currentTarget.value != "") {
+      setalertEmail(false);
+    }
+    if (e.currentTarget.id == "password" && e.currentTarget.value != "") {
+      setalertPassword(false);
+    }
+  };
+
   const fetchLoginData = async (loginEmail, loginPassword) => {
     const data = { email: loginEmail, password: loginPassword };
-    console.log(data);
+
     const request = new Request("http://localhost:8080/api/login", {
       method: "POST", // HTTP method
       headers: {
@@ -47,15 +58,12 @@ export default function Login() {
       }
 
       const responseData = await response.json();
-      console.log("Server Response:", responseData);
-      console.log("Server Response:", responseData.username);
 
       if (responseData.username != "") {
         router.push(`/${encodeURIComponent(responseData.username)}/home`);
       }
     } catch (error) {
-      console.error("Error fetching user home page:", error);
-      // alert("Error fetching user home page. Please try again later.");
+      setalertLoginError(true);
     }
   };
 
@@ -75,15 +83,23 @@ export default function Login() {
               className="mb-2 block text-sm font-bold text-gray-700"
               htmlFor="email"
             >
-              Email
+              Email{" "}
             </label>
             <input
               name="login_email"
-              className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+              className={`focus:shadow-outline w-full appearance-none rounded border ${alertEmail ? "border-red-500" : ""} px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none`}
               id="email"
               type="text"
               placeholder="Email"
-            />
+              onChange={handleInputOnChange}
+            />{" "}
+            {alertEmail ? (
+              <span className="text-xs italic text-red-500">
+                (Please fill in your email address.)
+              </span>
+            ) : (
+              <span> </span>
+            )}
           </div>
           <div className="mb-6">
             <label
@@ -94,14 +110,27 @@ export default function Login() {
             </label>
             <input
               name="login_password"
-              className="focus:shadow-outline mb-3 w-full appearance-none rounded border border-red-500 px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+              className={`focus:shadow-outline mb-3 w-full appearance-none rounded border ${alertPassword ? "border-red-500" : ""} px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none`}
               id="password"
               type="password"
               placeholder="******************"
+              onChange={handleInputOnChange}
             />
-            <p className="text-xs italic text-red-500">
-              Please type your password.
-            </p>
+            {alertPassword ? (
+              <span className="text-xs italic text-red-500">
+                (Please fill in your password.)
+              </span>
+            ) : (
+              <span> </span>
+            )}
+            {alertLoginError ? (
+              <span className="text-xs italic text-red-500">
+                We couldn’t log you in. Please check your email and password and
+                try again.
+              </span>
+            ) : (
+              <span> </span>
+            )}
           </div>
           <div className="flex items-center justify-between">
             <button className="btn-violet font-space_mono">Login</button>
