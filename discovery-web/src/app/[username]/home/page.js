@@ -60,8 +60,6 @@ export default function Home() {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (resultArray.length > 0) {
-      // const formData = new FormData(e.currentTarget);
-      // const searchData =/ formData.get("search");
       if (!resultArray) {
         alert("Please enter a location");
         return;

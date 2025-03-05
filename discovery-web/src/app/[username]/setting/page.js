@@ -14,6 +14,7 @@ export default function Setting() {
   const [alertNewPw, setAlertNewPw] = useState(false);
   const [alertConfirmPw, setAlertConfirmPw] = useState(false);
   const [alertUpdateError, setAlertUpdateError] = useState(false);
+  const [alertUpdateSuccess, setAlertUpdateSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   const params = useParams();
@@ -108,12 +109,12 @@ export default function Setting() {
         // For other errors
         const responseError = await response.json();
         console.log(responseError.error);
-        setErrorMsg(responseError.error);
+        setErrorMsg(capitalizeFirstLetter(responseError.error));
         setAlertUpdateError(true);
         throw new Error(`Failed to fetch: ${responseError.error}`);
       }
 
-      alert("Password has been successfully updated.");
+      setAlertUpdateSuccess("Password has been successfully updated.");
       // Successfully update password
     } catch (error) {
       console.error("Error fetching update password page:", error);
@@ -172,6 +173,10 @@ export default function Setting() {
     ) {
       setAlertConfirmPw(false);
     }
+  };
+
+  const capitalizeFirstLetter = (sentence) => {
+    return String(sentence).charAt(0).toUpperCase() + String(sentence).slice(1);
   };
 
   useEffect(() => {
@@ -241,7 +246,12 @@ export default function Setting() {
         {}
         <form className="mt-5" onSubmit={handleUpdatePw}>
           {alertUpdateError && (
-            <span className="text-xs italic text-red-500">{errorMsg}</span>
+            <span className="text-s mb-8 italic text-red-500">{errorMsg}</span>
+          )}
+          {alertUpdateSuccess && (
+            <span className="text-s mb-8 italic text-green-500">
+              {alertUpdateSuccess}
+            </span>
           )}
           <div className="items-left mb-4 flex flex-col">
             <label

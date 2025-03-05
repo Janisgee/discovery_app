@@ -13,10 +13,8 @@ export default function Login() {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    // const input_email = formData.get("login_email");
-    // const input_password = formData.get("login_password");
-    const input_email = "janisgeegee@gmail.com";
-    const input_password = "newpassword2change";
+    const input_email = formData.get("login_email");
+    const input_password = formData.get("login_password");
 
     if (!input_email || !input_password) {
       if (!input_email) setalertEmail(true);
