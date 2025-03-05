@@ -79,7 +79,7 @@ func main() {
 
 	var sessionSvc = session.NewSessionService(dbQueries)
 
-	server := api.NewApiServer(env.WebPort, locationSvc, userSvc, placesSvc, bookmarkPlaceSvc, imageSvc, emailSvc, sessionSvc)
+	server := api.NewApiServer(env.WebPort, locationSvc, userSvc, placesSvc, bookmarkPlaceSvc, imageSvc, emailSvc, sessionSvc, env.ClientBaseUrl)
 
 	// Start the API server
 	err = server.Run()
