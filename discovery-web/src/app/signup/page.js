@@ -5,7 +5,10 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/app/_ui/buttons";
 
 export default function Signup() {
-  const [passwordSuggest, setpasswordSuggest] = useState("");
+  const [suggest, setSuggest] = useState("");
+  const [alertUsername, setalertUsername] = useState(false);
+  const [alertEmail, setalertEmail] = useState(false);
+  const [alertPassword, setalertPassword] = useState(false);
 
   const router = useRouter();
   const handleSignupData = (e) => {
@@ -15,24 +18,32 @@ export default function Signup() {
     const input_email = formData.get("signup_email");
     const input_password = formData.get("signup_password");
 
-    if (!input_username) {
-      alert("Please enter a username.");
-      return;
-    }
-    if (!input_email) {
-      alert("Please enter an email.");
-      return;
-    }
-    if (!input_password) {
-      alert("Please enter a password.");
+    if (!input_username || !input_email || !input_password) {
+      if (!input_username) setalertUsername(true);
+      if (!input_email) setalertEmail(true);
+      if (!input_password) setalertPassword(true);
+      setSuggest("");
       return;
     }
     fetchSignupData(input_username, input_email, input_password);
   };
 
+  const handleInputOnChange = (e) => {
+    e.preventDefault();
+    if (e.currentTarget.id == "username" && e.currentTarget.value != "") {
+      setalertUsername(false);
+    }
+    if (e.currentTarget.id == "email" && e.currentTarget.value != "") {
+      setalertEmail(false);
+    }
+    if (e.currentTarget.id == "password" && e.currentTarget.value != "") {
+      setalertPassword(false);
+    }
+  };
+
   const fetchSignupData = async (username, email, password) => {
     const data = { username: username, email: email, password: password };
-    console.log(data);
+
     const request = new Request("http://localhost:8080/api/signup", {
       method: "POST", // HTTP method
       headers: {
@@ -45,21 +56,15 @@ export default function Signup() {
       const response = await fetch(request);
       if (!response.ok) {
         // Get error response from password validation
-        const responseData = await response.json();
-        console.log("Server Error Response for signup:", responseData);
-        setpasswordSuggest(capitalizeFirstLetter(responseData.error));
+        const errorResponse = await response.json();
+        console.log(errorResponse);
+        setSuggest(capitalizeFirstLetter(errorResponse.error));
         throw new Error(`Failed to fetch: ${response.statusText}`);
       }
 
-      const responseData = await response.json();
-      console.log("Server Response for signup:", responseData);
-
-      router.push(`/${encodeURIComponent(responseData.username)}/home`);
-
-      // router.push(`/dashboard/home`);
+      router.push(`/login`);
     } catch (error) {
       console.error("Error fetching user sign up:", error);
-      // alert("Error fetching user home page. Please try again later.");
     }
   };
 
@@ -86,12 +91,20 @@ export default function Signup() {
               Username
             </label>
             <input
-              className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+              className={`focus:shadow-outline w-full appearance-none rounded border ${alertUsername ? "border-red-500" : ""} px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none`}
               name="username"
               id="username"
               type="text"
               placeholder="Username"
-            />
+              onChange={handleInputOnChange}
+            />{" "}
+            {alertUsername ? (
+              <span className="text-xs italic text-red-500">
+                (Please fill in your username.)
+              </span>
+            ) : (
+              <span> </span>
+            )}
           </div>
           <div className="mb-4">
             <label
@@ -101,12 +114,20 @@ export default function Signup() {
               Email
             </label>
             <input
-              className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+              className={`focus:shadow-outline w-full appearance-none rounded border ${alertEmail ? "border-red-500" : ""} px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none`}
               name="signup_email"
               id="email"
               type="text"
               placeholder="Email"
-            />
+              onChange={handleInputOnChange}
+            />{" "}
+            {alertEmail ? (
+              <span className="text-xs italic text-red-500">
+                (Please fill in your email address.)
+              </span>
+            ) : (
+              <span> </span>
+            )}
           </div>
           <div className="mb-6">
             <label
@@ -116,17 +137,23 @@ export default function Signup() {
               Password
             </label>
             <input
-              className="focus:shadow-outline mb-3 w-full appearance-none rounded border border-red-500 px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+              className={`focus:shadow-outline w-full appearance-none rounded border ${alertPassword ? "border-red-500" : ""} px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none`}
               name="signup_password"
               id="password"
               type="password"
               placeholder="******************"
+              onChange={handleInputOnChange}
             />
-            <p className="text-xs italic text-red-500">
-              {passwordSuggest == ""
-                ? "Please choose a password."
-                : passwordSuggest}
-            </p>
+            {alertPassword ? (
+              <span className="text-xs italic text-red-500">
+                (Please fill in your password.)
+              </span>
+            ) : (
+              <span> </span>
+            )}
+            {suggest && (
+              <p className="mt-5 text-xs italic text-red-500">{suggest}</p>
+            )}{" "}
           </div>
           <div className="flex items-center">
             <button className="btn-violet">Sign Up</button>

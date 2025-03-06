@@ -20,7 +20,6 @@ export function TimeoutModule({ username }) {
         const errorText = await response.text();
         throw new Error(`Logout failed: ${errorText}`);
       }
-      console.log("Logged out successfully");
     } catch (error) {
       console.error("Error logging out:", error);
     }
@@ -98,11 +97,6 @@ export function TimeoutModule({ username }) {
 
   // Reset the warning timeout and logout timeout on any user interaction
   function eventHandler() {
-    // if (logoutTimeoutID) {
-    //   clearTimeout(logoutTimeoutID);
-    // }
-
-    // Reset the warning timeout if the user interacts with the page
     clearTimeout(warningTimeoutID.current);
     warningTimeoutID.current = setTimeout(
       callTimeoutFunc,

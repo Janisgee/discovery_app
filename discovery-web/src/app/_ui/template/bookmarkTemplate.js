@@ -29,9 +29,6 @@ export default function BookmarkTemplate({
   children,
 }) {
   const [catagoryClicked, setCatagoryClicked] = useState("attraction");
-  console.log(username);
-  console.log(city);
-  console.log(placeList);
 
   const params = useParams();
   let itemList = [];

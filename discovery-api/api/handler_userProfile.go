@@ -3,9 +3,11 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"strings"
 
+	passwordvalidator "github.com/wagslane/go-password-validator"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -30,7 +32,6 @@ func (svr *ApiServer) userProfileHandler(w http.ResponseWriter, r *http.Request)
 	// Split the email at the '@' symbol
 	splitEmail := strings.Split(email, "@")
 	if len(splitEmail) < 2 {
-		fmt.Println("Invalid email")
 		http.Error(w, "Invalid email address.", http.StatusBadRequest)
 		return
 	}
@@ -102,7 +103,19 @@ func (svr *ApiServer) userUpdatePwHandler(w http.ResponseWriter, r *http.Request
 	// Valified database hashed password and user input hashed password
 	err = bcrypt.CompareHashAndPassword([]byte(databasePw), []byte(updateRequest.CurrentPw))
 	if err != nil {
-		http.Error(w, "Fail to verify user's current password. Please try again", http.StatusBadRequest)
+		slog.Warn("Password is not strong enough.Plesae signup again with a stronger password. Suggestion:", "error", err)
+		errMessage := "Fail to verify user's current password. Please try again"
+		sendErrorResponse(w, http.StatusBadRequest, errMessage)
+		return
+	}
+
+	// Check password strength
+	const minEntropyBits = 60
+	err = passwordvalidator.Validate(updateRequest.NewPw, minEntropyBits)
+	if err != nil {
+		slog.Warn("Password is not strong enough.Plesae signup again with a stronger password. Suggestion:", "error", err)
+		errMessage := fmt.Sprintf("%v", err)
+		sendErrorResponse(w, http.StatusBadRequest, errMessage)
 		return
 	}
 
@@ -114,7 +127,7 @@ func (svr *ApiServer) userUpdatePwHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	// Console response struct to send back as JSON
-	response := map[string]interface{}{
+	response := map[string]string{
 		"message": message,
 	}
 

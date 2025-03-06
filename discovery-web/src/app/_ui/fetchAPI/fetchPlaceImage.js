@@ -14,10 +14,10 @@ export const fetchPlaceImage = async (place, searchFor, country) => {
 
   try {
     const response = await fetch(request);
-    console.log("Response status:", response.status);
+
     if (response.ok) {
       const imageInfo = await response.json(); // Use json() to handle HTML response
-      console.log("Received content:", imageInfo);
+
       if (imageInfo) {
         return imageInfo.image_url;
       }

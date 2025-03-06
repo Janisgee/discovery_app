@@ -51,8 +51,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	var mailDialer = gomail.NewDialer("smtp.gmail.com", 587, "yanisching@gmail.com", "yjpyfqdkwkczydef")
-	var emailSvc = email.NewEmailService("yanisching@gmail.com", mailDialer)
+	var mailDialer = gomail.NewDialer("smtp.gmail.com", 587, env.GgmailerEmail, env.GgmailerKey)
+	var emailSvc = email.NewEmailService(env.GgmailerEmail, mailDialer)
 
 	// Use generated database package to create a new *database.Queries instance
 	dbQueries := database.New(db)
@@ -79,7 +79,7 @@ func main() {
 
 	var sessionSvc = session.NewSessionService(dbQueries)
 
-	server := api.NewApiServer(env.WebPort, locationSvc, userSvc, placesSvc, bookmarkPlaceSvc, imageSvc, emailSvc, sessionSvc)
+	server := api.NewApiServer(env.WebPort, locationSvc, userSvc, placesSvc, bookmarkPlaceSvc, imageSvc, emailSvc, sessionSvc, env.ClientBaseUrl)
 
 	// Start the API server
 	err = server.Run()

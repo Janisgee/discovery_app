@@ -2,6 +2,7 @@ package user
 
 import (
 	"errors"
+
 	"github.com/google/uuid"
 )
 
@@ -25,3 +26,4 @@ type UserEmailPw struct {
 
 var ErrNoUser = errors.New("user does not exist")
 var ErrPasswordResetInvalid = errors.New("password reset code invalid or expired")
+var ErrEmailInUse = errors.New("user email already in use in database")

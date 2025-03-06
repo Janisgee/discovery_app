@@ -8,10 +8,9 @@ export default function BookmarkLocation() {
   const [display, setDisplay] = useState(false);
   const [content, setContent] = useState([]);
   const params = useParams();
-  console.log(params);
 
   const bookmarkLocation = params.location.toUpperCase().replaceAll("%20", " ");
-  // console.log(content);
+
   const spaceLocation = params.location.replaceAll("%20", " ");
 
   const fetchAllBookmarkByCity = async () => {
@@ -32,10 +31,10 @@ export default function BookmarkLocation() {
 
     try {
       const response = await fetch(request);
-      console.log("Response status:", response.status);
+
       if (response.ok) {
         const htmlContent = await response.json(); // Use json() to handle HTML response
-        console.log("Received content:", htmlContent);
+
         if (htmlContent != null) {
           setContent(htmlContent);
         }

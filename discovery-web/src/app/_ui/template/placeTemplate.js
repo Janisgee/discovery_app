@@ -64,7 +64,6 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
       const response = await fetch(request);
       if (response.ok) {
         const htmlContent = await response.json(); // Use json() to handle HTML response
-        console.log(htmlContent);
       } else {
         console.error("Error fetching bookmark request:", response.statusText);
         throw error;
@@ -88,10 +87,9 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
 
     try {
       const response = await fetch(request);
-      console.log("Response status:", response.status);
+
       if (response.ok) {
         const htmlContent = await response.json(); // Use json() to handle HTML response
-        console.log("Received content:", htmlContent);
 
         setContent(htmlContent.PlaceInfo);
 

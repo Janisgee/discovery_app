@@ -37,9 +37,10 @@ type ApiServer struct {
 	imgSvc               image.ImageService
 	emailSvc             email.EmailService
 	sessionSvc           session.SessionService
+	clientBaseURL        string
 }
 
-func NewApiServer(listenPort uint16, locationSvc location.LocationService, userSvc user.UserService, placesService places.PlacesService, bookmarkPlaceService bookmark.BookmarkPlaceService, imgSvc image.ImageService, emailSvc email.EmailService, sessionSvc session.SessionService) *ApiServer {
+func NewApiServer(listenPort uint16, locationSvc location.LocationService, userSvc user.UserService, placesService places.PlacesService, bookmarkPlaceService bookmark.BookmarkPlaceService, imgSvc image.ImageService, emailSvc email.EmailService, sessionSvc session.SessionService, clientBaseURL string) *ApiServer {
 	return &ApiServer{
 		listenPort,
 		locationSvc,
@@ -49,6 +50,7 @@ func NewApiServer(listenPort uint16, locationSvc location.LocationService, userS
 		imgSvc,
 		emailSvc,
 		sessionSvc,
+		clientBaseURL,
 	}
 }
 
@@ -153,7 +155,7 @@ func (svr *ApiServer) Run() error {
 
 	// Use CORS middleware to handle cross-origin requests
 	handler := requestTelemetryMiddleware((cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000"},
+		AllowedOrigins:   []string{svr.clientBaseURL},
 		AllowCredentials: true,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 	}).Handler(router)))

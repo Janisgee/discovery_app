@@ -10,6 +10,12 @@ import { useRouter } from "next/navigation";
 export default function Setting() {
   const [email, setEmail] = useState("");
   const [publicID, setPublicID] = useState("");
+  const [alertCurrentPw, setAlertCurrentPw] = useState(false);
+  const [alertNewPw, setAlertNewPw] = useState(false);
+  const [alertConfirmPw, setAlertConfirmPw] = useState(false);
+  const [alertUpdateError, setAlertUpdateError] = useState(false);
+  const [alertUpdateSuccess, setAlertUpdateSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const params = useParams();
 
@@ -21,7 +27,6 @@ export default function Setting() {
   const saveAvatar = async (publicID, url) => {
     setPublicID(publicID);
     fetchUpdateUserProfileImage(publicID, url);
-    // revalidatePath("/");
   };
 
   // Fetch publicID to backendserver to do storage
@@ -45,17 +50,12 @@ export default function Setting() {
     try {
       const response = await fetch(request);
       if (!response.ok) {
-        if (response.status == 401) {
-          alert(
-            `Please login again as 10 mins session expired without taking action.`,
-          );
-          router.push(`/login`);
-        }
-        throw new Error(`Failed to fetch: ${response.statusText}`);
+        console.error(
+          "Error fetching user profile image:",
+          response.statusText,
+        );
+        throw new Error(response.statusText);
       }
-
-      const responseData = await response.json();
-      console.log("Server Response:", responseData);
     } catch (error) {
       console.error("Error fetching user new profile image:", error);
     }
@@ -74,18 +74,10 @@ export default function Setting() {
       const response = await fetch(request);
       if (response.ok) {
         const responseData = await response.json();
-        console.log("Server Response:", responseData);
-        console.log("Server Response:", responseData.user_email);
+
         setEmail(responseData.user_email);
       } else {
-        if (response.status == 401) {
-          alert(
-            `Please login again as 10 mins session expired without taking action.`,
-          );
-          router.push(`/login`);
-        }
-
-        console.error("Error fetching search country:", response.statusText);
+        console.error("Error fetching user profile:", response.statusText);
         throw new Error(response.statusText);
       }
     } catch (error) {
@@ -112,30 +104,28 @@ export default function Setting() {
 
     try {
       const response = await fetch(request);
-      console.log(response.status);
+
       if (!response.ok) {
-        // For other errors, handle as text (non-JSON responses)
-        const errorText = await response.text();
-        throw new Error(`Failed to fetch: ${errorText}`);
+        // For other errors
+        const responseError = await response.json();
+        console.log(responseError.error);
+        setErrorMsg(capitalizeFirstLetter(responseError.error));
+        setAlertUpdateError(true);
+        throw new Error(`Failed to fetch: ${responseError.error}`);
       }
 
-      const responseData = await response.json();
-      console.log("Server Response:", responseData);
-      alert("Password has been successfully updated.");
+      setAlertUpdateSuccess("Password has been successfully updated.");
       // Successfully update password
     } catch (error) {
       console.error("Error fetching update password page:", error);
       // Not Successfully update password
-      alert(
-        "Fail to update user password. Please try a stronger password pattern.",
-      );
     }
   };
 
-  const fetchData = async (router) => {
+  const fetchData = async () => {
     try {
-      const imageData = await fetchProfileImage(router);
-      console.log(imageData);
+      const imageData = await fetchProfileImage();
+
       if (imageData != null) {
         setPublicID(imageData.publicID);
         setImageSource(imageData.secureURL);
@@ -152,11 +142,41 @@ export default function Setting() {
     const newPw = formData.get("new_password");
     const confirmedNewPw = formData.get("confirm_new_password");
 
+    if (!currentPw || !newPw || !confirmedNewPw) {
+      if (!currentPw) setAlertCurrentPw(true);
+      if (!newPw) setAlertNewPw(true);
+      if (!confirmedNewPw) setAlertConfirmPw(true);
+      return;
+    }
     if (newPw != confirmedNewPw) {
-      alert("Please enter smae password into the confirm password field.");
+      alert("Please enter same password into the confirm password field.");
       return;
     }
     fetchUpdateNewPw(currentPw, newPw);
+  };
+
+  const handleInputOnChange = (e) => {
+    e.preventDefault();
+    console.log(e.currentTarget.id);
+    if (
+      e.currentTarget.id == "current_password" &&
+      e.currentTarget.value != ""
+    ) {
+      setAlertCurrentPw(false);
+    }
+    if (e.currentTarget.id == "new_password" && e.currentTarget.value != "") {
+      setAlertNewPw(false);
+    }
+    if (
+      e.currentTarget.id == "confirm_new_password" &&
+      e.currentTarget.value != ""
+    ) {
+      setAlertConfirmPw(false);
+    }
+  };
+
+  const capitalizeFirstLetter = (sentence) => {
+    return String(sentence).charAt(0).toUpperCase() + String(sentence).slice(1);
   };
 
   useEffect(() => {
@@ -223,20 +243,36 @@ export default function Setting() {
         <h3 className="mt-5 justify-items-start text-gray-400">
           Change Password
         </h3>
+        {}
         <form className="mt-5" onSubmit={handleUpdatePw}>
-          {" "}
+          {alertUpdateError && (
+            <span className="text-s mb-8 italic text-red-500">{errorMsg}</span>
+          )}
+          {alertUpdateSuccess && (
+            <span className="text-s mb-8 italic text-green-500">
+              {alertUpdateSuccess}
+            </span>
+          )}
           <div className="items-left mb-4 flex flex-col">
             <label
               className="mr-3 block font-bold text-gray-700"
               htmlFor="current_password"
             >
-              Current Password:
+              Current Password:{" "}
+              {alertCurrentPw ? (
+                <span className="text-xs italic text-red-500">
+                  (Please fill in your current password.)
+                </span>
+              ) : (
+                <span> </span>
+              )}
             </label>
             <input
               name="current_password"
-              className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus-within:outline-4 focus-within:outline-indigo-600"
+              className={`focus:shadow-outline w-full appearance-none rounded border ${alertCurrentPw ? "border-red-500" : ""} px-3 py-2 leading-tight text-gray-700 shadow focus-within:outline-4 focus-within:outline-indigo-600`}
               id="current_password"
               type="password"
+              onChange={handleInputOnChange}
             />
           </div>
           <div className="items-left mb-4 flex flex-col">
@@ -244,13 +280,21 @@ export default function Setting() {
               className="mr-3 block font-bold text-gray-700"
               htmlFor="new_password"
             >
-              New Password:
+              New Password:{" "}
+              {alertNewPw ? (
+                <span className="text-xs italic text-red-500">
+                  (Please fill in your new password.)
+                </span>
+              ) : (
+                <span> </span>
+              )}
             </label>
             <input
               name="new_password"
-              className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus-within:outline-4 focus-within:outline-indigo-600"
+              className={`focus:shadow-outline w-full appearance-none rounded border ${alertNewPw ? "border-red-500" : ""} px-3 py-2 leading-tight text-gray-700 shadow focus-within:outline-4 focus-within:outline-indigo-600`}
               id="new_password"
               type="password"
+              onChange={handleInputOnChange}
             />
           </div>
           <div className="items-left mb-4 flex flex-col">
@@ -258,13 +302,21 @@ export default function Setting() {
               className="mr-3 block font-bold text-gray-700"
               htmlFor="confirm_new_password"
             >
-              Confirm New Password:
+              Confirm New Password:{" "}
+              {alertNewPw ? (
+                <span className="text-xs italic text-red-500">
+                  (Please confirm your new password.)
+                </span>
+              ) : (
+                <span> </span>
+              )}
             </label>
             <input
               name="confirm_new_password"
-              className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus-within:outline-4 focus-within:outline-indigo-600"
+              className={`focus:shadow-outline w-full appearance-none rounded border ${alertConfirmPw ? "border-red-500" : ""} px-3 py-2 leading-tight text-gray-700 shadow focus-within:outline-4 focus-within:outline-indigo-600`}
               id="confirm_new_password"
               type="password"
+              onChange={handleInputOnChange}
             />
           </div>
           <div className="flex justify-center">

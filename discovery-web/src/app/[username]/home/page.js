@@ -55,14 +55,11 @@ export default function Home() {
     }
     setItemList(itemList);
     setIsPending(false);
-    console.log(itemList);
   };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (resultArray.length > 0) {
-      // const formData = new FormData(e.currentTarget);
-      // const searchData =/ formData.get("search");
       if (!resultArray) {
         alert("Please enter a location");
         return;
@@ -79,7 +76,7 @@ export default function Home() {
     try {
       let optionList = [];
       const result = await fetchInputControl(e.target.value);
-      console.log(result);
+
       if (result) {
         for (let i = 0; i < result.length; i++) {
           optionList.push(
@@ -97,12 +94,12 @@ export default function Home() {
   const fetchData = async (router) => {
     try {
       const data = await fetchAllBookmark(router);
-      console.log(data);
+
       if (data.BookmarkedPlace != null) {
         setBookmarkNum(data.BookmarkedPlace.length);
       }
-      const imageData = await fetchProfileImage(router);
-      console.log(imageData);
+      const imageData = await fetchProfileImage();
+
       if (imageData != null) {
         setUserPublicID(imageData.publicID);
       }
@@ -114,11 +111,9 @@ export default function Home() {
   useEffect(() => {
     fetchData(router);
     fetchCountryImage();
-    console.log(itemList);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log("upid", userPublicID);
-  console.log("PARAMS.USERNAME", params.username);
 
   return (
     <div>
