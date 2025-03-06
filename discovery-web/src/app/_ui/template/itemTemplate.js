@@ -25,10 +25,12 @@ export default function ItemTemplete({
     e.preventDefault();
     if (!emptyHeart) {
       alert(`Unbookmark place: ${title}!`);
-      fetchBookmark("http://localhost:8080/api/unBookmark");
+      fetchBookmark(
+        `${process.env.NEXT_PUBLIC_API_SERVER_BASE}/api/unBookmark`,
+      );
     } else {
       alert(`Bookmark place: ${title}!`);
-      fetchBookmark("http://localhost:8080/api/bookmark");
+      fetchBookmark(`${process.env.NEXT_PUBLIC_API_SERVER_BASE}/api/bookmark`);
     }
     setEmptyHeart(!emptyHeart);
   };

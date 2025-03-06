@@ -44,13 +44,16 @@ export default function Signup() {
   const fetchSignupData = async (username, email, password) => {
     const data = { username: username, email: email, password: password };
 
-    const request = new Request("http://localhost:8080/api/signup", {
-      method: "POST", // HTTP method
-      headers: {
-        "Content-Type": "application/json",
+    const request = new Request(
+      `${process.env.NEXT_PUBLIC_API_SERVER_BASE}/api/signup`,
+      {
+        method: "POST", // HTTP method
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       },
-      body: JSON.stringify(data),
-    });
+    );
 
     try {
       const response = await fetch(request);

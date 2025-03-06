@@ -1,6 +1,6 @@
 export const fetchInputControl = async (searchWord) => {
   const request = new Request(
-    `http://localhost:8080/api/place/autocomplete?search=${encodeURIComponent(searchWord)}`,
+    `${process.env.NEXT_PUBLIC_API_SERVER_BASE}/api/place/autocomplete?search=${encodeURIComponent(searchWord)}`,
     {
       method: "GET", // HTTP method
       headers: {

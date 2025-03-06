@@ -36,7 +36,7 @@ export default function Setting() {
       secure_url: url,
     };
     const request = new Request(
-      "http://localhost:8080/api/updateUserProfileImage",
+      `${process.env.NEXT_PUBLIC_API_SERVER_BASE}/api/updateUserProfileImage`,
       {
         method: "POST", // HTTP method
         headers: {
@@ -62,13 +62,16 @@ export default function Setting() {
   };
 
   const fetchUserProfile = async () => {
-    const request = new Request("http://localhost:8080/api/getUserProfile", {
-      method: "GET", // HTTP method
-      headers: {
-        "Content-Type": "application/json",
+    const request = new Request(
+      `${process.env.NEXT_PUBLIC_API_SERVER_BASE}/api/getUserProfile`,
+      {
+        method: "GET", // HTTP method
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
       },
-      credentials: "include",
-    });
+    );
 
     try {
       const response = await fetch(request);
@@ -93,14 +96,17 @@ export default function Setting() {
       currentPw: currentPw,
       newPw: newPw,
     };
-    const request = new Request("http://localhost:8080/api/updatePassword", {
-      method: "POST", // HTTP method
-      headers: {
-        "Content-Type": "application/json",
+    const request = new Request(
+      `${process.env.NEXT_PUBLIC_API_SERVER_BASE}/api/updatePassword`,
+      {
+        method: "POST", // HTTP method
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
       },
-      credentials: "include",
-      body: JSON.stringify(data),
-    });
+    );
 
     try {
       const response = await fetch(request);

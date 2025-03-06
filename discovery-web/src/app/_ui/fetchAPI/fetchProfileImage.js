@@ -1,6 +1,6 @@
 export const fetchProfileImage = async () => {
   const request = new Request(
-    "http://localhost:8080/api/displayUserProfileImage",
+    `${process.env.NEXT_PUBLIC_API_SERVER_BASE}/api/displayUserProfileImage`,
     {
       method: "GET", // HTTP method
       headers: {

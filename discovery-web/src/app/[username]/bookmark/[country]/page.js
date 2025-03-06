@@ -14,13 +14,16 @@ export default function BookmarkCountry() {
   const params = useParams();
   const decodeCountryName = decodeURIComponent(params.country);
   const fetchAllBookmark = async () => {
-    const request = new Request("http://localhost:8080/api/getAllBookmark", {
-      method: "GET", // HTTP method
-      headers: {
-        "Content-Type": "application/json",
+    const request = new Request(
+      `${process.env.NEXT_PUBLIC_API_SERVER_BASE}/api/getAllBookmark`,
+      {
+        method: "GET", // HTTP method
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
       },
-      credentials: "include",
-    });
+    );
 
     try {
       const response = await fetch(request);
