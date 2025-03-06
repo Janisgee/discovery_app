@@ -22,14 +22,17 @@ export default function CatagoryTemplate({ catagory }) {
     const data = { country: location, catagory: twoWordCatagory };
     setIsPending(true);
 
-    const request = new Request("http://localhost:8080/searchCountry", {
-      method: "POST", // HTTP method
-      headers: {
-        "Content-Type": "application/json",
+    const request = new Request(
+      `${process.env.NEXT_PUBLIC_API_SERVER_BASE}/searchCountry`,
+      {
+        method: "POST", // HTTP method
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
       },
-      credentials: "include",
-      body: JSON.stringify(data),
-    });
+    );
 
     try {
       const response = await fetch(request, { next: { revalidate: 600 } });

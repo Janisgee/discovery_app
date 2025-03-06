@@ -12,4 +12,4 @@ Run the server:
 /scripts/build.sh
 ```
 
-It will serve a simple webpage at `http://localhost:8080`.
+It will serve a simple webpage at `https://discovery-api-server.onrender.com`.

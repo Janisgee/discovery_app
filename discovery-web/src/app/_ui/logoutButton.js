@@ -8,9 +8,12 @@ import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 export default function LogoutButton() {
   const router = useRouter();
   const fetchLogoutRequest = async () => {
-    const request = new Request("http://localhost:8080/api/logout", {
-      credentials: "include",
-    });
+    const request = new Request(
+      `${process.env.NEXT_PUBLIC_API_SERVER_BASE}/api/logout`,
+      {
+        credentials: "include",
+      },
+    );
 
     try {
       const response = await fetch(request);

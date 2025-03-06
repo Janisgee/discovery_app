@@ -34,11 +34,13 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
 
     if (hasBookmark) {
       alert(`Unbookmark place: ${decodeURIPlace}!`);
-      fetchBookmarkActionInPlaceDetail("http://localhost:8080/api/unBookmark");
+      fetchBookmarkActionInPlaceDetail(
+        `${process.env.NEXT_PUBLIC_API_SERVER_BASE}/api/unBookmark`,
+      );
     } else {
       alert(`Bookmark place: ${decodeURIPlace}!`);
       fetchBookmarkActionInPlaceDetail(
-        "http://localhost:8080/api/bookmarkByPlaceName",
+        `${process.env.NEXT_PUBLIC_API_SERVER_BASE}/api/bookmarkByPlaceName`,
       );
     }
     setHasBookmark(!hasBookmark);
@@ -76,14 +78,17 @@ export default function PlaceTemplate({ username, location, place, catagory }) {
   const fetchSearchPlaceDetails = async () => {
     const data = { place: placeName, catagory: catagory };
 
-    const request = new Request("http://localhost:8080/searchPlace", {
-      method: "POST", // HTTP method
-      headers: {
-        "Content-Type": "application/json",
+    const request = new Request(
+      `${process.env.NEXT_PUBLIC_API_SERVER_BASE}/searchPlace`,
+      {
+        method: "POST", // HTTP method
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
       },
-      credentials: "include",
-      body: JSON.stringify(data),
-    });
+    );
 
     try {
       const response = await fetch(request);

@@ -1,7 +1,7 @@
 export const fetchPlaceImage = async (place, searchFor, country) => {
   const data = { place_name: place, search_for: searchFor, country: country };
   const request = new Request(
-    "http://localhost:8080/api/getDisplayPlaceImage",
+    `${process.env.NEXT_PUBLIC_API_SERVER_BASE}/api/getDisplayPlaceImage`,
     {
       method: "POST", // HTTP method
       headers: {

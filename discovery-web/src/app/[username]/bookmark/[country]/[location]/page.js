@@ -18,7 +18,7 @@ export default function BookmarkLocation() {
       city: spaceLocation,
     };
     const request = new Request(
-      "http://localhost:8080/api/getAllBookmarkByCity",
+      `${process.env.NEXT_PUBLIC_API_SERVER_BASE}/api/getAllBookmarkByCity`,
       {
         method: "POST", // HTTP method
         headers: {

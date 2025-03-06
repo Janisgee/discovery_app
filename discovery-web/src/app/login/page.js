@@ -41,14 +41,17 @@ export default function Login() {
   const fetchLoginData = async (loginEmail, loginPassword) => {
     const data = { email: loginEmail, password: loginPassword };
 
-    const request = new Request("http://localhost:8080/api/login", {
-      method: "POST", // HTTP method
-      headers: {
-        "Content-Type": "application/json",
+    const request = new Request(
+      `${process.env.NEXT_PUBLIC_API_SERVER_BASE}/api/login`,
+      {
+        method: "POST", // HTTP method
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
       },
-      credentials: "include",
-      body: JSON.stringify(data),
-    });
+    );
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
