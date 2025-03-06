@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"os"
 
 	"github.com/caarlos0/env/v11"
 	"github.com/joho/godotenv"
@@ -24,14 +25,16 @@ func startupGetEnv() (*EnvConfig, error) {
 	envPath := flag.String("env", ".env", "path to .env file")
 	flag.Parse()
 
-	err := godotenv.Load(*envPath)
-	if err != nil {
-		return nil, err
+	//Skip .env Loading on Render: Modify your startupGetEnv() function to only load the .env file if you are running the application locally. If ENV_NAME is empty, it's assumed to be local, and the .env file is loaded.
+	if os.Getenv("IS_RENDER") == "" {
+		err := godotenv.Load(*envPath)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	envCfg := EnvConfig{}
-
-	err = env.Parse(&envCfg)
+	err := env.Parse(&envCfg)
 	if err != nil {
 		return nil, err
 	}
