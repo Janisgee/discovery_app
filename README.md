@@ -16,7 +16,7 @@ To get started, see the docs below and resources.
 
 1. Make sure you're on Go version 1.22+.
 
-    Run the server to install all the packages for this application:
+    Build the server to install all the packages for this application:
     
     ```
     /scripts/build.sh
@@ -73,13 +73,13 @@ To get started, see the docs below and resources.
     # Client Url
     CLIENT_BASE_URL = "http://localhost:3000"
      ```
-4. Start PostgresSQL database
+4. Start PostgresSQL database (Requires docker)
    ```
    /scripts/start_database.sh
    ```
 
 
-5. Generate database code
+5. Generate database code (Only need to do it when sql files changed)
    ```
    /scripts/generate_db_code.sh
    ```
