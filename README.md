@@ -22,7 +22,7 @@ To get started, see the docs below and resources.
     /scripts/build.sh
     ```
 
-2. Create environment file (.env.local) inside discovery-web for front-end server to use.
+2. Create environment file (.env.local) inside discovery-web for front-end server to use. (Fill in your own key value according different variables)
      ```
     # Front-end Environment
     
@@ -39,7 +39,7 @@ To get started, see the docs below and resources.
     NEXT_PUBLIC_API_SERVER_BASE="http://localhost:8080"
     ```
 
-3.  Create environment file (.env) inside discovery-api for back-end server to use.
+3.  Create environment file (.env) inside discovery-api for back-end server to use. (Fill in your own key value according different variables)
 
      ```
     # Back-end Environment
