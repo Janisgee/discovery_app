@@ -14,12 +14,100 @@ To get started, see the docs below and resources.
 
 ## Local Development
 
-Make sure you're on Go version 1.22+.
+1. Make sure you're on Go version 1.22+.
 
-Run the server:
+    Run the server to install all the packages for this application:
+    
+    ```
+    /scripts/build.sh
+    ```
 
-```
-/scripts/build.sh
-```
+2. Create environment file (.env.local) inside discovery-web for front-end server to use.
+     ```
+    # Front-end Environment
+    
+    # Cloudinary (profile picture storage) Configure for front-end environment
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=""
+    NEXT_PUBLIC_CLOUDINARY_API_KEY=""
+    CLOUDINARY_UPLOAD_PRESET=""
+    CLOUDINARY_API_SECRET=""
+    
+    # Time limit for autologout if user is not active
+    NEXT_PUBLIC_AUTOLOGOUT_TIME=1800000
+    
+    # Server Base URL
+    NEXT_PUBLIC_API_SERVER_BASE="http://localhost:8080"
+    ```
 
-It will serve a simple webpage at `https://discovery-api-server.onrender.com`.
+3.  Create environment file (.env) inside discovery-api for back-end server to use.
+
+     ```
+    # Back-end Environment
+
+    # Indicate whether your application is running in a local or production environment (such as on Render). "" is from local.
+    IS_RENDER= ""
+   
+    # Connect to ChatGPT API
+    OPENAI_API_KEY = ''
+    
+    # Connect to port
+    PORT = 8080
+    
+    # PostgreSQL connection string - connect to database (discovery)
+    PSQL_CONNECTION_STRING = "postgres://postgres:postgres@localhost:5433/discovery_app?sslmode=disable"
+    
+    # Connect to docker database name: discovery_app
+    # Generate PostgresSQL request
+    #goose postgres "postgres://postgres:postgres@localhost:5433/discovery_app" up
+    
+    # google mailer - connect to gmail to send user password reset email
+    GGMAILER_KEY=""
+    GGMAILER_EMAIL=""
+    
+    # Google map - get google placeID
+    GMAPS_API_KEY=''
+    
+    # pexels image - get location image
+    PEXEL_API_KEY=''
+    
+    # Client Url
+    CLIENT_BASE_URL = "http://localhost:3000"
+     ```
+4. Start PostgresSQL database
+   ```
+   /scripts/start_database.sh
+   ```
+
+
+5. Generate database code
+   ```
+   /scripts/generate_db_code.sh
+   ```
+
+
+
+## Quick Start
+
+- Start running front-end server on (http://localhost:3000/)
+
+  ```
+  pnpm dev
+  ```
+
+- Start running back-end server on (http://localhost:8080/)
+  - Build app server and run.
+   ```
+   /scripts/build_run.sh
+   ```
+
+- Database schema migration with "goose up" : Updating its schema to the latest version (cd sql/schema directory)
+  ```
+   goose postgres "postgres://postgres:postgres@localhost:5433/discovery_app" up
+  ```
+
+- Database schema migration with "goose down" : Revert the changes to the previous version (cd sql/schema directory)
+  ```
+   goose postgres "postgres://postgres:postgres@localhost:5433/discovery_app" down
+  ```
+
+
